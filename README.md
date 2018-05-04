@@ -1,0 +1,2 @@
+# MyNewPhoto
+take photos
