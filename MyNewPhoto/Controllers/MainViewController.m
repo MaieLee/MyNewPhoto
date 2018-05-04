@@ -16,8 +16,9 @@
 
 @property (nonatomic, strong) GPUImageView *gpuImageView;
 @property (nonatomic, strong) GPUImageStillCamera *gpuStillCamera;
-@property (nonatomic, strong) GPUImageHighlightShadowFilter *filter;
+@property (nonatomic, strong) GPUImageBilateralFilter *bilateralFilter;
 @property (nonatomic, strong) BottomBarView *bottomView;
+@property (nonatomic, strong) UISlider *brightnessSilder;
 @end
 
 @implementation MainViewController
@@ -28,14 +29,11 @@
     
     [self setUpUI];
     [self setUpCamera];
-    
-    
 }
 
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-    
     self.navigationController.navigationBarHidden = YES;
 }
 
@@ -61,17 +59,24 @@
     _bottomView.picBlock = ^{
         [weakSelf takePicture];
     };
+    
+    
 }
 
 - (void)setUpCamera{
     self.gpuStillCamera = [[GPUImageStillCamera alloc] initWithSessionPreset:AVCaptureSessionPreset1280x720 cameraPosition:AVCaptureDevicePositionBack];
     self.gpuStillCamera.outputImageOrientation = UIInterfaceOrientationPortrait;
     self.gpuImageView.fillMode = kGPUImageFillModePreserveAspectRatioAndFill;
-    _filter = [[GPUImageHighlightShadowFilter alloc] init];
-    _filter.shadows = 0.5;
-    _filter.highlights = 0.5;
-    [self.gpuStillCamera addTarget:_filter];
-    [_filter addTarget:self.gpuImageView];
+    // 磨皮滤镜-- 双边模糊-- GPUImageBilateralFilter
+    _bilateralFilter = [[GPUImageBilateralFilter alloc]init];
+    _bilateralFilter.distanceNormalizationFactor = 8;  // 模糊度数值越大越不模糊,默认值是8大于1
+    // 美白滤镜-- 亮度 亮度：调整亮度（-1.0 - 1.0，默认为0.0）
+    GPUImageBrightnessFilter *brightnessFilter = [[GPUImageBrightnessFilter alloc] init];
+    brightnessFilter.brightness = 0.1;
+    
+    [self.gpuStillCamera addTarget:brightnessFilter];
+    [brightnessFilter addTarget:_bilateralFilter];
+    [_bilateralFilter addTarget:self.gpuImageView];
     
     dispatch_async(dispatch_get_main_queue(), ^{
         [self.gpuStillCamera startCameraCapture];
@@ -85,7 +90,7 @@
 - (void)takePicture{
     [self.bottomView.activityIndicator startAnimating];
     
-    [self.gpuStillCamera capturePhotoAsImageProcessedUpToFilter:_filter withCompletionHandler:^(UIImage *processedImage, NSError *error) {
+    [self.gpuStillCamera capturePhotoAsImageProcessedUpToFilter:_bilateralFilter withCompletionHandler:^(UIImage *processedImage, NSError *error) {
         void* contextInfo;
         UIImageWriteToSavedPhotosAlbum(processedImage, self, @selector(saveImage:didFinishSavingWithError:contextInfo:), contextInfo);
     }];
