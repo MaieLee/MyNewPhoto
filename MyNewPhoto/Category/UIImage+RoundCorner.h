@@ -10,4 +10,5 @@
 
 @interface UIImage (RoundCorner)
 - (UIImage *)imageWithRect:(CGSize)rectSize;
++ (UIImage *)thumbnailWithImage:(UIImage *)originalImage size:(CGSize)size;
 @end

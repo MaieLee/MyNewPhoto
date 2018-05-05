@@ -21,6 +21,7 @@
 		34922BB1209BE4090009FEB5 /* ToolBarView.m in Sources */ = {isa = PBXBuildFile; fileRef = 34922BAF209BE4090009FEB5 /* ToolBarView.m */; };
 		34B1A4F5209AEA090039B074 /* MainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 34B1A4F4209AEA090039B074 /* MainViewController.m */; };
 		34B1A504209B18870039B074 /* DrawCyclesButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 34B1A503209B18870039B074 /* DrawCyclesButton.m */; };
+		34D5DD0F209DCCA000F9182D /* GPUImageBeautifyFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = 34D5DD0E209DCCA000F9182D /* GPUImageBeautifyFilter.m */; };
 		9D4027BD49C8E420A7B313D4 /* libPods-MyNewPhoto.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1EC42C55EF4D683FABD04253 /* libPods-MyNewPhoto.a */; };
 /* End PBXBuildFile section */
 
@@ -92,6 +93,8 @@
 		34B1A4FD209B0FA00039B074 /* PrefixHeader.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PrefixHeader.pch; sourceTree = "<group>"; };
 		34B1A502209B18870039B074 /* DrawCyclesButton.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DrawCyclesButton.h; sourceTree = "<group>"; };
 		34B1A503209B18870039B074 /* DrawCyclesButton.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DrawCyclesButton.m; sourceTree = "<group>"; };
+		34D5DD0D209DCCA000F9182D /* GPUImageBeautifyFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GPUImageBeautifyFilter.h; sourceTree = "<group>"; };
+		34D5DD0E209DCCA000F9182D /* GPUImageBeautifyFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GPUImageBeautifyFilter.m; sourceTree = "<group>"; };
 		F2B2517B06B0B5686E9676E8 /* Pods-MyNewPhoto.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MyNewPhoto.debug.xcconfig"; path = "Pods/Target Support Files/Pods-MyNewPhoto/Pods-MyNewPhoto.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -241,6 +244,8 @@
 		34B1A4FB209B06FE0039B074 /* CommonHepler */ = {
 			isa = PBXGroup;
 			children = (
+				34D5DD0D209DCCA000F9182D /* GPUImageBeautifyFilter.h */,
+				34D5DD0E209DCCA000F9182D /* GPUImageBeautifyFilter.m */,
 			);
 			path = CommonHepler;
 			sourceTree = "<group>";
@@ -452,6 +457,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				3470A85720994DD1003972FD /* ViewController.m in Sources */,
+				34D5DD0F209DCCA000F9182D /* GPUImageBeautifyFilter.m in Sources */,
 				3470A86220994DD4003972FD /* main.m in Sources */,
 				34922BB1209BE4090009FEB5 /* ToolBarView.m in Sources */,
 				3470A85420994DD1003972FD /* AppDelegate.m in Sources */,

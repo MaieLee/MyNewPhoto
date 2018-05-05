@@ -11,12 +11,13 @@
 #import "ToolBarView.h"
 #import "BottomBarView.h"
 #import "UIImage+RoundCorner.h"
+#import "GPUImageBeautifyFilter.h"
 
 @interface MainViewController ()
 
 @property (nonatomic, strong) GPUImageView *gpuImageView;
 @property (nonatomic, strong) GPUImageStillCamera *gpuStillCamera;
-@property (nonatomic, strong) GPUImageBilateralFilter *bilateralFilter;
+@property (nonatomic, strong) GPUImageBrightnessFilter *brightnessFilter;
 @property (nonatomic, strong) BottomBarView *bottomView;
 @property (nonatomic, strong) UISlider *brightnessSilder;
 @end
@@ -60,23 +61,39 @@
         [weakSelf takePicture];
     };
     
+    _brightnessSilder = [[UISlider alloc] initWithFrame:CGRectMake(self.view.frame.size.width-130, 260, 214, 18)];
+    //设置旋转90度
+    _brightnessSilder.transform = CGAffineTransformMakeRotation(-1.57079633);
+    _brightnessSilder.value=0;
+    _brightnessSilder.minimumValue=-1.0;
+    _brightnessSilder.maximumValue=1.0;
+    _brightnessSilder.minimumTrackTintColor = [UIColor whiteColor];
+    _brightnessSilder.maximumTrackTintColor = [UIColor whiteColor];
+    _brightnessSilder.alpha = 0.5;
+    [self.view addSubview:_brightnessSilder];
     
+    [_brightnessSilder addTarget:self action:@selector(sliderValueChanged:) forControlEvents:UIControlEventValueChanged];
+}
+
+- (void)sliderValueChanged:(UISlider *)slider
+{
+    _brightnessFilter.brightness = slider.value;
 }
 
 - (void)setUpCamera{
     self.gpuStillCamera = [[GPUImageStillCamera alloc] initWithSessionPreset:AVCaptureSessionPreset1280x720 cameraPosition:AVCaptureDevicePositionBack];
     self.gpuStillCamera.outputImageOrientation = UIInterfaceOrientationPortrait;
     self.gpuImageView.fillMode = kGPUImageFillModePreserveAspectRatioAndFill;
-    // 磨皮滤镜-- 双边模糊-- GPUImageBilateralFilter
-    _bilateralFilter = [[GPUImageBilateralFilter alloc]init];
-    _bilateralFilter.distanceNormalizationFactor = 8;  // 模糊度数值越大越不模糊,默认值是8大于1
+
     // 美白滤镜-- 亮度 亮度：调整亮度（-1.0 - 1.0，默认为0.0）
-    GPUImageBrightnessFilter *brightnessFilter = [[GPUImageBrightnessFilter alloc] init];
-    brightnessFilter.brightness = 0.1;
+    _brightnessFilter = [[GPUImageBrightnessFilter alloc] init];
+    _brightnessFilter.brightness = 0.1;
     
-    [self.gpuStillCamera addTarget:brightnessFilter];
-    [brightnessFilter addTarget:_bilateralFilter];
-    [_bilateralFilter addTarget:self.gpuImageView];
+    GPUImageBeautifyFilter *beautifyFilter = [[GPUImageBeautifyFilter alloc] init];
+    
+    [self.gpuStillCamera addTarget:beautifyFilter];
+    [beautifyFilter addTarget:_brightnessFilter];
+    [_brightnessFilter addTarget:self.gpuImageView];
     
     dispatch_async(dispatch_get_main_queue(), ^{
         [self.gpuStillCamera startCameraCapture];
@@ -90,14 +107,16 @@
 - (void)takePicture{
     [self.bottomView.activityIndicator startAnimating];
     
-    [self.gpuStillCamera capturePhotoAsImageProcessedUpToFilter:_bilateralFilter withCompletionHandler:^(UIImage *processedImage, NSError *error) {
+    [self.gpuStillCamera capturePhotoAsImageProcessedUpToFilter:_brightnessFilter withCompletionHandler:^(UIImage *processedImage, NSError *error) {
         void* contextInfo;
         UIImageWriteToSavedPhotosAlbum(processedImage, self, @selector(saveImage:didFinishSavingWithError:contextInfo:), contextInfo);
     }];
 }
 
 - (void)saveImage:(UIImage *)image didFinishSavingWithError:(NSError *)error contextInfo:(void *)contextInfo{
-    self.bottomView.imgView.image = [image imageWithRect:self.bottomView.imgView.frame.size];
+    CGSize imgSize = self.bottomView.imgView.frame.size;
+    UIImage *thumImg = [UIImage thumbnailWithImage:image size:imgSize];
+    self.bottomView.imgView.image = [thumImg imageWithRect:imgSize];
     [self.bottomView.activityIndicator stopAnimating];
     if(!error) {
         NSLog(@"保存成功！");
