@@ -81,8 +81,10 @@
 }
 
 - (void)setUpCamera{
-    self.gpuStillCamera = [[GPUImageStillCamera alloc] initWithSessionPreset:AVCaptureSessionPreset1280x720 cameraPosition:AVCaptureDevicePositionBack];
+    self.gpuStillCamera = [[GPUImageStillCamera alloc] initWithSessionPreset:AVCaptureSessionPresetPhoto cameraPosition:AVCaptureDevicePositionBack];
     self.gpuStillCamera.outputImageOrientation = UIInterfaceOrientationPortrait;
+    self.gpuStillCamera.horizontallyMirrorFrontFacingCamera = YES;
+    self.gpuStillCamera.horizontallyMirrorRearFacingCamera  = NO;
     self.gpuImageView.fillMode = kGPUImageFillModePreserveAspectRatioAndFill;
 
     // 美白滤镜-- 亮度 亮度：调整亮度（-1.0 - 1.0，默认为0.0）
@@ -94,6 +96,8 @@
     [self.gpuStillCamera addTarget:beautifyFilter];
     [beautifyFilter addTarget:_brightnessFilter];
     [_brightnessFilter addTarget:self.gpuImageView];
+    
+//    [self.gpuStillCamera addTarget:self.gpuImageView];
     
     dispatch_async(dispatch_get_main_queue(), ^{
         [self.gpuStillCamera startCameraCapture];
