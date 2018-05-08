@@ -79,7 +79,7 @@ NSString *const kGPUImageBeautifyFragmentShaderString = SHADER_STRING
     
     // First pass: face smoothing filter
     bilateralFilter = [[GPUImageBilateralFilter alloc] init];
-    bilateralFilter.distanceNormalizationFactor = 6.5;
+    bilateralFilter.distanceNormalizationFactor = 8;
     [self addFilter:bilateralFilter];
     
     // Second pass: edge detection
