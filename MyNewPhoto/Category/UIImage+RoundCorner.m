@@ -51,13 +51,13 @@
 
 + (UIImage *)createFilterImage
 {
-    CGSize size = CGSizeMake(40, 20);
+    CGSize size = CGSizeMake(80, 40);
     UIGraphicsBeginImageContext(size);
     CGContextRef context = UIGraphicsGetCurrentContext();
     CGContextSetLineWidth(context, 1.0);
-        //以矩形rect为依据画一个圆
-    CGContextAddArc(context, size.width/2.0, size.height/2.0, size.width/2-1, 0, M_PI*2, YES);
-        //填充当前绘画区域的颜色
+    CGContextAddArc(context, size.width/4.0, size.height/2.0, (size.width-3)/4, 0, M_PI*2, NO);
+    CGContextAddArc(context, size.width*3/4.0, size.height/2.0, (size.width-3)/4, 0, M_PI*2, NO);
+    
     [[UIColor blackColor] set];
     CGContextStrokePath(context);
     

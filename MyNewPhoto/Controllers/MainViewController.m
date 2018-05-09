@@ -69,10 +69,13 @@ typedef NS_ENUM(NSInteger, CameraManagerFlashMode) {
         [weakSelf changeCamera];
     };
     
-    _bottomView = [[BottomBarView alloc] initWithFrame:CGRectMake(0, self.view.frame.size.height-130, self.view.frame.size.width, 130)];
+    _bottomView = [[BottomBarView alloc] initWithFrame:CGRectMake(0, self.view.frame.size.height-150, self.view.frame.size.width, 150)];
     [self.view addSubview:_bottomView];
     _bottomView.picBlock = ^{
         [weakSelf takePicture];
+    };
+    _bottomView.filterBlock = ^(GPUImageFilter *filter){
+        [weakSelf showFilters:filter];
     };
     
     [self setfocusImage:[UIImage createImageWithColor:[UIColor whiteColor] Size:CGSizeMake(60, 60)]];
@@ -324,6 +327,14 @@ typedef NS_ENUM(NSInteger, CameraManagerFlashMode) {
     }else{
         NSLog(@"保存失败！");
     }
+}
+
+- (void)showFilters:(GPUImageFilter *)filter
+{
+    [self.gpuStillCamera removeAllTargets];
+    [self.gpuStillCamera addTarget:filter];
+    [filter addTarget:_brightnessFilter];
+    [_brightnessFilter addTarget:self.gpuImageView];
 }
 
 - (void)didReceiveMemoryWarning {

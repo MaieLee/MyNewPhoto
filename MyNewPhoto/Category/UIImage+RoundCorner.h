@@ -11,5 +11,6 @@
 @interface UIImage (RoundCorner)
 - (UIImage *)imageWithRect:(CGSize)rectSize;
 + (UIImage *)createImageWithColor:(UIColor *)color Size:(CGSize)size;
++ (UIImage *)createFilterImage;
 + (UIImage *)thumbnailWithImage:(UIImage *)originalImage size:(CGSize)size;
 @end
