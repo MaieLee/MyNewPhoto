@@ -44,6 +44,10 @@ typedef NS_ENUM(NSInteger, CameraManagerFlashMode) {
     
     [self setUpUI];
     [self setUpCamera];
+    
+    NSURL *filterUrl = [[NSBundle mainBundle] URLForResource:@"Filter" withExtension:@"json"];
+    NSArray *filters = [NSArray arrayWithContentsOfFile:filterUrl.path];
+    
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -115,15 +119,12 @@ typedef NS_ENUM(NSInteger, CameraManagerFlashMode) {
 
     // 美白滤镜-- 亮度 亮度：调整亮度（-1.0 - 1.0，默认为0.0）
     _brightnessFilter = [[GPUImageBrightnessFilter alloc] init];
-    _brightnessFilter.brightness = 0.1;
     
     GPUImageBeautifyFilter *beautifyFilter = [[GPUImageBeautifyFilter alloc] init];
-    
+//    GPUImageSmoothToonFilter *smoothToonFilter = [[GPUImageSmoothToonFilter alloc] init];
     [self.gpuStillCamera addTarget:beautifyFilter];
     [beautifyFilter addTarget:_brightnessFilter];
     [_brightnessFilter addTarget:self.gpuImageView];
-    
-//    [self.gpuStillCamera addTarget:self.gpuImageView];
     
     dispatch_async(dispatch_get_main_queue(), ^{
         [self.gpuStillCamera startCameraCapture];

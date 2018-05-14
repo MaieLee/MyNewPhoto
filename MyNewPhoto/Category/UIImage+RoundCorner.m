@@ -33,8 +33,7 @@
 + (UIImage *)createImageWithColor:(UIColor *)color Size:(CGSize)size
 {
     //设置长宽
-//    CGRect rect = (CGRect){0.f, 0.f, size};
-    UIGraphicsBeginImageContext(size);
+    UIGraphicsBeginImageContextWithOptions(size, NO, UIScreen.mainScreen.scale);
     CGContextRef context = UIGraphicsGetCurrentContext();
     CGContextSetLineWidth(context, 1.0);
     //以矩形rect为依据画一个圆
@@ -54,11 +53,42 @@
     CGSize size = CGSizeMake(80, 40);
     UIGraphicsBeginImageContext(size);
     CGContextRef context = UIGraphicsGetCurrentContext();
+    
     CGContextSetLineWidth(context, 1.0);
     CGContextAddArc(context, size.width/4.0, size.height/2.0, (size.width-3)/4, 0, M_PI*2, NO);
     CGContextAddArc(context, size.width*3/4.0, size.height/2.0, (size.width-3)/4, 0, M_PI*2, NO);
     
     [[UIColor blackColor] set];
+    CGContextStrokePath(context);
+    
+    UIImage *resultImage = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    
+    return resultImage;
+}
+
++ (UIImage *)createTickImage
+{
+    CGSize size = CGSizeMake(40, 40);
+    UIGraphicsBeginImageContextWithOptions(size, NO, UIScreen.mainScreen.scale);
+    CGContextRef context = UIGraphicsGetCurrentContext();
+    CGContextSetLineCap(context, kCGLineCapRound);
+    CGContextSetAllowsAntialiasing(context,NO);
+
+    CGContextSetLineWidth(context, 1.0);
+    //以矩形rect为依据画一个圆
+    CGContextAddArc(context, size.width/2.0, size.height/2.0, size.width/2-1, 0, M_PI*2, YES);
+    //填充当前绘画区域的颜色
+    [mnColor(0, 0, 0, 0.5) set];
+    CGContextFillPath(context);
+    
+    CGContextSetLineWidth(context, 1.0);
+    CGContextSetRGBStrokeColor(context, 1, 1, 1, 1.0);
+        //开始绘制
+    CGContextBeginPath(context);
+    CGContextMoveToPoint(context, 10, 20);
+    CGContextAddLineToPoint(context, 18, 28);
+    CGContextAddLineToPoint(context, 32, 14);
     CGContextStrokePath(context);
     
     UIImage *resultImage = UIGraphicsGetImageFromCurrentImageContext();

@@ -7,8 +7,19 @@
 //
 
 #import "CameraFilterView.h"
+#import "FilterCollectionViewCell.h"
+#import "UIImage+RoundCorner.h"
+#import "FilterSampleModel.h"
+
 static const float CELL_HEIGHT = 40.0f;
 static const float CELL_WIDTH = 50.0f;
+@interface CameraFilterView ()
+@property (nonatomic, assign) NSInteger selIndex;
+@property (nonatomic, strong) FilterCollectionViewCell *selCell;
+@end
+
+static NSString *identifier = @"cameraFilterCellID";
+
 @implementation CameraFilterView
 
 #pragma mark 初始化方法
@@ -20,6 +31,10 @@ static const float CELL_WIDTH = 50.0f;
         self.dataSource = self;
         self.showsHorizontalScrollIndicator = NO;
         self.showsVerticalScrollIndicator = NO;
+        
+        [self registerClass:[FilterCollectionViewCell class] forCellWithReuseIdentifier:identifier];
+        
+        _selIndex = -1;
     }
     return self;
 }
@@ -35,13 +50,11 @@ static const float CELL_WIDTH = 50.0f;
 }
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath{
-    static NSString *identifier = @"cameraFilterCellID";
-    [collectionView registerClass:[UICollectionViewCell class] forCellWithReuseIdentifier:identifier];
-    UICollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:identifier forIndexPath:indexPath];
-    UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(10, 0, CELL_WIDTH-10, CELL_HEIGHT)];
-    imageView.image = [_picArray objectAtIndex:indexPath.row];
-    [cell addSubview:imageView];
-    cell.backgroundColor = [UIColor whiteColor];
+    FilterCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:identifier forIndexPath:indexPath];
+    FilterSampleModel *fSModel = [self.picArray objectAtIndex:indexPath.row];
+    cell.imageView.image = fSModel.image;
+    cell.selImageView.image = [UIImage createTickImage];
+    cell.selImageView.hidden = !fSModel.isSel;
     
     return cell;
 }
@@ -51,6 +64,22 @@ static const float CELL_WIDTH = 50.0f;
 }
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
+    if (indexPath.row == self.selIndex) {
+        return;
+    }
+    FilterSampleModel *fSModel = [self.picArray objectAtIndex:indexPath.row];
+    fSModel.isSel = YES;
+    FilterCollectionViewCell *cell = (FilterCollectionViewCell *)[collectionView cellForItemAtIndexPath:indexPath];
+    cell.selImageView.hidden = NO;
+    
+    if (self.selIndex != -1) {
+        FilterSampleModel *lastFSModel = [self.picArray objectAtIndex:self.selIndex];
+        lastFSModel.isSel = NO;
+        self.selCell.selImageView.hidden = YES;
+    }
+    self.selCell = cell;
+    self.selIndex = indexPath.row;
+    
     [_cameraFilterDelegate switchCameraFilter:indexPath.row];
 }
 

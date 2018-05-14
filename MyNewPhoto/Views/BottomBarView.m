@@ -12,8 +12,9 @@
 #import "UIImage+RoundCorner.h"
 #import "CameraFilterView.h"
 #import "GPUImage.h"
+#import "FilterSampleModel.h"
 
-static int CameraFilterCount = 9;//滤镜的数量
+static int CameraFilterCount = 10;//滤镜的数量
 
 @interface BottomBarView ()<CameraFilterViewDelegate>
 @property (nonatomic, strong) UIView *moView;
@@ -74,7 +75,12 @@ static int CameraFilterCount = 9;//滤镜的数量
         NSMutableArray *filterNameArray = [[NSMutableArray alloc] initWithCapacity:CameraFilterCount];
         for (NSInteger index = 0; index < CameraFilterCount; index++) {
             UIImage *image = [[UIImage imageNamed:@"filter"] imageWithRect:CGSizeMake(42, 42)];
-            [filterNameArray addObject:[self setTheSampleImageFilter:index SampleImg:image]];
+            
+            FilterSampleModel *fSModel = [[FilterSampleModel alloc] init];
+            fSModel.index = index;
+            fSModel.image = [self setTheSampleImageFilter:index SampleImg:image];
+            fSModel.isSel = NO;
+            [filterNameArray addObject:fSModel];
         }
         _cameraFilterView.cameraFilterDelegate = self;
         _cameraFilterView.picArray = filterNameArray;
@@ -92,9 +98,7 @@ static int CameraFilterCount = 9;//滤镜的数量
     [filter forceProcessingAtSize:CGSizeMake(120, 120)];
     [filter useNextFrameForImageCapture];
     
-//    GPUImagePicture *stillImageSource = [[GPUImagePicture alloc] initWithImage:inputImage smoothlyScaleOutput:YES];
-    
-    GPUImagePicture *imageSorce = [[GPUImagePicture alloc] initWithImage:inputImage];
+    GPUImagePicture *imageSorce = [[GPUImagePicture alloc] initWithImage:inputImage smoothlyScaleOutput:YES];
     [imageSorce addTarget:filter];
     [imageSorce processImage];
     
@@ -129,7 +133,7 @@ static int CameraFilterCount = 9;//滤镜的数量
         }
             break;
         case 5:
-            _filter = [[GPUImageSketchFilter alloc] init];//素描
+            _filter = [[GPUImageToonFilter alloc] init];//素描
             break;
         case 6:
             _filter = [[GPUImageVignetteFilter alloc] init];//黑晕
@@ -138,7 +142,16 @@ static int CameraFilterCount = 9;//滤镜的数量
             _filter = [[GPUImageGrayscaleFilter alloc] init];//灰度
             break;
         case 8:
-            _filter = [[GPUImageToonFilter alloc] init];//卡通效果 黑色粗线描边
+        {
+            _filter = [[GPUImageGammaFilter alloc] init];//卡通效果 黑色粗线描边
+            [(GPUImageGammaFilter *)_filter setGamma:2];
+        }
+            break;
+        case 9:
+        {
+            _filter = [[GPUImageLuminanceThresholdFilter alloc] init];
+        }
+            break;
         default:
             _filter = [[GPUImageFilter alloc] init];
             break;
