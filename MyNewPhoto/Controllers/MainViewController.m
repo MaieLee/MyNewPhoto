@@ -30,10 +30,10 @@ typedef NS_ENUM(NSInteger, CameraManagerFlashMode) {
 @property (nonatomic, strong) GPUImageBrightnessFilter *brightnessFilter;
 @property (nonatomic, strong) BottomBarView *bottomView;
 @property (nonatomic, strong) UISlider *brightnessSilder;
-@property (nonatomic , assign) CGFloat beginGestureScale;//开始的缩放比例
-@property (nonatomic , assign) CGFloat effectiveScale;//最后的缩放比例
-@property (nonatomic , assign) CameraManagerFlashMode flashMode;
-
+@property (nonatomic, assign) CGFloat beginGestureScale;//开始的缩放比例
+@property (nonatomic, assign) CGFloat effectiveScale;//最后的缩放比例
+@property (nonatomic, assign) CameraManagerFlashMode flashMode;
+@property (nonatomic, strong) UILabel *lblDesc;
 @end
 
 @implementation MainViewController
@@ -44,22 +44,6 @@ typedef NS_ENUM(NSInteger, CameraManagerFlashMode) {
     
     [self setUpUI];
     [self setUpCamera];
-    
-    NSURL *filterUrl = [[NSBundle mainBundle] URLForResource:@"Filter" withExtension:@"json"];
-    NSArray *filters = [NSArray arrayWithContentsOfFile:filterUrl.path];
-    
-}
-
-- (void)viewWillAppear:(BOOL)animated
-{
-    [super viewWillAppear:animated];
-    self.navigationController.navigationBarHidden = YES;
-}
-
-- (void)viewWillDisappear:(BOOL)animated
-{
-    [super viewWillDisappear:animated];
-    self.navigationController.navigationBarHidden = NO;
 }
 
 - (void)setUpUI{
@@ -78,9 +62,16 @@ typedef NS_ENUM(NSInteger, CameraManagerFlashMode) {
     _bottomView.picBlock = ^{
         [weakSelf takePicture];
     };
-    _bottomView.filterBlock = ^(GPUImageFilter *filter){
-        [weakSelf showFilters:filter];
+    _bottomView.filterBlock = ^(id filter, NSString *desc){
+        [weakSelf showFilters:filter Desc:desc];
     };
+    _bottomView.parentVC = self;
+    
+    self.lblDesc = [UILabel new];
+    self.lblDesc.font = mnFont(26);
+    self.lblDesc.textColor = [UIColor whiteColor];
+    [self.view addSubview:self.lblDesc];
+    self.lblDesc.hidden = YES;
     
     [self setfocusImage:[UIImage createImageWithColor:[UIColor whiteColor] Size:CGSizeMake(60, 60)]];
     
@@ -102,7 +93,7 @@ typedef NS_ENUM(NSInteger, CameraManagerFlashMode) {
     [self.view addSubview:_brightnessSilder];
     
     [_brightnessSilder addTarget:self action:@selector(sliderValueChanged:) forControlEvents:UIControlEventValueChanged];
-    
+
 }
 
 - (void)sliderValueChanged:(UISlider *)slider
@@ -330,12 +321,29 @@ typedef NS_ENUM(NSInteger, CameraManagerFlashMode) {
     }
 }
 
-- (void)showFilters:(GPUImageFilter *)filter
+- (void)showFilters:(id)filter Desc:(NSString *)desc
 {
     [self.gpuStillCamera removeAllTargets];
+    GPUImageBilateralFilter *bilateralFilter = [[GPUImageBilateralFilter alloc] init];
+    bilateralFilter.distanceNormalizationFactor = 7.0;
+    
     [self.gpuStillCamera addTarget:filter];
-    [filter addTarget:_brightnessFilter];
+    [filter addTarget:bilateralFilter];
+    [bilateralFilter addTarget:_brightnessFilter];
     [_brightnessFilter addTarget:self.gpuImageView];
+    
+    self.lblDesc.hidden = NO;
+    self.lblDesc.text = desc;
+    [self.lblDesc sizeToFit];
+    self.lblDesc.center = self.gpuImageView.center;
+    [UIView animateWithDuration:0.6 delay:0.5 options:UIViewAnimationOptionCurveEaseInOut animations:^{
+        self.lblDesc.transform = CGAffineTransformMakeScale(1.6, 1.6);
+        self.lblDesc.alpha = 0.1;
+    } completion:^(BOOL finished) {
+        self.lblDesc.transform = CGAffineTransformMakeScale(1, 1);
+        self.lblDesc.hidden = YES;
+        self.lblDesc.alpha = 1;
+    }];
 }
 
 - (void)didReceiveMemoryWarning {

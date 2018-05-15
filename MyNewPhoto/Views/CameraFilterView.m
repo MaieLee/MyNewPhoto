@@ -11,7 +11,7 @@
 #import "UIImage+RoundCorner.h"
 #import "FilterSampleModel.h"
 
-static const float CELL_HEIGHT = 40.0f;
+static const float CELL_HEIGHT = 63.0f;
 static const float CELL_WIDTH = 50.0f;
 @interface CameraFilterView ()
 @property (nonatomic, assign) NSInteger selIndex;
@@ -55,6 +55,7 @@ static NSString *identifier = @"cameraFilterCellID";
     cell.imageView.image = fSModel.image;
     cell.selImageView.image = [UIImage createTickImage];
     cell.selImageView.hidden = !fSModel.isSel;
+    cell.descLabel.text = fSModel.desc;
     
     return cell;
 }

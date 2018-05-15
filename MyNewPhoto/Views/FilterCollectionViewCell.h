@@ -12,4 +12,5 @@
 @interface FilterCollectionViewCell : UICollectionViewCell
 @property (nonatomic, strong) UIImageView *selImageView;
 @property (nonatomic, strong) UIImageView *imageView;
+@property (nonatomic, strong) UILabel *descLabel;
 @end

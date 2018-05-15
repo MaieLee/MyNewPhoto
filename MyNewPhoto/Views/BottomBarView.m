@@ -13,13 +13,16 @@
 #import "CameraFilterView.h"
 #import "GPUImage.h"
 #import "FilterSampleModel.h"
+#import "FilterManager.h"
+#import "PictureFilterViewController.h"
 
-static int CameraFilterCount = 10;//滤镜的数量
-
-@interface BottomBarView ()<CameraFilterViewDelegate>
+@interface BottomBarView ()<CameraFilterViewDelegate,UIImagePickerControllerDelegate,UINavigationControllerDelegate>
 @property (nonatomic, strong) UIView *moView;
 @property (nonatomic, strong) DrawCyclesButton *camera;
 @property (nonatomic, strong) CameraFilterView *cameraFilterView;//自定义滤镜视图
+@property (nonatomic, strong) FilterManager *filterManager;
+@property (nonatomic, strong) NSMutableArray *filtersArray;
+@property (nonatomic, strong) UIImagePickerController *imagePickerVc;
 @end
 
 @implementation BottomBarView
@@ -48,6 +51,8 @@ static int CameraFilterCount = 10;//滤镜的数量
     cyclesView.center = CGPointMake(cyclesView.center.x, _camera.center.y);
     cyclesView.backgroundColor = mnColor(0, 0, 0, 0);
     
+    [cyclesView addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(showPickerVc:)]];
+    
     _imgView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 34, 34)];
     [moView insertSubview:_imgView belowSubview:cyclesView];
     _imgView.center = cyclesView.center;
@@ -64,6 +69,36 @@ static int CameraFilterCount = 10;//滤镜的数量
     filterBtn.center = CGPointMake(filterBtn.center.x, _camera.center.y);
     
     [filterBtn addTarget:self action:@selector(filtersAction:) forControlEvents:UIControlEventTouchUpInside];
+    
+    [self setUpFsModels];
+}
+
+- (void)setUpFsModels
+{
+    dispatch_async(dispatch_get_main_queue(), ^{
+        NSInteger cameraFilterCount = self.filterManager.filterArray.count;
+        NSMutableArray *filterArray = [[NSMutableArray alloc] initWithCapacity:cameraFilterCount];
+        for (NSInteger index = 0; index < cameraFilterCount; index++) {
+            UIImage *image = [UIImage imageNamed:@"filter"];
+            FilterSampleModel *fSModel = [[FilterSampleModel alloc] init];
+            fSModel.index = index;
+            fSModel.filter = [self.filterManager filterTheImage:index];
+            fSModel.image = [self setTheSampleImageFilter:[self.filterManager filterTheImage:index] SampleImg:image];
+            fSModel.isSel = NO;
+            fSModel.desc = self.filterManager.filterArray[index][@"desc"];
+            [filterArray addObject:fSModel];
+        }
+        
+        self.filtersArray = filterArray;
+    });
+}
+
+- (FilterManager *)filterManager{
+    if(_filterManager == nil){
+        _filterManager = [[FilterManager alloc] init];
+    }
+    
+    return _filterManager;
 }
 
 - (CameraFilterView *)cameraFilterView{
@@ -71,19 +106,9 @@ static int CameraFilterCount = 10;//滤镜的数量
         UICollectionViewFlowLayout *layout = [[UICollectionViewFlowLayout alloc] init];
         layout.scrollDirection = UICollectionViewScrollDirectionHorizontal;
         
-        _cameraFilterView = [[CameraFilterView alloc] initWithFrame:CGRectMake(0, -55, self.frame.size.width, 40) collectionViewLayout:layout];
-        NSMutableArray *filterNameArray = [[NSMutableArray alloc] initWithCapacity:CameraFilterCount];
-        for (NSInteger index = 0; index < CameraFilterCount; index++) {
-            UIImage *image = [[UIImage imageNamed:@"filter"] imageWithRect:CGSizeMake(42, 42)];
-            
-            FilterSampleModel *fSModel = [[FilterSampleModel alloc] init];
-            fSModel.index = index;
-            fSModel.image = [self setTheSampleImageFilter:index SampleImg:image];
-            fSModel.isSel = NO;
-            [filterNameArray addObject:fSModel];
-        }
+        _cameraFilterView = [[CameraFilterView alloc] initWithFrame:CGRectMake(0, -63, self.frame.size.width, 63) collectionViewLayout:layout];
         _cameraFilterView.cameraFilterDelegate = self;
-        _cameraFilterView.picArray = filterNameArray;
+        _cameraFilterView.picArray = self.filtersArray;
         _cameraFilterView.backgroundColor = [UIColor whiteColor];
         [self addSubview:_cameraFilterView];
     }
@@ -91,10 +116,19 @@ static int CameraFilterCount = 10;//滤镜的数量
     return _cameraFilterView;
 }
 
-- (UIImage *)setTheSampleImageFilter:(NSInteger)index SampleImg:(UIImage *)inputImage
-{
-    GPUImageFilter *filter = [self filterTheImage:index];
+- (UIImagePickerController *)imagePickerVc{
+    if (_imagePickerVc == nil) {
+        _imagePickerVc = [[UIImagePickerController alloc] init];
+        _imagePickerVc.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
+        _imagePickerVc.delegate = self;
+        _imagePickerVc.allowsEditing = NO;
+    }
     
+    return _imagePickerVc;
+}
+
+- (UIImage *)setTheSampleImageFilter:(id)filter SampleImg:(UIImage *)inputImage
+{
     [filter forceProcessingAtSize:CGSizeMake(120, 120)];
     [filter useNextFrameForImageCapture];
     
@@ -102,62 +136,14 @@ static int CameraFilterCount = 10;//滤镜的数量
     [imageSorce addTarget:filter];
     [imageSorce processImage];
     
-    return [filter imageFromCurrentFramebuffer];
+    return [[filter imageFromCurrentFramebuffer] imageWithRect:CGSizeMake(42, 42)];
 }
 
 - (void)switchCameraFilter:(NSInteger)index {
-    GPUImageFilter *filter = [self filterTheImage:index];
+    FilterSampleModel *fsModel = self.filtersArray[index];
     if (self.filterBlock) {
-        self.filterBlock(filter);
+        self.filterBlock(fsModel.filter,fsModel.desc);
     }
-}
-
-- (GPUImageFilter *)filterTheImage:(NSInteger)index{
-    GPUImageFilter *_filter;
-    switch (index) {
-        case 0:
-            _filter = [[GPUImageFilter alloc] init];//原图
-            break;
-        case 1:
-            _filter = [[GPUImageHueFilter alloc] init];//绿巨人
-            break;
-        case 2:
-            _filter = [[GPUImageColorInvertFilter alloc] init];//负片
-            break;
-        case 3:
-            _filter = [[GPUImageSepiaFilter alloc] init];//老照片
-            break;
-        case 4: {
-            _filter = [[GPUImageGaussianBlurPositionFilter alloc] init];
-            [(GPUImageGaussianBlurPositionFilter*)_filter setBlurRadius:40.0/320.0];
-        }
-            break;
-        case 5:
-            _filter = [[GPUImageToonFilter alloc] init];//素描
-            break;
-        case 6:
-            _filter = [[GPUImageVignetteFilter alloc] init];//黑晕
-            break;
-        case 7:
-            _filter = [[GPUImageGrayscaleFilter alloc] init];//灰度
-            break;
-        case 8:
-        {
-            _filter = [[GPUImageGammaFilter alloc] init];//卡通效果 黑色粗线描边
-            [(GPUImageGammaFilter *)_filter setGamma:2];
-        }
-            break;
-        case 9:
-        {
-            _filter = [[GPUImageLuminanceThresholdFilter alloc] init];
-        }
-            break;
-        default:
-            _filter = [[GPUImageFilter alloc] init];
-            break;
-    }
-    
-    return _filter;
 }
 
 - (void)filtersAction:(UIButton *)sender
@@ -167,7 +153,7 @@ static int CameraFilterCount = 10;//滤镜的数量
         self.cameraFilterView.hidden = NO;
         [UIView animateWithDuration:0.1 delay:0.2 options:0 animations:^{
             self.cameraFilterView.transform = CGAffineTransformMakeTranslation(0, 70);
-            self.moView.transform = CGAffineTransformMakeTranslation(0, 25);
+            self.moView.transform = CGAffineTransformMakeTranslation(0, 28);
             self.camera.transform = CGAffineTransformMakeScale(0.85, 0.85);
         } completion:^(BOOL finished) {
             
@@ -186,6 +172,36 @@ static int CameraFilterCount = 10;//滤镜的数量
 - (void)drawColor{
     if (self.picBlock) {
         self.picBlock();
+    }
+}
+
+- (void)showPickerVc:(id)recognizer{
+    //本地相册不需要检查，因为UIImagePickerController会自动检查并提醒
+    [self.parentVC presentViewController:self.imagePickerVc animated:YES completion:nil];
+}
+
+#pragma mark -
+#pragma mark UIImagePickerControllerDelegate Call Back Implementation
+- (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker
+{
+    [picker dismissViewControllerAnimated:YES completion:nil];
+}
+
+- (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary<NSString *,id> *)info
+{
+    NSString *type = [info objectForKey:UIImagePickerControllerMediaType];
+    
+    //当选择的类型是图片
+    if ([type isEqualToString:@"public.image"])
+    {
+        //获取图片
+        UIImage *image = [info objectForKey:UIImagePickerControllerOriginalImage];
+        //关闭相册界面
+        [picker dismissViewControllerAnimated:YES completion:^{
+            PictureFilterViewController *picVc = [[PictureFilterViewController alloc] init];
+            picVc.picture = image;
+            [self.parentVC.navigationController pushViewController:picVc animated:YES];
+        }];
     }
 }
 

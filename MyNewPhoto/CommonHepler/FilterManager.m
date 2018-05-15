@@ -8,21 +8,29 @@
 
 #import "FilterManager.h"
 
-@interface FilterManager ()
-
-@property (nonatomic, strong) NSArray *filterArray;
-
-@end
-
 @implementation FilterManager
 
-- (void)filterTheImage:(NSInteger)index{
+- (id)filterTheImage:(NSInteger)index{
+    NSDictionary *filterDict = self.filterArray[index];
+    Class filterClass = NSClassFromString(filterDict[@"name"]);
+    if (!filterClass) {
+        return nil;
+    }
     
+    id instance = [[filterClass alloc] init];
+    
+    return instance;
 }
 
 - (NSArray *)filterArray{
     if (_filterArray == nil) {
-        _filterArray = [NSArray arrayWithContentsOfFile:@"Filter.json"];
+        NSError *error;
+        NSString *filePath = [[NSBundle mainBundle] pathForResource:@"Filter" ofType:@"json"];
+        //根据文件路径读取数据
+        NSData *jdata = [[NSData alloc] initWithContentsOfFile:filePath];
+        id jsonObject = [NSJSONSerialization JSONObjectWithData:jdata options:kNilOptions error:&error];
+        
+        _filterArray = (NSArray *)jsonObject;
     }
     
     return _filterArray;

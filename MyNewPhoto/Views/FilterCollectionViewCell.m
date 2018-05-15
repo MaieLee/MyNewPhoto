@@ -33,6 +33,12 @@
     _selImageView = [[UIImageView alloc] initWithFrame:CGRectMake(10, 0, 40, 40)];
     [self addSubview:_selImageView];
 //    _selImageView.hidden = YES;
+    
+    _descLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 42, 40, 18)];
+    _descLabel.textColor = [UIColor blackColor];
+    _descLabel.font = mnFont(12);
+    _descLabel.textAlignment = NSTextAlignmentCenter;
+    [self addSubview:_descLabel];
 }
 
 @end

@@ -14,4 +14,5 @@
 + (UIImage *)createFilterImage;
 + (UIImage *)createTickImage;
 + (UIImage *)thumbnailWithImage:(UIImage *)originalImage size:(CGSize)size;
++ (UIImage *)waterImageWithImage:(UIImage *)image waterImage:(UIImage *)waterImage waterImageRect:(CGRect)rect;
 @end

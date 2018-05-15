@@ -10,11 +10,12 @@
 @class GPUImageFilter;
 
 typedef void(^CameraPicBlock) ();
-typedef void(^ShowFilterBlock) (GPUImageFilter *filter);
+typedef void(^ShowFilterBlock) (id filter,NSString *desc);
 
 @interface BottomBarView : UIView
 @property (nonatomic, strong) UIImageView *imgView;
 @property (nonatomic, strong) UIActivityIndicatorView * activityIndicator;
+@property (nonatomic, weak) UIViewController *parentVC;
 
 @property (nonatomic, copy) CameraPicBlock picBlock;
 @property (nonatomic, copy) ShowFilterBlock filterBlock;

@@ -90,6 +90,7 @@
 		347C65FF20A59EAC004B07D8 /* FWXproIIFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = 347C65EA20A59EAC004B07D8 /* FWXproIIFilter.m */; };
 		34922BB0209BE4090009FEB5 /* BottomBarView.m in Sources */ = {isa = PBXBuildFile; fileRef = 34922BAC209BE4090009FEB5 /* BottomBarView.m */; };
 		34922BB1209BE4090009FEB5 /* ToolBarView.m in Sources */ = {isa = PBXBuildFile; fileRef = 34922BAF209BE4090009FEB5 /* ToolBarView.m */; };
+		34A8146420AAE1BB00971CBA /* PictureFilterViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 34A8146320AAE1BB00971CBA /* PictureFilterViewController.m */; };
 		34B1A4F5209AEA090039B074 /* MainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 34B1A4F4209AEA090039B074 /* MainViewController.m */; };
 		34B1A504209B18870039B074 /* DrawCyclesButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 34B1A503209B18870039B074 /* DrawCyclesButton.m */; };
 		34CA5CCD20A5256B00FB988D /* FilterSampleModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 34CA5CCC20A5256B00FB988D /* FilterSampleModel.m */; };
@@ -249,6 +250,8 @@
 		34922BAD209BE4090009FEB5 /* BottomBarView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BottomBarView.h; sourceTree = "<group>"; };
 		34922BAE209BE4090009FEB5 /* ToolBarView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ToolBarView.h; sourceTree = "<group>"; };
 		34922BAF209BE4090009FEB5 /* ToolBarView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ToolBarView.m; sourceTree = "<group>"; };
+		34A8146220AAE1BB00971CBA /* PictureFilterViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PictureFilterViewController.h; sourceTree = "<group>"; };
+		34A8146320AAE1BB00971CBA /* PictureFilterViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PictureFilterViewController.m; sourceTree = "<group>"; };
 		34B1A4C5209AA87E0039B074 /* CoreAudio.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreAudio.framework; path = System/Library/Frameworks/CoreAudio.framework; sourceTree = SDKROOT; };
 		34B1A4C7209AA88A0039B074 /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
 		34B1A4C9209AA8930039B074 /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
@@ -469,6 +472,8 @@
 				347C65E820A59EAC004B07D8 /* FWWaldenFilter.m */,
 				347C65E920A59EAC004B07D8 /* FWXproIIFilter.h */,
 				347C65EA20A59EAC004B07D8 /* FWXproIIFilter.m */,
+				34D5DD0D209DCCA000F9182D /* GPUImageBeautifyFilter.h */,
+				34D5DD0E209DCCA000F9182D /* GPUImageBeautifyFilter.m */,
 			);
 			path = "Custom Filters";
 			sourceTree = "<group>";
@@ -480,6 +485,8 @@
 				3470A85620994DD1003972FD /* ViewController.m */,
 				34B1A4F3209AEA090039B074 /* MainViewController.h */,
 				34B1A4F4209AEA090039B074 /* MainViewController.m */,
+				34A8146220AAE1BB00971CBA /* PictureFilterViewController.h */,
+				34A8146320AAE1BB00971CBA /* PictureFilterViewController.m */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -530,8 +537,6 @@
 		34B1A4FB209B06FE0039B074 /* CommonHepler */ = {
 			isa = PBXGroup;
 			children = (
-				34D5DD0D209DCCA000F9182D /* GPUImageBeautifyFilter.h */,
-				34D5DD0E209DCCA000F9182D /* GPUImageBeautifyFilter.m */,
 				3477242920A42AA80082D57F /* FilterManager.h */,
 				3477242A20A42AA80082D57F /* FilterManager.m */,
 			);
@@ -806,6 +811,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				3470A85720994DD1003972FD /* ViewController.m in Sources */,
+				34A8146420AAE1BB00971CBA /* PictureFilterViewController.m in Sources */,
 				3472093F20A972C8009A8DB9 /* GPUImageFourInputFilter.m in Sources */,
 				34D5DD0F209DCCA000F9182D /* GPUImageBeautifyFilter.m in Sources */,
 				3470A86220994DD4003972FD /* main.m in Sources */,

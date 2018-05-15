@@ -165,5 +165,16 @@
         return originalImage;
     }
 }
+
+// 给图片添加图片水印
++ (UIImage *)waterImageWithImage:(UIImage *)image waterImage:(UIImage *)waterImage waterImageRect:(CGRect)rect{
+    UIGraphicsBeginImageContextWithOptions(image.size, NO, 0);
+    [image drawInRect:CGRectMake(0, 0, image.size.width, image.size.height)];
+    [waterImage drawInRect:rect];
+    UIImage * newImage = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    
+    return newImage;
+}
     
 @end

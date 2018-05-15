@@ -9,5 +9,6 @@
 #import <GPUImage/GPUImage.h>
 
 @interface FilterManager : NSObject
-
+@property (nonatomic, strong) NSArray *filterArray;
+- (id)filterTheImage:(NSInteger)index;
 @end
