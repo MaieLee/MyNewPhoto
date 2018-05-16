@@ -90,6 +90,10 @@
 		347C65FF20A59EAC004B07D8 /* FWXproIIFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = 347C65EA20A59EAC004B07D8 /* FWXproIIFilter.m */; };
 		34922BB0209BE4090009FEB5 /* BottomBarView.m in Sources */ = {isa = PBXBuildFile; fileRef = 34922BAC209BE4090009FEB5 /* BottomBarView.m */; };
 		34922BB1209BE4090009FEB5 /* ToolBarView.m in Sources */ = {isa = PBXBuildFile; fileRef = 34922BAF209BE4090009FEB5 /* ToolBarView.m */; };
+		349A982F20ABD1CF0064E2A1 /* MNImagePickerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 349A982E20ABD1CF0064E2A1 /* MNImagePickerViewController.m */; };
+		349A983220ABDF9C0064E2A1 /* MNGetPhotoAlbums.m in Sources */ = {isa = PBXBuildFile; fileRef = 349A983120ABDF9C0064E2A1 /* MNGetPhotoAlbums.m */; };
+		349A983520AC110D0064E2A1 /* ImgHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = 349A983420AC110D0064E2A1 /* ImgHeaderView.m */; };
+		349A983820AC27800064E2A1 /* MNTitleButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 349A983720AC27800064E2A1 /* MNTitleButton.m */; };
 		34A8146420AAE1BB00971CBA /* PictureFilterViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 34A8146320AAE1BB00971CBA /* PictureFilterViewController.m */; };
 		34B1A4F5209AEA090039B074 /* MainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 34B1A4F4209AEA090039B074 /* MainViewController.m */; };
 		34B1A504209B18870039B074 /* DrawCyclesButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 34B1A503209B18870039B074 /* DrawCyclesButton.m */; };
@@ -250,6 +254,14 @@
 		34922BAD209BE4090009FEB5 /* BottomBarView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BottomBarView.h; sourceTree = "<group>"; };
 		34922BAE209BE4090009FEB5 /* ToolBarView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ToolBarView.h; sourceTree = "<group>"; };
 		34922BAF209BE4090009FEB5 /* ToolBarView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ToolBarView.m; sourceTree = "<group>"; };
+		349A982D20ABD1CF0064E2A1 /* MNImagePickerViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MNImagePickerViewController.h; sourceTree = "<group>"; };
+		349A982E20ABD1CF0064E2A1 /* MNImagePickerViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MNImagePickerViewController.m; sourceTree = "<group>"; };
+		349A983020ABDF9C0064E2A1 /* MNGetPhotoAlbums.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MNGetPhotoAlbums.h; sourceTree = "<group>"; };
+		349A983120ABDF9C0064E2A1 /* MNGetPhotoAlbums.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MNGetPhotoAlbums.m; sourceTree = "<group>"; };
+		349A983320AC110D0064E2A1 /* ImgHeaderView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ImgHeaderView.h; sourceTree = "<group>"; };
+		349A983420AC110D0064E2A1 /* ImgHeaderView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ImgHeaderView.m; sourceTree = "<group>"; };
+		349A983620AC27800064E2A1 /* MNTitleButton.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MNTitleButton.h; sourceTree = "<group>"; };
+		349A983720AC27800064E2A1 /* MNTitleButton.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MNTitleButton.m; sourceTree = "<group>"; };
 		34A8146220AAE1BB00971CBA /* PictureFilterViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PictureFilterViewController.h; sourceTree = "<group>"; };
 		34A8146320AAE1BB00971CBA /* PictureFilterViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PictureFilterViewController.m; sourceTree = "<group>"; };
 		34B1A4C5209AA87E0039B074 /* CoreAudio.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreAudio.framework; path = System/Library/Frameworks/CoreAudio.framework; sourceTree = SDKROOT; };
@@ -487,6 +499,8 @@
 				34B1A4F4209AEA090039B074 /* MainViewController.m */,
 				34A8146220AAE1BB00971CBA /* PictureFilterViewController.h */,
 				34A8146320AAE1BB00971CBA /* PictureFilterViewController.m */,
+				349A982D20ABD1CF0064E2A1 /* MNImagePickerViewController.h */,
+				349A982E20ABD1CF0064E2A1 /* MNImagePickerViewController.m */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -539,6 +553,8 @@
 			children = (
 				3477242920A42AA80082D57F /* FilterManager.h */,
 				3477242A20A42AA80082D57F /* FilterManager.m */,
+				349A983020ABDF9C0064E2A1 /* MNGetPhotoAlbums.h */,
+				349A983120ABDF9C0064E2A1 /* MNGetPhotoAlbums.m */,
 			);
 			path = CommonHepler;
 			sourceTree = "<group>";
@@ -558,6 +574,10 @@
 				34E7A46D20A2DB4F00DEE629 /* CameraFilterView.m */,
 				3477242320A3DCAF0082D57F /* FilterCollectionViewCell.h */,
 				3477242420A3DCAF0082D57F /* FilterCollectionViewCell.m */,
+				349A983320AC110D0064E2A1 /* ImgHeaderView.h */,
+				349A983420AC110D0064E2A1 /* ImgHeaderView.m */,
+				349A983620AC27800064E2A1 /* MNTitleButton.h */,
+				349A983720AC27800064E2A1 /* MNTitleButton.m */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -813,10 +833,13 @@
 				3470A85720994DD1003972FD /* ViewController.m in Sources */,
 				34A8146420AAE1BB00971CBA /* PictureFilterViewController.m in Sources */,
 				3472093F20A972C8009A8DB9 /* GPUImageFourInputFilter.m in Sources */,
+				349A983820AC27800064E2A1 /* MNTitleButton.m in Sources */,
 				34D5DD0F209DCCA000F9182D /* GPUImageBeautifyFilter.m in Sources */,
+				349A983220ABDF9C0064E2A1 /* MNGetPhotoAlbums.m in Sources */,
 				3470A86220994DD4003972FD /* main.m in Sources */,
 				347C65F220A59EAC004B07D8 /* FWHudsonFilter.m in Sources */,
 				347C65F420A59EAC004B07D8 /* FWLomofiFilter.m in Sources */,
+				349A983520AC110D0064E2A1 /* ImgHeaderView.m in Sources */,
 				34CA5CCD20A5256B00FB988D /* FilterSampleModel.m in Sources */,
 				34922BB1209BE4090009FEB5 /* ToolBarView.m in Sources */,
 				347C65EF20A59EAC004B07D8 /* FWEarlybirdFilter.m in Sources */,
@@ -839,6 +862,7 @@
 				347C65F620A59EAC004B07D8 /* FWLordKelvinFilter.m in Sources */,
 				347C65FF20A59EAC004B07D8 /* FWXproIIFilter.m in Sources */,
 				347C65F920A59EAC004B07D8 /* FWSierraFilter.m in Sources */,
+				349A982F20ABD1CF0064E2A1 /* MNImagePickerViewController.m in Sources */,
 				347C65EE20A59EAC004B07D8 /* FWBrannanFilter.m in Sources */,
 				342EB0CA209C3CB3006F762B /* CyclesView.m in Sources */,
 				34922BB0209BE4090009FEB5 /* BottomBarView.m in Sources */,

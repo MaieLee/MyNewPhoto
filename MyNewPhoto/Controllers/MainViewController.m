@@ -46,6 +46,12 @@ typedef NS_ENUM(NSInteger, CameraManagerFlashMode) {
     [self setUpCamera];
 }
 
+- (void)viewWillAppear:(BOOL)animated{
+    [super viewWillAppear:animated];
+    
+    [self.navigationController setNavigationBarHidden:YES animated:YES];
+}
+
 - (void)setUpUI{
     self.gpuImageView = [[GPUImageView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height-150)];
     [self.view addSubview:self.gpuImageView];
@@ -325,7 +331,7 @@ typedef NS_ENUM(NSInteger, CameraManagerFlashMode) {
 {
     [self.gpuStillCamera removeAllTargets];
     GPUImageBilateralFilter *bilateralFilter = [[GPUImageBilateralFilter alloc] init];
-    bilateralFilter.distanceNormalizationFactor = 7.0;
+    bilateralFilter.distanceNormalizationFactor = 9.0;
     
     [self.gpuStillCamera addTarget:filter];
     [filter addTarget:bilateralFilter];

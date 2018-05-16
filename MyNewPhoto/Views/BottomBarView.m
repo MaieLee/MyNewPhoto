@@ -14,15 +14,15 @@
 #import "GPUImage.h"
 #import "FilterSampleModel.h"
 #import "FilterManager.h"
-#import "PictureFilterViewController.h"
+#import "MNImagePickerViewController.h"
+#import "MNGetPhotoAlbums.h"
 
-@interface BottomBarView ()<CameraFilterViewDelegate,UIImagePickerControllerDelegate,UINavigationControllerDelegate>
+@interface BottomBarView ()<CameraFilterViewDelegate>
 @property (nonatomic, strong) UIView *moView;
 @property (nonatomic, strong) DrawCyclesButton *camera;
 @property (nonatomic, strong) CameraFilterView *cameraFilterView;//自定义滤镜视图
 @property (nonatomic, strong) FilterManager *filterManager;
 @property (nonatomic, strong) NSMutableArray *filtersArray;
-@property (nonatomic, strong) UIImagePickerController *imagePickerVc;
 @end
 
 @implementation BottomBarView
@@ -116,17 +116,6 @@
     return _cameraFilterView;
 }
 
-- (UIImagePickerController *)imagePickerVc{
-    if (_imagePickerVc == nil) {
-        _imagePickerVc = [[UIImagePickerController alloc] init];
-        _imagePickerVc.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
-        _imagePickerVc.delegate = self;
-        _imagePickerVc.allowsEditing = NO;
-    }
-    
-    return _imagePickerVc;
-}
-
 - (UIImage *)setTheSampleImageFilter:(id)filter SampleImg:(UIImage *)inputImage
 {
     [filter forceProcessingAtSize:CGSizeMake(120, 120)];
@@ -176,32 +165,16 @@
 }
 
 - (void)showPickerVc:(id)recognizer{
-    //本地相册不需要检查，因为UIImagePickerController会自动检查并提醒
-    [self.parentVC presentViewController:self.imagePickerVc animated:YES completion:nil];
-}
-
-#pragma mark -
-#pragma mark UIImagePickerControllerDelegate Call Back Implementation
-- (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker
-{
-    [picker dismissViewControllerAnimated:YES completion:nil];
-}
-
-- (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary<NSString *,id> *)info
-{
-    NSString *type = [info objectForKey:UIImagePickerControllerMediaType];
-    
-    //当选择的类型是图片
-    if ([type isEqualToString:@"public.image"])
-    {
-        //获取图片
-        UIImage *image = [info objectForKey:UIImagePickerControllerOriginalImage];
-        //关闭相册界面
-        [picker dismissViewControllerAnimated:YES completion:^{
-            PictureFilterViewController *picVc = [[PictureFilterViewController alloc] init];
-            picVc.picture = image;
-            [self.parentVC.navigationController pushViewController:picVc animated:YES];
+    if ([MNGetPhotoAlbums authorizationStatus] == 2) { // 已被拒绝，没有相册权限，将无法保存拍的照片
+        UIAlertView * alert = [[UIAlertView alloc]initWithTitle:@"无法访问相册" message:@"请在iPhone的""设置-隐私-相册""中允许访问相册" delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"设置", nil];
+        [alert show];
+    } else if ([MNGetPhotoAlbums authorizationStatus] == 0) { // 未请求过相册权限
+        [[MNGetPhotoAlbums shareManager] requestAuthorizationWithCompletion:^{
+            [self showPickerVc:nil];
         }];
+    }else{
+        MNImagePickerViewController *imagePickerVc = [[MNImagePickerViewController alloc] init];
+        [self.parentVC presentViewController:imagePickerVc animated:YES completion:nil];
     }
 }
 

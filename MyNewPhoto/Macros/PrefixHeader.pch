@@ -14,5 +14,6 @@
 
 #import "Macros.h"
 #import "GPUImage.h"
+#import "Masonry.h"
 
 #endif /* PrefixHeader_pch */
