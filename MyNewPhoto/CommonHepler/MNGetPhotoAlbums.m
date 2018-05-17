@@ -117,7 +117,14 @@
             PHFetchResult *fetchResult = [PHAsset fetchAssetsInAssetCollection:collection options:nil];
             if (fetchResult.count > 0&&collection.assetCollectionSubtype != PHAssetCollectionSubtypeSmartAlbumVideos && collection.assetCollectionSubtype !=PHAssetCollectionSubtypeSmartAlbumTimelapses) {
                 
-                [albums addObject:collection];
+                if ([collection.localizedTitle containsString:@"Hidden"] || [collection.localizedTitle isEqualToString:@"已隐藏"] || [collection.localizedTitle containsString:@"Deleted"] || [collection.localizedTitle isEqualToString:@"最近删除"]){
+                    //不添加这些相册
+                }else if ([collection.localizedTitle isEqualToString:@"All Photos"] || [collection.localizedTitle isEqualToString:@"所有照片"]){
+                    [albums insertObject:collection atIndex:0];
+                }else{
+                    [albums addObject:collection];
+                }
+                
             }
         } else {
             NSAssert1(NO, @"Fetch collection not PHCollection: %@", collection);
@@ -139,12 +146,7 @@
     
     
     [albums enumerateObjectsUsingBlock:^(PHAssetCollection *  _Nonnull Collection, NSUInteger idx, BOOL * _Nonnull stop) {
-        if ([Collection.localizedTitle containsString:@"Hidden"] || [Collection.localizedTitle isEqualToString:@"已隐藏"] || [Collection.localizedTitle containsString:@"Deleted"] || [Collection.localizedTitle isEqualToString:@"最近删除"]){
-            //不添加这些相册
-            [albums removeObjectAtIndex:idx];
-        }else if ([Collection.localizedTitle isEqualToString:@"All Photos"] || [Collection.localizedTitle isEqualToString:@"所有照片"]){
-            [albums exchangeObjectAtIndex:0 withObjectAtIndex:idx];
-        }
+        
     }];
     
     return albums;
