@@ -85,7 +85,6 @@
     return title;
 }
 
-
 #pragma mark - 获取所有相册内的所有图片
 -(NSMutableArray*)getPhtotAlbumsImages{
     NSMutableArray *albumPictures = [NSMutableArray array];
@@ -143,6 +142,8 @@
         if ([Collection.localizedTitle containsString:@"Hidden"] || [Collection.localizedTitle isEqualToString:@"已隐藏"] || [Collection.localizedTitle containsString:@"Deleted"] || [Collection.localizedTitle isEqualToString:@"最近删除"]){
             //不添加这些相册
             [albums removeObjectAtIndex:idx];
+        }else if ([Collection.localizedTitle isEqualToString:@"All Photos"] || [Collection.localizedTitle isEqualToString:@"所有照片"]){
+            [albums exchangeObjectAtIndex:0 withObjectAtIndex:idx];
         }
     }];
     

@@ -10,4 +10,6 @@
 
 @interface MNTitleButton : UIButton
 
+-(void)setImageToRight;
+
 @end

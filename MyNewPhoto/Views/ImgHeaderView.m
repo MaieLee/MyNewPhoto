@@ -34,16 +34,41 @@
     backBtn.center = CGPointMake(backBtn.center.x, self.center.y);
     
     _titleBtn = [[MNTitleButton alloc] init];
-    _titleBtn.frame = CGRectMake(0, 0, 40, 40);
-    _titleBtn.titleLabel.font = mnFont(13);
+    _titleBtn.frame = CGRectMake(0, 0, 100, self.frame.size.height-10);
+    _titleBtn.titleLabel.font = mnFont(15);
     [_titleBtn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+    [_titleBtn setTitle:@"" forState:UIControlStateNormal];
+    [_titleBtn setImage:[UIImage imageNamed:@"History_SearchArrow_down"] forState:UIControlStateNormal];
     [self addSubview:_titleBtn];
+    _titleBtn.center = self.center;
     
+    [_titleBtn addTarget:self action:@selector(titleAction:) forControlEvents:UIControlEventTouchUpInside];
 }
 
 - (void)backAction:(id)sender{
     if (self.backBlock) {
         self.backBlock();
+    }
+}
+
+- (void)titleAction:(UIButton *)sender{
+    [sender setSelected:!sender.isSelected];
+    
+    if (sender.isSelected) {
+        [sender setImage:[UIImage imageNamed:@"History_SearchArrow_Up"] forState:UIControlStateNormal];
+    }else{
+        [sender setImage:[UIImage imageNamed:@"History_SearchArrow_down"] forState:UIControlStateNormal];
+    }
+    
+    if (self.titleBlock) {
+        self.titleBlock(sender.isSelected);
+    }
+}
+
+- (void)closeTitle{
+    if (self.titleBtn.isSelected) {
+        [self.titleBtn setSelected:!self.titleBtn.isSelected];
+        [_titleBtn setImage:[UIImage imageNamed:@"History_SearchArrow_down"] forState:UIControlStateNormal];
     }
 }
 

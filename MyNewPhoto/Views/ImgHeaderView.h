@@ -10,10 +10,14 @@
 #import "MNTitleButton.h"
 
 typedef void(^BackBlock) ();
+typedef void(^TitleChangeBlock) (BOOL isShowTitle);
 
 @interface ImgHeaderView : UIView
 
 @property (nonatomic, copy) BackBlock backBlock;
+@property (nonatomic, copy) TitleChangeBlock titleBlock;
 @property (nonatomic, strong) MNTitleButton *titleBtn;
+
+- (void)closeTitle;
 
 @end

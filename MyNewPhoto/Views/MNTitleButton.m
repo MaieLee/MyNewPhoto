@@ -10,17 +10,22 @@
 
 @implementation MNTitleButton
 
-- (void)layoutSubviews {
-    [super layoutSubviews];
-
-    CGRect titleF = self.titleLabel.frame;
-    CGRect imageF = self.imageView.frame;
+//设置图片居右
+-(void)setImageToRight
+{
+    NSDictionary *attribute = @{NSFontAttributeName:self.titleLabel.font};
+    //获取文本的宽度
+    CGFloat btnWidth = [self.titleLabel.text boundingRectWithSize:CGSizeMake(0, 24)
+                                                         options:\
+                        NSStringDrawingTruncatesLastVisibleLine |
+                        NSStringDrawingUsesLineFragmentOrigin |
+                        NSStringDrawingUsesFontLeading
+                                                      attributes:attribute
+                                                         context:nil].size.width;
     
-    titleF.origin.x = 0;
-    self.titleLabel.frame = titleF;
     
-    imageF.origin.x = CGRectGetMaxX(titleF) + 10;
-    self.imageView.frame = imageF;
+    //通过调节文本和图片的内边距到达目的
+    self.imageEdgeInsets = UIEdgeInsetsMake(3, btnWidth+2.5, 0, -btnWidth);
+    [self setTitleEdgeInsets:UIEdgeInsetsMake(0, -self.imageView.image.size.width-2.5, 0, self.imageView.image.size.width)];
 }
-
 @end

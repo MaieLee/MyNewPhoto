@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		342EB0C4209C391C006F762B /* UIImage+RoundCorner.m in Sources */ = {isa = PBXBuildFile; fileRef = 342EB0C3209C391C006F762B /* UIImage+RoundCorner.m */; };
 		342EB0CA209C3CB3006F762B /* CyclesView.m in Sources */ = {isa = PBXBuildFile; fileRef = 342EB0C9209C3CB3006F762B /* CyclesView.m */; };
+		3432591920AD652D00C11FFE /* MNPictrueCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 3432591820AD652D00C11FFE /* MNPictrueCollectionViewCell.m */; };
+		3432591C20AD6F0000C11FFE /* PicCollectTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 3432591B20AD6F0000C11FFE /* PicCollectTableViewCell.m */; };
 		3470A85420994DD1003972FD /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 3470A85320994DD1003972FD /* AppDelegate.m */; };
 		3470A85720994DD1003972FD /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3470A85620994DD1003972FD /* ViewController.m */; };
 		3470A85A20994DD1003972FD /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3470A85820994DD1003972FD /* Main.storyboard */; };
@@ -140,6 +142,12 @@
 		342EB0C3209C391C006F762B /* UIImage+RoundCorner.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "UIImage+RoundCorner.m"; sourceTree = "<group>"; };
 		342EB0C8209C3CB3006F762B /* CyclesView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CyclesView.h; sourceTree = "<group>"; };
 		342EB0C9209C3CB3006F762B /* CyclesView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CyclesView.m; sourceTree = "<group>"; };
+		3432591520AD21EF00C11FFE /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Main.strings"; sourceTree = "<group>"; };
+		3432591620AD21EF00C11FFE /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/LaunchScreen.strings"; sourceTree = "<group>"; };
+		3432591720AD652D00C11FFE /* MNPictrueCollectionViewCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MNPictrueCollectionViewCell.h; sourceTree = "<group>"; };
+		3432591820AD652D00C11FFE /* MNPictrueCollectionViewCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MNPictrueCollectionViewCell.m; sourceTree = "<group>"; };
+		3432591A20AD6F0000C11FFE /* PicCollectTableViewCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PicCollectTableViewCell.h; sourceTree = "<group>"; };
+		3432591B20AD6F0000C11FFE /* PicCollectTableViewCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PicCollectTableViewCell.m; sourceTree = "<group>"; };
 		3470A84F20994DD1003972FD /* MyNewPhoto.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MyNewPhoto.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3470A85220994DD1003972FD /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		3470A85320994DD1003972FD /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -578,6 +586,10 @@
 				349A983420AC110D0064E2A1 /* ImgHeaderView.m */,
 				349A983620AC27800064E2A1 /* MNTitleButton.h */,
 				349A983720AC27800064E2A1 /* MNTitleButton.m */,
+				3432591720AD652D00C11FFE /* MNPictrueCollectionViewCell.h */,
+				3432591820AD652D00C11FFE /* MNPictrueCollectionViewCell.m */,
+				3432591A20AD6F0000C11FFE /* PicCollectTableViewCell.h */,
+				3432591B20AD6F0000C11FFE /* PicCollectTableViewCell.m */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -846,6 +858,7 @@
 				3470A85420994DD1003972FD /* AppDelegate.m in Sources */,
 				347C65FE20A59EAC004B07D8 /* FWWaldenFilter.m in Sources */,
 				347C65F720A59EAC004B07D8 /* FWNashvilleFilter.m in Sources */,
+				3432591920AD652D00C11FFE /* MNPictrueCollectionViewCell.m in Sources */,
 				347C65FD20A59EAC004B07D8 /* FWValenciaFilter.m in Sources */,
 				347C65F020A59EAC004B07D8 /* FWFiveInputFilter.m in Sources */,
 				34B1A4F5209AEA090039B074 /* MainViewController.m in Sources */,
@@ -858,6 +871,7 @@
 				347C65F120A59EAC004B07D8 /* FWHefeFilter.m in Sources */,
 				347C65EB20A59EAC004B07D8 /* FW1977Filter.m in Sources */,
 				347C65F520A59EAC004B07D8 /* FWLOMOFilter1.m in Sources */,
+				3432591C20AD6F0000C11FFE /* PicCollectTableViewCell.m in Sources */,
 				347C65FA20A59EAC004B07D8 /* FWSixInputFilter.m in Sources */,
 				347C65F620A59EAC004B07D8 /* FWLordKelvinFilter.m in Sources */,
 				347C65FF20A59EAC004B07D8 /* FWXproIIFilter.m in Sources */,
@@ -909,6 +923,7 @@
 			isa = PBXVariantGroup;
 			children = (
 				3470A85920994DD1003972FD /* Base */,
+				3432591520AD21EF00C11FFE /* zh-Hans */,
 			);
 			name = Main.storyboard;
 			sourceTree = "<group>";
@@ -917,6 +932,7 @@
 			isa = PBXVariantGroup;
 			children = (
 				3470A85E20994DD4003972FD /* Base */,
+				3432591620AD21EF00C11FFE /* zh-Hans */,
 			);
 			name = LaunchScreen.storyboard;
 			sourceTree = "<group>";
@@ -928,6 +944,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
@@ -986,6 +1003,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";

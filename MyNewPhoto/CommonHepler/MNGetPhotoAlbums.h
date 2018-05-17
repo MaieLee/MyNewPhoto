@@ -31,6 +31,11 @@
 - (NSMutableArray *)getPhtotAlbums;
 
 /**
+ * 获取相对应的相册名称
+ **/
+- (NSString *)transformAblumTitle:(NSString *)title;
+
+/**
  *  获取照片数组列表
  *
  *  @return 返回照片数组

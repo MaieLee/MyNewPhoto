@@ -27,6 +27,7 @@ typedef NS_ENUM(NSInteger, CameraManagerFlashMode) {
 
 @property (nonatomic, strong) GPUImageView *gpuImageView;
 @property (nonatomic, strong) GPUImageStillCamera *gpuStillCamera;
+@property (nonatomic, strong) AVCaptureStillImageOutput *stillImageOutput;
 @property (nonatomic, strong) GPUImageBrightnessFilter *brightnessFilter;
 @property (nonatomic, strong) BottomBarView *bottomView;
 @property (nonatomic, strong) UISlider *brightnessSilder;
@@ -54,7 +55,7 @@ typedef NS_ENUM(NSInteger, CameraManagerFlashMode) {
 
 - (void)setUpUI{
     self.gpuImageView = [[GPUImageView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height-150)];
-    [self.view addSubview:self.gpuImageView];
+//    [self.view addSubview:self.gpuImageView];
     
     ToolBarView *toolView = [[ToolBarView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 68)];
     [self.view addSubview:toolView];
@@ -108,7 +109,7 @@ typedef NS_ENUM(NSInteger, CameraManagerFlashMode) {
 }
 
 - (void)setUpCamera{
-    self.gpuStillCamera = [[GPUImageStillCamera alloc] initWithSessionPreset:AVCaptureSessionPresetPhoto cameraPosition:AVCaptureDevicePositionBack];
+    self.gpuStillCamera = [[GPUImageStillCamera alloc] initWithSessionPreset:AVCaptureSessionPresetHigh cameraPosition:AVCaptureDevicePositionBack];
     self.gpuStillCamera.outputImageOrientation = UIInterfaceOrientationPortrait;
     self.gpuStillCamera.horizontallyMirrorFrontFacingCamera = YES;
     self.gpuStillCamera.horizontallyMirrorRearFacingCamera  = NO;
