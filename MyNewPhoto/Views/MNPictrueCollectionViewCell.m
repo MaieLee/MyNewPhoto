@@ -24,6 +24,7 @@
 -(void)initSubView{
     self.backgroundColor=[UIColor whiteColor];
     self.picView = [[UIImageView alloc] initWithFrame:self.contentView.bounds];
+    self.picView.contentMode =  UIViewContentModeScaleAspectFill;
     [self.contentView addSubview:self.picView];
 }
 

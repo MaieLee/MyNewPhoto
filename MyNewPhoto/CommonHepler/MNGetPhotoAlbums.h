@@ -47,7 +47,7 @@
  *
  *  @return 返回照片数组
  **/
-- (NSArray<PHAsset *> *)getAssetsInAssetCollection:(PHAssetCollection *)assetCollection;
+- (NSArray *)getAssetsInAssetCollection:(PHAssetCollection *)assetCollection;
 
 /**
  *  按尺寸获取照片

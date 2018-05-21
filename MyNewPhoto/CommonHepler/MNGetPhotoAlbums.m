@@ -7,6 +7,7 @@
 //
 
 #import "MNGetPhotoAlbums.h"
+#import "SysPictureModel.h"
 
 @interface MNGetPhotoAlbums()
 {
@@ -124,7 +125,6 @@
                 }else{
                     [albums addObject:collection];
                 }
-                
             }
         } else {
             NSAssert1(NO, @"Fetch collection not PHCollection: %@", collection);
@@ -144,21 +144,18 @@
         }
     }];
     
-    
-    [albums enumerateObjectsUsingBlock:^(PHAssetCollection *  _Nonnull Collection, NSUInteger idx, BOOL * _Nonnull stop) {
-        
-    }];
-    
     return albums;
 }
 
-- (NSArray<PHAsset *> *)getAssetsInAssetCollection:(PHAssetCollection *)assetCollection
+- (NSArray *)getAssetsInAssetCollection:(PHAssetCollection *)assetCollection
 {
-    NSMutableArray<PHAsset *> *arr = [NSMutableArray array];
+    NSMutableArray *arr = [NSMutableArray array];
     
     PHFetchResult *result = [PHAsset fetchAssetsInAssetCollection:assetCollection options:nil];
     [result enumerateObjectsUsingBlock:^(PHAsset * _Nonnull asset, NSUInteger idx, BOOL * _Nonnull stop) {
-        [arr addObject:asset];
+        SysPictureModel *picModel = [[SysPictureModel alloc] init];
+        picModel.asset = asset;
+        [arr addObject:picModel];
     }];
     return arr;
 }
@@ -176,7 +173,8 @@
      */
     option.resizeMode = PHImageRequestOptionsResizeModeFast;
     option.networkAccessAllowed = YES;
-        //param：targetSize 即你想要的图片尺寸，若想要原尺寸则可输入PHImageManagerMaximumSize
+    option.synchronous = NO;
+    //param：targetSize 即你想要的图片尺寸，若想要原尺寸则可输入PHImageManagerMaximumSize
     [[PHCachingImageManager defaultManager] requestImageForAsset:asset targetSize:size contentMode:PHImageContentModeAspectFit options:option resultHandler:^(UIImage * _Nullable image, NSDictionary * _Nullable info) {
             //解析出来的图片
         resultImage(image);

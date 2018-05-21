@@ -11,6 +11,7 @@
 #import "ImgHeaderView.h"
 #import "MNPictrueCollectionViewCell.h"
 #import "PicCollectTableViewCell.h"
+#import "SysPictureModel.h"
 
 static NSString *const cellIdentf = @"showPictureCell";
 static NSString *const collectCellIdentf = @"collectionCell";
@@ -144,17 +145,25 @@ static NSString *const collectCellIdentf = @"collectionCell";
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     MNPictrueCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:cellIdentf forIndexPath:indexPath];
     if (indexPath.item < _picArray.count) {
-        PHAsset *asset = _picArray[indexPath.row];
-        [[MNGetPhotoAlbums shareManager] getAlbumImageWithAsset:asset andParamSize:CGSizeMake(self.itemSize.width*3, self.itemSize.height*3) resultImage:^(UIImage *image) {
-            cell.picView.image = image;
-        }];
+        __block SysPictureModel *sysPicModel = _picArray[indexPath.row];
+        
+        if (sysPicModel.assetImage == nil) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [[MNGetPhotoAlbums shareManager] getAlbumImageWithAsset:sysPicModel.asset andParamSize:CGSizeMake(self.itemSize.width, self.itemSize.height) resultImage:^(UIImage *image) {
+                    cell.picView.image = image;
+                    sysPicModel.assetImage = image;
+                }];
+            });
+        }else{
+            cell.picView.image = sysPicModel.assetImage;
+        }
     }
     return cell;
 }
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
-    PHAsset *asset = _picArray[indexPath.row];
-    [[MNGetPhotoAlbums shareManager] getAlbumImageWithAsset:asset resultImage:^(UIImage *image) {
+    SysPictureModel *sysPicModel = _picArray[indexPath.row];
+    [[MNGetPhotoAlbums shareManager] getAlbumImageWithAsset:sysPicModel.asset resultImage:^(UIImage *image) {
         
     }];
 }
