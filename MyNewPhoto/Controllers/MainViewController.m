@@ -23,10 +23,13 @@ typedef NS_ENUM(NSInteger, CameraManagerFlashMode) {
 @interface MainViewController ()<UIGestureRecognizerDelegate,CAAnimationDelegate>
 {
     CALayer *_focusLayer; //聚焦层
+    NSString *pathToMovie;
+    GPUImageMovieWriter *movieWriter;
 }
 
 @property (nonatomic, strong) GPUImageView *gpuImageView;
 @property (nonatomic, strong) GPUImageStillCamera *gpuStillCamera;
+@property (nonatomic, strong) GPUImageVideoCamera *gpuVideoCamera;
 @property (nonatomic, strong) AVCaptureStillImageOutput *stillImageOutput;
 @property (nonatomic, strong) GPUImageBrightnessFilter *brightnessFilter;
 @property (nonatomic, strong) BottomBarView *bottomView;
@@ -44,7 +47,7 @@ typedef NS_ENUM(NSInteger, CameraManagerFlashMode) {
     self.view.backgroundColor = [UIColor whiteColor];
     
     [self setUpUI];
-    [self setUpCamera];
+    [self setUpStillCamera];
 }
 
 - (void)viewWillAppear:(BOOL)animated{
@@ -55,7 +58,7 @@ typedef NS_ENUM(NSInteger, CameraManagerFlashMode) {
 
 - (void)setUpUI{
     self.gpuImageView = [[GPUImageView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height-150)];
-//    [self.view addSubview:self.gpuImageView];
+    [self.view addSubview:self.gpuImageView];
     
     ToolBarView *toolView = [[ToolBarView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 68)];
     [self.view addSubview:toolView];
@@ -108,7 +111,7 @@ typedef NS_ENUM(NSInteger, CameraManagerFlashMode) {
     _brightnessFilter.brightness = slider.value;
 }
 
-- (void)setUpCamera{
+- (void)setUpStillCamera{
     self.gpuStillCamera = [[GPUImageStillCamera alloc] initWithSessionPreset:AVCaptureSessionPresetHigh cameraPosition:AVCaptureDevicePositionBack];
     self.gpuStillCamera.outputImageOrientation = UIInterfaceOrientationPortrait;
     self.gpuStillCamera.horizontallyMirrorFrontFacingCamera = YES;
@@ -119,13 +122,31 @@ typedef NS_ENUM(NSInteger, CameraManagerFlashMode) {
     _brightnessFilter = [[GPUImageBrightnessFilter alloc] init];
     
     GPUImageBeautifyFilter *beautifyFilter = [[GPUImageBeautifyFilter alloc] init];
-//    GPUImageSmoothToonFilter *smoothToonFilter = [[GPUImageSmoothToonFilter alloc] init];
     [self.gpuStillCamera addTarget:beautifyFilter];
     [beautifyFilter addTarget:_brightnessFilter];
     [_brightnessFilter addTarget:self.gpuImageView];
     
     dispatch_async(dispatch_get_main_queue(), ^{
         [self.gpuStillCamera startCameraCapture];
+    });
+}
+
+- (void)setUpVideoCamera{
+    self.gpuVideoCamera = [[GPUImageVideoCamera alloc] initWithSessionPreset:AVCaptureSessionPresetLow cameraPosition:AVCaptureDevicePositionBack];
+    self.gpuVideoCamera.outputImageOrientation = UIInterfaceOrientationPortrait;
+    self.gpuVideoCamera.horizontallyMirrorFrontFacingCamera = YES;
+    self.gpuVideoCamera.horizontallyMirrorRearFacingCamera  = NO;
+    [self.gpuVideoCamera addAudioInputsAndOutputs];
+    
+    //美白滤镜-- 亮度 亮度：调整亮度（-1.0 - 1.0，默认为0.0）
+    _brightnessFilter = [[GPUImageBrightnessFilter alloc] init];
+    
+    GPUImageBeautifyFilter *beautifyFilter = [[GPUImageBeautifyFilter alloc] init];
+    [self.gpuVideoCamera addTarget:beautifyFilter];
+    [beautifyFilter addTarget:_brightnessFilter];
+    [_brightnessFilter addTarget:self.gpuImageView];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self.gpuVideoCamera startCameraCapture];
     });
 }
 
@@ -309,11 +330,28 @@ typedef NS_ENUM(NSInteger, CameraManagerFlashMode) {
 }
 
 - (void)takePicture{
-    [self.bottomView.activityIndicator startAnimating];
+//    [self.bottomView.activityIndicator startAnimating];
+//
+//    [self.gpuStillCamera capturePhotoAsImageProcessedUpToFilter:_brightnessFilter withCompletionHandler:^(UIImage *processedImage, NSError *error) {
+//        UIImageWriteToSavedPhotosAlbum(processedImage, self, @selector(saveImage:didFinishSavingWithError:contextInfo:), nil);
+//    }];
     
-    [self.gpuStillCamera capturePhotoAsImageProcessedUpToFilter:_brightnessFilter withCompletionHandler:^(UIImage *processedImage, NSError *error) {
-        UIImageWriteToSavedPhotosAlbum(processedImage, self, @selector(saveImage:didFinishSavingWithError:contextInfo:), nil);
-    }];
+    pathToMovie = [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/Movie.m4v"];
+    unlink([pathToMovie UTF8String]); // If a file already exists, AVAssetWriter won't let you record new frames, so delete the old movie
+    NSURL *movieURL = [NSURL fileURLWithPath:pathToMovie];
+    movieWriter = [[GPUImageMovieWriter alloc] initWithMovieURL:movieURL size:self.gpuImageView.frame.size];
+    
+    movieWriter.encodingLiveVideo = YES;
+    movieWriter.shouldPassthroughAudio = YES;
+    
+    self.gpuVideoCamera.audioEncodingTarget = movieWriter;
+    [movieWriter startRecording];
+
+    
+}
+
+- (void)updateTimer:(NSTimer *)sender{
+    
 }
 
 - (void)saveImage:(UIImage *)image didFinishSavingWithError:(NSError *)error contextInfo:(void *)contextInfo{
