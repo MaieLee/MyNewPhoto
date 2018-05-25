@@ -13,7 +13,6 @@
 #import "UIImage+RoundCorner.h"
 #import "GPUImageBeautifyFilter.h"
 #import "MNGetPhotoAlbums.h"
-#import <AssetsLibrary/AssetsLibrary.h>
 
 //闪光灯状态
 typedef NS_ENUM(NSInteger, CameraManagerFlashMode) {
@@ -33,7 +32,6 @@ typedef NS_ENUM(NSInteger, CameraManagerFlashMode) {
 @property (nonatomic, strong) GPUImageStillCamera *gpuStillCamera;
 @property (nonatomic, strong) GPUImageVideoCamera *gpuVideoCamera;
 @property (nonatomic, strong) GPUImageBeautifyFilter *beautifyFilter;
-@property (nonatomic, strong) AVCaptureStillImageOutput *stillImageOutput;
 @property (nonatomic, strong) BottomBarView *bottomView;
 @property (nonatomic, assign) CGFloat beginGestureScale;//开始的缩放比例
 @property (nonatomic, assign) CGFloat effectiveScale;//最后的缩放比例
