@@ -190,7 +190,24 @@
     [[PHCachingImageManager defaultManager] requestImageForAsset:asset targetSize:PHImageManagerMaximumSize contentMode:PHImageContentModeAspectFit options:option resultHandler:^(UIImage * _Nullable image, NSDictionary * _Nullable info) {
         resultImage(image);
     }];
-    
+}
+
+#pragma mark ---- 获取图片第一帧
+- (UIImage *)firstFrameWithVideoURL:(NSString *)urlString size:(CGSize)size
+{
+    NSURL *url = [NSURL fileURLWithPath:urlString];
+    //获取视频第一帧
+    NSDictionary *opts = [NSDictionary dictionaryWithObject:[NSNumber numberWithBool:NO] forKey:AVURLAssetPreferPreciseDurationAndTimingKey];
+    AVURLAsset *urlAsset = [AVURLAsset URLAssetWithURL:url options:opts];
+    AVAssetImageGenerator *generator = [AVAssetImageGenerator assetImageGeneratorWithAsset:urlAsset];
+    generator.appliesPreferredTrackTransform = YES;
+    generator.maximumSize = CGSizeMake(size.width, size.height);
+    NSError *error = nil;
+    CGImageRef img = [generator copyCGImageAtTime:CMTimeMake(0, 10) actualTime:NULL error:&error];
+    {
+        return [UIImage imageWithCGImage:img];
+    }
+    return nil;
 }
 
 @end

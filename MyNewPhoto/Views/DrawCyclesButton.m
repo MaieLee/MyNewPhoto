@@ -10,15 +10,7 @@
 
 @implementation DrawCyclesButton
 
--(void)drawRect:(CGRect)rect {
-    if (!_isVideo) {
-        [self drawRect:rect WithFillColor:mnColor(0, 0, 0, 0.1)];
-    }else{
-        [self drawRect:rect WithFillColor:[UIColor redColor]];
-    }
-}
-
-- (void)drawRect:(CGRect)rect WithFillColor:(UIColor *)color{
+- (void)drawRect:(CGRect)rect{
     // 获取图形上下文
     CGContextRef ctx = UIGraphicsGetCurrentContext();
     CGFloat width = rect.size.width;
@@ -26,18 +18,14 @@
     /**
      画实心圆
      */
-    CGRect frame = CGRectMake(kBorderWith * 2,
-                              kBorderWith * 2,
-                              width - kBorderWith*4,
-                              width - kBorderWith*4);
     //填充当前绘画区域内的颜色
     [[UIColor whiteColor] set];
     //填充当前矩形区域
     CGContextFillRect(ctx, rect);
     //以矩形frame为依据画一个圆
-    CGContextAddEllipseInRect(ctx, frame);
+    CGContextAddEllipseInRect(ctx, rect);
     //填充当前绘画区域内的颜色
-    [color set];
+    [mnColor(0, 0, 0, 0.1) set];
     //填充(沿着矩形内围填充出指定大小的圆)
     CGContextFillPath(ctx);
     
@@ -54,7 +42,7 @@
     //以矩形bigRect为依据画一个圆
     CGContextAddEllipseInRect(ctx, bigRect);
     //填充当前绘画区域的颜色
-    [[UIColor blackColor] set];
+    [[UIColor colorWithRed:26/255.0 green:170/255.0 blue:255/255.0 alpha:1] set];
     //(如果是画圆会沿着矩形外围描画出指定宽度的（圆线）空心圆)/（根据上下文的内容渲染图层）
     CGContextStrokePath(ctx);
 }

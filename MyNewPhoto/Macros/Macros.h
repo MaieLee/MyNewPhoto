@@ -13,6 +13,8 @@
 #define mnFont(str) [UIFont systemFontOfSize:str]
 #define WEAKSELF typeof(self) __weak weakSelf = self;
 #define kBorderWith 4.0
+#define IS_IOS_9_10_11    [[[UIDevice currentDevice] systemVersion] floatValue] >= 9.0
+#define IS_IOS_8       [[[UIDevice currentDevice] systemVersion] floatValue] < 9.0
 
 #define kScreenHeight  [UIScreen mainScreen].bounds.size.height
 #define kScreenWidth   [UIScreen mainScreen].bounds.size.width

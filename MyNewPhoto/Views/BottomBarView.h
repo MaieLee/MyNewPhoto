@@ -9,7 +9,8 @@
 #import <UIKit/UIKit.h>
 @class GPUImageFilter;
 
-typedef void(^CameraPicBlock) ();
+typedef void(^CameraPicBlock) (void);
+typedef void(^CameraVideoBlock) (NSInteger cameraStatus);
 typedef void(^ShowFilterBlock) (id filter,NSString *desc);
 
 @interface BottomBarView : UIView
@@ -18,6 +19,11 @@ typedef void(^ShowFilterBlock) (id filter,NSString *desc);
 @property (nonatomic, weak) UIViewController *parentVC;
 
 @property (nonatomic, copy) CameraPicBlock picBlock;
+@property (nonatomic, copy) CameraVideoBlock videoBlock;
 @property (nonatomic, copy) ShowFilterBlock filterBlock;
+
+- (void)startVideoRecord;
+- (void)finishSavePic;
+- (void)finishSaveVideo;
 
 @end

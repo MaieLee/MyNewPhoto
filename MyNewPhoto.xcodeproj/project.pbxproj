@@ -91,6 +91,9 @@
 		347C65FD20A59EAC004B07D8 /* FWValenciaFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = 347C65E620A59EAC004B07D8 /* FWValenciaFilter.m */; };
 		347C65FE20A59EAC004B07D8 /* FWWaldenFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = 347C65E820A59EAC004B07D8 /* FWWaldenFilter.m */; };
 		347C65FF20A59EAC004B07D8 /* FWXproIIFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = 347C65EA20A59EAC004B07D8 /* FWXproIIFilter.m */; };
+		3480DF5720B79F0200289A08 /* CameraButtonView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3480DF5620B79F0200289A08 /* CameraButtonView.m */; };
+		3480DF5A20B7A57500289A08 /* MNCircleView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3480DF5920B7A57500289A08 /* MNCircleView.m */; };
+		3480DF5D20B7A68700289A08 /* MNSolidCircleView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3480DF5C20B7A68700289A08 /* MNSolidCircleView.m */; };
 		34922BB0209BE4090009FEB5 /* BottomBarView.m in Sources */ = {isa = PBXBuildFile; fileRef = 34922BAC209BE4090009FEB5 /* BottomBarView.m */; };
 		34922BB1209BE4090009FEB5 /* ToolBarView.m in Sources */ = {isa = PBXBuildFile; fileRef = 34922BAF209BE4090009FEB5 /* ToolBarView.m */; };
 		349A982F20ABD1CF0064E2A1 /* MNImagePickerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 349A982E20ABD1CF0064E2A1 /* MNImagePickerViewController.m */; };
@@ -261,6 +264,12 @@
 		347C65E820A59EAC004B07D8 /* FWWaldenFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FWWaldenFilter.m; sourceTree = "<group>"; };
 		347C65E920A59EAC004B07D8 /* FWXproIIFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FWXproIIFilter.h; sourceTree = "<group>"; };
 		347C65EA20A59EAC004B07D8 /* FWXproIIFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FWXproIIFilter.m; sourceTree = "<group>"; };
+		3480DF5520B79F0200289A08 /* CameraButtonView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CameraButtonView.h; sourceTree = "<group>"; };
+		3480DF5620B79F0200289A08 /* CameraButtonView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CameraButtonView.m; sourceTree = "<group>"; };
+		3480DF5820B7A57500289A08 /* MNCircleView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MNCircleView.h; sourceTree = "<group>"; };
+		3480DF5920B7A57500289A08 /* MNCircleView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MNCircleView.m; sourceTree = "<group>"; };
+		3480DF5B20B7A68700289A08 /* MNSolidCircleView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MNSolidCircleView.h; sourceTree = "<group>"; };
+		3480DF5C20B7A68700289A08 /* MNSolidCircleView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MNSolidCircleView.m; sourceTree = "<group>"; };
 		34922BAC209BE4090009FEB5 /* BottomBarView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BottomBarView.m; sourceTree = "<group>"; };
 		34922BAD209BE4090009FEB5 /* BottomBarView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BottomBarView.h; sourceTree = "<group>"; };
 		34922BAE209BE4090009FEB5 /* ToolBarView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ToolBarView.h; sourceTree = "<group>"; };
@@ -593,6 +602,12 @@
 				3432591820AD652D00C11FFE /* MNPictrueCollectionViewCell.m */,
 				3432591A20AD6F0000C11FFE /* PicCollectTableViewCell.h */,
 				3432591B20AD6F0000C11FFE /* PicCollectTableViewCell.m */,
+				3480DF5520B79F0200289A08 /* CameraButtonView.h */,
+				3480DF5620B79F0200289A08 /* CameraButtonView.m */,
+				3480DF5820B7A57500289A08 /* MNCircleView.h */,
+				3480DF5920B7A57500289A08 /* MNCircleView.m */,
+				3480DF5B20B7A68700289A08 /* MNSolidCircleView.h */,
+				3480DF5C20B7A68700289A08 /* MNSolidCircleView.m */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -853,6 +868,8 @@
 				349A983820AC27800064E2A1 /* MNTitleButton.m in Sources */,
 				34D5DD0F209DCCA000F9182D /* GPUImageBeautifyFilter.m in Sources */,
 				349A983220ABDF9C0064E2A1 /* MNGetPhotoAlbums.m in Sources */,
+				3480DF5A20B7A57500289A08 /* MNCircleView.m in Sources */,
+				3480DF5D20B7A68700289A08 /* MNSolidCircleView.m in Sources */,
 				3470A86220994DD4003972FD /* main.m in Sources */,
 				347C65F220A59EAC004B07D8 /* FWHudsonFilter.m in Sources */,
 				347C65F420A59EAC004B07D8 /* FWLomofiFilter.m in Sources */,
@@ -868,6 +885,7 @@
 				3446A7E220B26D88002BAC6E /* SysPictureModel.m in Sources */,
 				347C65F020A59EAC004B07D8 /* FWFiveInputFilter.m in Sources */,
 				34B1A4F5209AEA090039B074 /* MainViewController.m in Sources */,
+				3480DF5720B79F0200289A08 /* CameraButtonView.m in Sources */,
 				3477242520A3DCAF0082D57F /* FilterCollectionViewCell.m in Sources */,
 				347C65F320A59EAC004B07D8 /* FWInkwellFilter.m in Sources */,
 				342EB0C4209C391C006F762B /* UIImage+RoundCorner.m in Sources */,

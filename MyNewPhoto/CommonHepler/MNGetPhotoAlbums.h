@@ -67,5 +67,11 @@
  *  @param resultImage 返回照片原图
  */
 - (void)getAlbumImageWithAsset:(PHAsset*)asset
-                  resultImage:(void (^)(UIImage *image))resultImage;  
+                  resultImage:(void (^)(UIImage *image))resultImage;
+
+/**
+ * 获取视频第一帧图像
+ *
+ **/
+- (UIImage *)firstFrameWithVideoURL:(NSString *)urlString size:(CGSize)size;
 @end

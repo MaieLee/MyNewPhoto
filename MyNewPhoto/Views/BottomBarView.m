@@ -16,10 +16,11 @@
 #import "FilterManager.h"
 #import "MNImagePickerViewController.h"
 #import "MNGetPhotoAlbums.h"
+#import "CameraButtonView.h"
 
 @interface BottomBarView ()<CameraFilterViewDelegate>
 @property (nonatomic, strong) UIView *moView;
-@property (nonatomic, strong) DrawCyclesButton *camera;
+@property (nonatomic, strong) CameraButtonView *camera;
 @property (nonatomic, strong) CameraFilterView *cameraFilterView;//自定义滤镜视图
 @property (nonatomic, strong) FilterManager *filterManager;
 @property (nonatomic, strong) NSMutableArray *filtersArray;
@@ -41,10 +42,20 @@
     [self addSubview:moView];
     self.moView = moView;
     
-    _camera = [[DrawCyclesButton alloc] initWithFrame:CGRectMake(0, self.frame.size.height - 110, 76, 76)];
+    WEAKSELF
+    _camera = [[CameraButtonView alloc] initWithFrame:CGRectMake(0, self.frame.size.height - 110, 76, 76)];
     [moView addSubview:_camera];
     _camera.center = CGPointMake(moView.center.x, _camera.center.y);
-    [_camera addTarget:self action:@selector(drawColor) forControlEvents:UIControlEventTouchUpInside];
+    _camera.takePicture = ^{
+        if (weakSelf.picBlock) {
+            weakSelf.picBlock();
+        }
+    };
+    _camera.takeVideo = ^(NSInteger cameraStatus) {
+        if (weakSelf.videoBlock) {
+            weakSelf.videoBlock(cameraStatus);
+        }
+    };
     
     CyclesView *cyclesView = [[CyclesView alloc] initWithFrame:CGRectMake(20, 0, 36, 36)];
     [moView addSubview:cyclesView];
@@ -158,10 +169,19 @@
     }
 }
 
-- (void)drawColor{
-    if (self.picBlock) {
-        self.picBlock();
-    }
+- (void)startVideoRecord
+{
+    [self.camera startRecord];
+}
+
+- (void)finishSavePic
+{
+    [self.camera finishSavePic];
+}
+
+- (void)finishSaveVideo
+{
+    [self.camera finishSaveVideo];
 }
 
 - (void)showPickerVc:(id)recognizer{
