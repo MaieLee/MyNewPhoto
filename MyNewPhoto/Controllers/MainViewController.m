@@ -35,7 +35,7 @@ typedef NS_ENUM(NSInteger, CameraManagerFlashMode) {
 @property (nonatomic, strong) GPUImageVideoCamera *gpuVideoCamera;
 @property (nonatomic, strong) GPUImageBeautifyFilter *beautifyFilter;
 @property (nonatomic, strong) id selFilter;
-@property (nonatomic, strong) CameraButtonView *camera;
+@property (nonatomic, strong) CameraButtonView *cameraBtn;
 @property (nonatomic, strong) BottomBarView *bottomView;
 @property (nonatomic, assign) CGFloat beginGestureScale;//开始的缩放比例
 @property (nonatomic, assign) CGFloat effectiveScale;//最后的缩放比例
@@ -79,13 +79,13 @@ typedef NS_ENUM(NSInteger, CameraManagerFlashMode) {
     [switchCameraBtn addTarget:self action:@selector(switchCamera) forControlEvents:UIControlEventTouchUpInside];
     
     WEAKSELF
-    _camera = [[CameraButtonView alloc] initWithFrame:CGRectMake(0, viewFrame.size.height - 140, 87, 87)];
-    [self.view addSubview:_camera];
-    _camera.center = CGPointMake(self.view.center.x, _camera.center.y);
-    _camera.takePicture = ^{
+    _cameraBtn = [[CameraButtonView alloc] initWithFrame:CGRectMake(0, viewFrame.size.height - 140, 87, 87)];
+    [self.view addSubview:_cameraBtn];
+    _cameraBtn.center = CGPointMake(self.view.center.x, _cameraBtn.center.y);
+    _cameraBtn.takePicture = ^{
         [weakSelf takePicture];
     };
-    _camera.takeVideo = ^(NSInteger cameraStatus) {
+    _cameraBtn.takeVideo = ^(NSInteger cameraStatus) {
         if (cameraStatus == 0) {
             [weakSelf preVideoRecording];
         }else if (cameraStatus == 1) {
@@ -171,7 +171,7 @@ typedef NS_ENUM(NSInteger, CameraManagerFlashMode) {
     
     [self.gpuVideoCamera startCameraCapture];
     
-    [self.camera startRecord];
+    [self.cameraBtn startRecord];
 }
 
 - (GPUImageVideoCamera *)gpuVideoCamera{
@@ -189,9 +189,19 @@ typedef NS_ENUM(NSInteger, CameraManagerFlashMode) {
 - (void)handleSwipeFrom:(UISwipeGestureRecognizer *)recognizer{
     if(recognizer.direction == UISwipeGestureRecognizerDirectionUp) {
         [self.bottomView show];
+        [UIView animateWithDuration:0.2 animations:^{
+            self.cameraBtn.transform = CGAffineTransformMakeTranslation(0,-30);
+        } completion:^(BOOL finished) {
+            
+        }];
     }
     if(recognizer.direction == UISwipeGestureRecognizerDirectionDown) {
         [self.bottomView hide];
+        [UIView animateWithDuration:0.2 animations:^{
+            self.cameraBtn.transform = CGAffineTransformMakeTranslation(0,0);
+        } completion:^(BOOL finished) {
+            
+        }];
     }
     if(recognizer.direction == UISwipeGestureRecognizerDirectionLeft) {
         [self showPickerVc];
@@ -405,7 +415,7 @@ typedef NS_ENUM(NSInteger, CameraManagerFlashMode) {
 
 - (void)saveImage:(UIImage *)image didFinishSavingWithError:(NSError *)error contextInfo:(void *)contextInfo{
 
-    [self.camera finishSavePic];
+    [self.cameraBtn finishSavePic];
     
     if(!error) {
         NSLog(@"保存成功！");
@@ -454,7 +464,7 @@ typedef NS_ENUM(NSInteger, CameraManagerFlashMode) {
     [self.gpuVideoCamera removeAllTargets];
     [self setUpStillCamera];
     
-    [self.camera finishSaveVideo];
+    [self.cameraBtn finishSaveVideo];
 }
 
 - (void)showFilters:(id)filter Desc:(NSString *)desc
@@ -465,9 +475,9 @@ typedef NS_ENUM(NSInteger, CameraManagerFlashMode) {
     GPUImageBilateralFilter *bilateralFilter = [[GPUImageBilateralFilter alloc] init];
     bilateralFilter.distanceNormalizationFactor = 9.0;
     
-    [self.gpuStillCamera addTarget:bilateralFilter];
-    [bilateralFilter addTarget:filter];
-    [filter addTarget:self.gpuImageView];
+    [self.gpuStillCamera addTarget:filter];
+    [filter addTarget:bilateralFilter];
+    [bilateralFilter addTarget:self.gpuImageView];
     self.selFilter = filter;
     
     self.lblDesc.hidden = NO;
