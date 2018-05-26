@@ -8,7 +8,7 @@
 
 #import "MNCircleView.h"
 
-#define KHWCircleLineWidth 5.0f
+#define KHWCircleLineWidth 4.0f
 #define KHWCircleColor [UIColor colorWithRed:0/255.0 green:191/255.0 blue:255/255.0 alpha:1]
 
 @implementation MNCircleView

@@ -13,6 +13,8 @@
 #import "UIImage+RoundCorner.h"
 #import "GPUImageBeautifyFilter.h"
 #import "MNGetPhotoAlbums.h"
+#import "CameraButtonView.h"
+#import "MNImagePickerViewController.h"
 
 //闪光灯状态
 typedef NS_ENUM(NSInteger, CameraManagerFlashMode) {
@@ -32,6 +34,7 @@ typedef NS_ENUM(NSInteger, CameraManagerFlashMode) {
 @property (nonatomic, strong) GPUImageStillCamera *gpuStillCamera;
 @property (nonatomic, strong) GPUImageVideoCamera *gpuVideoCamera;
 @property (nonatomic, strong) GPUImageBeautifyFilter *beautifyFilter;
+@property (nonatomic, strong) CameraButtonView *camera;
 @property (nonatomic, strong) BottomBarView *bottomView;
 @property (nonatomic, assign) CGFloat beginGestureScale;//开始的缩放比例
 @property (nonatomic, assign) CGFloat effectiveScale;//最后的缩放比例
@@ -58,23 +61,30 @@ typedef NS_ENUM(NSInteger, CameraManagerFlashMode) {
 }
 
 - (void)setUpUI{
-    self.gpuImageView = [[GPUImageView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height-150)];
+    CGRect viewFrame = self.view.frame;
+    self.gpuImageView = [[GPUImageView alloc] initWithFrame:CGRectMake(0, 0, viewFrame.size.width, viewFrame.size.height)];
     self.gpuImageView.fillMode = kGPUImageFillModePreserveAspectRatio;
     [self.view addSubview:self.gpuImageView];
     
-    ToolBarView *toolView = [[ToolBarView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 68)];
-    [self.view addSubview:toolView];
-    WEAKSELF
-    toolView.cameraBlock = ^(NSInteger cameraType) {
-        [weakSelf changeCamera];
-    };
+    [self addSwipeGesture];
     
-    _bottomView = [[BottomBarView alloc] initWithFrame:CGRectMake(0, self.view.frame.size.height-150, self.view.frame.size.width, 150)];
-    [self.view addSubview:_bottomView];
-    _bottomView.picBlock = ^{
+    UIButton *switchCameraBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+    [switchCameraBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    [switchCameraBtn setTitle:@"切换镜头" forState:UIControlStateNormal];
+    switchCameraBtn.titleLabel.font = mnFont(14);
+    switchCameraBtn.frame = CGRectMake(viewFrame.size.width-80, 10, 60, 40);
+    [self.view addSubview:switchCameraBtn];
+    
+    [switchCameraBtn addTarget:self action:@selector(switchCamera) forControlEvents:UIControlEventTouchUpInside];
+    
+    WEAKSELF
+    _camera = [[CameraButtonView alloc] initWithFrame:CGRectMake(0, viewFrame.size.height - 140, 87, 87)];
+    [self.view addSubview:_camera];
+    _camera.center = CGPointMake(self.view.center.x, _camera.center.y);
+    _camera.takePicture = ^{
         [weakSelf takePicture];
     };
-    _bottomView.videoBlock = ^(NSInteger cameraStatus) {
+    _camera.takeVideo = ^(NSInteger cameraStatus) {
         if (cameraStatus == 0) {
             [weakSelf preVideoRecording];
         }else if (cameraStatus == 1) {
@@ -83,10 +93,11 @@ typedef NS_ENUM(NSInteger, CameraManagerFlashMode) {
             [weakSelf stopVideoRecording];
         }
     };
-    _bottomView.filterBlock = ^(id filter, NSString *desc){
-        [weakSelf showFilters:filter Desc:desc];
-    };
-    _bottomView.parentVC = self;
+    
+    
+    _bottomView = [[BottomBarView alloc] initWithFrame:CGRectMake(0, viewFrame.size.height+63, viewFrame.size.width, 63)];
+    _bottomView.hidden = YES;
+    [self.view addSubview:_bottomView];
     
     self.lblDesc = [UILabel new];
     self.lblDesc.font = mnFont(26);
@@ -101,7 +112,20 @@ typedef NS_ENUM(NSInteger, CameraManagerFlashMode) {
     //初始化开始及结束的缩放比例都为1.0
     [self setBeginGestureScale:1.0f];
     [self setEffectiveScale:1.0f];
+}
 
+- (void)addSwipeGesture{
+    UISwipeGestureRecognizer *leftRecognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(handleSwipeFrom:)];
+    [leftRecognizer setDirection:(UISwipeGestureRecognizerDirectionLeft)];
+    [self.gpuImageView addGestureRecognizer:leftRecognizer];
+    
+    UISwipeGestureRecognizer *upRecognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(handleSwipeFrom:)];
+    [upRecognizer setDirection:(UISwipeGestureRecognizerDirectionUp)];
+    [self.gpuImageView addGestureRecognizer:upRecognizer];
+    
+    UISwipeGestureRecognizer *downRecognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(handleSwipeFrom:)];
+    [downRecognizer setDirection:(UISwipeGestureRecognizerDirectionDown)];
+    [self.gpuImageView addGestureRecognizer:downRecognizer];
 }
 
 - (void)preFilter{
@@ -123,7 +147,7 @@ typedef NS_ENUM(NSInteger, CameraManagerFlashMode) {
 
 - (GPUImageStillCamera *)gpuStillCamera{
     if (_gpuStillCamera == nil) {
-        _gpuStillCamera = [[GPUImageStillCamera alloc] initWithSessionPreset:AVCaptureSessionPresetPhoto cameraPosition:AVCaptureDevicePositionBack];
+        _gpuStillCamera = [[GPUImageStillCamera alloc] initWithSessionPreset:AVCaptureSessionPreset1280x720 cameraPosition:AVCaptureDevicePositionBack];
         _gpuStillCamera.outputImageOrientation = UIInterfaceOrientationPortrait;
         _gpuStillCamera.horizontallyMirrorFrontFacingCamera = YES;
         _gpuStillCamera.horizontallyMirrorRearFacingCamera  = NO;
@@ -141,7 +165,7 @@ typedef NS_ENUM(NSInteger, CameraManagerFlashMode) {
     
     [self.gpuVideoCamera startCameraCapture];
     
-    [self.bottomView startVideoRecord];
+    [self.camera startRecord];
 }
 
 - (GPUImageVideoCamera *)gpuVideoCamera{
@@ -156,7 +180,37 @@ typedef NS_ENUM(NSInteger, CameraManagerFlashMode) {
     return _gpuVideoCamera;
 }
 
-- (void)changeCamera{
+- (void)handleSwipeFrom:(UISwipeGestureRecognizer *)recognizer{
+    if(recognizer.direction == UISwipeGestureRecognizerDirectionUp) {
+        if (self.bottomView.hidden) {
+            [self.bottomView show];
+        }
+    }
+    if(recognizer.direction == UISwipeGestureRecognizerDirectionDown) {
+        if (!self.bottomView.hidden) {
+            [self.bottomView hide];
+        }
+    }
+    if(recognizer.direction == UISwipeGestureRecognizerDirectionLeft) {
+        [self showPickerVc];
+    }
+}
+
+- (void)showPickerVc{
+    if ([MNGetPhotoAlbums authorizationStatus] == 2) { // 已被拒绝，没有相册权限，将无法保存拍的照片
+        UIAlertView * alert = [[UIAlertView alloc]initWithTitle:@"无法访问相册" message:@"请在iPhone的""设置-隐私-相册""中允许访问相册" delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"设置", nil];
+        [alert show];
+    } else if ([MNGetPhotoAlbums authorizationStatus] == 0) { // 未请求过相册权限
+        [[MNGetPhotoAlbums shareManager] requestAuthorizationWithCompletion:^{
+            [self showPickerVc];
+        }];
+    }else{
+        MNImagePickerViewController *imagePickerVc = [[MNImagePickerViewController alloc] init];
+        [self.navigationController pushViewController:imagePickerVc animated:YES];
+    }
+}
+
+- (void)switchCamera{
     if (self.isTakeVideo) {
         [self.gpuVideoCamera rotateCamera];
     }else{
@@ -340,7 +394,7 @@ typedef NS_ENUM(NSInteger, CameraManagerFlashMode) {
 }
 
 - (void)takePicture{
-    [self.bottomView.activityIndicator startAnimating];
+//    [self.bottomView.activityIndicator startAnimating];
 
     [self.gpuStillCamera capturePhotoAsImageProcessedUpToFilter:self.beautifyFilter withCompletionHandler:^(UIImage *processedImage, NSError *error) {
         UIImageWriteToSavedPhotosAlbum(processedImage, self, @selector(saveImage:didFinishSavingWithError:contextInfo:), nil);
@@ -348,12 +402,12 @@ typedef NS_ENUM(NSInteger, CameraManagerFlashMode) {
 }
 
 - (void)saveImage:(UIImage *)image didFinishSavingWithError:(NSError *)error contextInfo:(void *)contextInfo{
-    CGSize imgSize = CGSizeMake(self.bottomView.imgView.frame.size.width*3, self.bottomView.imgView.frame.size.height*3);
-    UIImage *thumImg = [UIImage thumbnailWithImage:image size:imgSize];
-    self.bottomView.imgView.image = [thumImg imageWithRect:imgSize];
-    [self.bottomView.activityIndicator stopAnimating];
+//    CGSize imgSize = CGSizeMake(self.bottomView.imgView.frame.size.width*3, self.bottomView.imgView.frame.size.height*3);
+//    UIImage *thumImg = [UIImage thumbnailWithImage:image size:imgSize];
+//    self.bottomView.imgView.image = [thumImg imageWithRect:imgSize];
+//    [self.bottomView.activityIndicator stopAnimating];
     
-    [self.bottomView finishSavePic];
+    [self.camera finishSavePic];
     
     if(!error) {
         NSLog(@"保存成功！");
@@ -389,7 +443,7 @@ typedef NS_ENUM(NSInteger, CameraManagerFlashMode) {
     }
     self.gpuVideoCamera.audioEncodingTarget = nil;
     NSLog(@"Path %@",pathToMovie);
-    [self.bottomView.activityIndicator startAnimating];
+//    [self.bottomView.activityIndicator startAnimating];
     UISaveVideoAtPathToSavedPhotosAlbum(pathToMovie, self, @selector(saveVideo:didFinishSavingWithError:contextInfo:), nil);
     [movieWriter finishRecording];
     [self.beautifyFilter removeTarget:movieWriter];
@@ -397,17 +451,17 @@ typedef NS_ENUM(NSInteger, CameraManagerFlashMode) {
 
 - (void)saveVideo:(NSString *)videoPath didFinishSavingWithError:(NSError *)error
   contextInfo:(void *)contextInfo {
-    CGSize imgSize = CGSizeMake(self.bottomView.imgView.frame.size.width*3, self.bottomView.imgView.frame.size.height*3);
-    UIImage *thumImg =[[MNGetPhotoAlbums shareManager] firstFrameWithVideoURL:videoPath size:imgSize];
-    self.bottomView.imgView.image = [thumImg imageWithRect:imgSize];
-    [self.bottomView.activityIndicator stopAnimating];
+//    CGSize imgSize = CGSizeMake(self.bottomView.imgView.frame.size.width*3, self.bottomView.imgView.frame.size.height*3);
+//    UIImage *thumImg =[[MNGetPhotoAlbums shareManager] firstFrameWithVideoURL:videoPath size:imgSize];
+//    self.bottomView.imgView.image = [thumImg imageWithRect:imgSize];
+//    [self.bottomView.activityIndicator stopAnimating];
     
     [self.gpuVideoCamera stopCameraCapture];
     [self.gpuVideoCamera removeInputsAndOutputs];
     [self.gpuVideoCamera removeAllTargets];
     [self setUpStillCamera];
     
-    [self.bottomView finishSaveVideo];
+    [self.camera finishSaveVideo];
 }
 
 - (void)showFilters:(id)filter Desc:(NSString *)desc

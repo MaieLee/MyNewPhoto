@@ -7,23 +7,17 @@
 //
 
 #import "BottomBarView.h"
-#import "DrawCyclesButton.h"
-#import "CyclesView.h"
 #import "UIImage+RoundCorner.h"
 #import "CameraFilterView.h"
 #import "GPUImage.h"
 #import "FilterSampleModel.h"
 #import "FilterManager.h"
-#import "MNImagePickerViewController.h"
-#import "MNGetPhotoAlbums.h"
-#import "CameraButtonView.h"
 
 @interface BottomBarView ()<CameraFilterViewDelegate>
-@property (nonatomic, strong) UIView *moView;
-@property (nonatomic, strong) CameraButtonView *camera;
 @property (nonatomic, strong) CameraFilterView *cameraFilterView;//自定义滤镜视图
 @property (nonatomic, strong) FilterManager *filterManager;
 @property (nonatomic, strong) NSMutableArray *filtersArray;
+@property (nonatomic, assign) BOOL isHadLoadCameraView;
 @end
 
 @implementation BottomBarView
@@ -31,56 +25,14 @@
     self = [super initWithFrame:frame];
     if (self) {
         [self setUpUI];
-        self.clipsToBounds = YES;
     }
     
     return self;
 }
 
 - (void)setUpUI{
-    UIView *moView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.frame.size.width, self.frame.size.height)];
-    [self addSubview:moView];
-    self.moView = moView;
-    
-    WEAKSELF
-    _camera = [[CameraButtonView alloc] initWithFrame:CGRectMake(0, self.frame.size.height - 110, 76, 76)];
-    [moView addSubview:_camera];
-    _camera.center = CGPointMake(moView.center.x, _camera.center.y);
-    _camera.takePicture = ^{
-        if (weakSelf.picBlock) {
-            weakSelf.picBlock();
-        }
-    };
-    _camera.takeVideo = ^(NSInteger cameraStatus) {
-        if (weakSelf.videoBlock) {
-            weakSelf.videoBlock(cameraStatus);
-        }
-    };
-    
-    CyclesView *cyclesView = [[CyclesView alloc] initWithFrame:CGRectMake(20, 0, 36, 36)];
-    [moView addSubview:cyclesView];
-    cyclesView.center = CGPointMake(cyclesView.center.x, _camera.center.y);
-    cyclesView.backgroundColor = mnColor(0, 0, 0, 0);
-    
-    [cyclesView addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(showPickerVc:)]];
-    
-    _imgView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 34, 34)];
-    [moView insertSubview:_imgView belowSubview:cyclesView];
-    _imgView.center = cyclesView.center;
-    
-    _activityIndicator = [[UIActivityIndicatorView alloc]initWithActivityIndicatorStyle:(UIActivityIndicatorViewStyleGray)];
-    [cyclesView addSubview:_activityIndicator];
-    _activityIndicator.frame = (CGRect){0,0,cyclesView.frame.size};
-    _activityIndicator.hidesWhenStopped = YES;
-    
-    UIButton *filterBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-    [filterBtn setBackgroundImage:[UIImage createFilterImage] forState:UIControlStateNormal];
-    [moView addSubview:filterBtn];
-    filterBtn.frame = CGRectMake(self.frame.size.width-60, 0, 40, 20);
-    filterBtn.center = CGPointMake(filterBtn.center.x, _camera.center.y);
-    
-    [filterBtn addTarget:self action:@selector(filtersAction:) forControlEvents:UIControlEventTouchUpInside];
-    
+    self.clipsToBounds = YES;
+    self.backgroundColor = [UIColor clearColor];
     [self setUpFsModels];
 }
 
@@ -117,11 +69,10 @@
         UICollectionViewFlowLayout *layout = [[UICollectionViewFlowLayout alloc] init];
         layout.scrollDirection = UICollectionViewScrollDirectionHorizontal;
         
-        _cameraFilterView = [[CameraFilterView alloc] initWithFrame:CGRectMake(0, -63, self.frame.size.width, 63) collectionViewLayout:layout];
+        _cameraFilterView = [[CameraFilterView alloc] initWithFrame:CGRectMake(0, 0, self.frame.size.width, 63) collectionViewLayout:layout];
         _cameraFilterView.cameraFilterDelegate = self;
         _cameraFilterView.picArray = self.filtersArray;
-        _cameraFilterView.backgroundColor = [UIColor whiteColor];
-        [self addSubview:_cameraFilterView];
+        _cameraFilterView.backgroundColor = [UIColor clearColor];
     }
     
     return _cameraFilterView;
@@ -146,56 +97,27 @@
     }
 }
 
-- (void)filtersAction:(UIButton *)sender
+- (void)show
 {
-    [sender setSelected:!sender.isSelected];
-    if (sender.isSelected) {
-        self.cameraFilterView.hidden = NO;
-        [UIView animateWithDuration:0.1 delay:0.2 options:0 animations:^{
-            self.cameraFilterView.transform = CGAffineTransformMakeTranslation(0, 70);
-            self.moView.transform = CGAffineTransformMakeTranslation(0, 28);
-            self.camera.transform = CGAffineTransformMakeScale(0.85, 0.85);
-        } completion:^(BOOL finished) {
-            
-        }];
-    }else{
-        [UIView animateWithDuration:0.1 delay:0.2 options:0 animations:^{
-            self.cameraFilterView.transform = CGAffineTransformMakeTranslation(0, -70);
-            self.moView.transform = CGAffineTransformMakeTranslation(0, 0);
-            self.camera.transform = CGAffineTransformMakeScale(1, 1);
-        } completion:^(BOOL finished) {
-            self.cameraFilterView.hidden = YES;
-        }];
+    if (!self.isHadLoadCameraView) {
+        self.isHadLoadCameraView = YES;
+        [self addSubview:self.cameraFilterView];
     }
+    
+    self.hidden = NO;
+    [UIView animateWithDuration:0.1 delay:0.2 options:0 animations:^{
+        self.transform = CGAffineTransformMakeTranslation(0, -63);
+    } completion:^(BOOL finished) {
+    }];
 }
 
-- (void)startVideoRecord
+- (void)hide
 {
-    [self.camera startRecord];
-}
-
-- (void)finishSavePic
-{
-    [self.camera finishSavePic];
-}
-
-- (void)finishSaveVideo
-{
-    [self.camera finishSaveVideo];
-}
-
-- (void)showPickerVc:(id)recognizer{
-    if ([MNGetPhotoAlbums authorizationStatus] == 2) { // 已被拒绝，没有相册权限，将无法保存拍的照片
-        UIAlertView * alert = [[UIAlertView alloc]initWithTitle:@"无法访问相册" message:@"请在iPhone的""设置-隐私-相册""中允许访问相册" delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"设置", nil];
-        [alert show];
-    } else if ([MNGetPhotoAlbums authorizationStatus] == 0) { // 未请求过相册权限
-        [[MNGetPhotoAlbums shareManager] requestAuthorizationWithCompletion:^{
-            [self showPickerVc:nil];
-        }];
-    }else{
-        MNImagePickerViewController *imagePickerVc = [[MNImagePickerViewController alloc] init];
-        [self.parentVC presentViewController:imagePickerVc animated:YES completion:nil];
-    }
+    [UIView animateWithDuration:0.1 delay:0.2 options:0 animations:^{
+        self.transform = CGAffineTransformMakeTranslation(0, 0);
+    } completion:^(BOOL finished) {
+        self.hidden = YES;
+    }];
 }
 
 @end

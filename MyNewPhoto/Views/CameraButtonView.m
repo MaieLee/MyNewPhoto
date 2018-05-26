@@ -37,14 +37,14 @@
 }
 
 - (void)setUpUI{
-    _bgSolidCircleView = [[MNSolidCircleView alloc] initWithFrame:CGRectMake(0, 0, self.frame.size.width, self.frame.size.height) BgColor:mnColor(0, 0, 0, 0.2)];
+    _bgSolidCircleView = [[MNSolidCircleView alloc] initWithFrame:CGRectMake(0, 0, self.frame.size.width, self.frame.size.height) BgColor:mnColor(1, 1, 1, 0.3)];
     [self addSubview:_bgSolidCircleView];
     
     _circleView = [[MNCircleView alloc] initWithFrame:CGRectMake(0, 0, self.frame.size.width, self.frame.size.height)];
     [self addSubview:_circleView];
     
     CGSize selfSize = self.frame.size;
-    CGFloat upSolidW = selfSize.width - 20;
+    CGFloat upSolidW = selfSize.width - 24;
     _upSolidCircleView = [[MNSolidCircleView alloc] initWithFrame:CGRectMake((selfSize.width-upSolidW)/2, (selfSize.width-upSolidW)/2, upSolidW, upSolidW) BgColor:[UIColor whiteColor]];
     [self addSubview:_upSolidCircleView];
 }
@@ -91,6 +91,7 @@
     [UIView animateWithDuration:0.2 animations:^{
         self.upSolidCircleView.transform = CGAffineTransformMakeScale(0.8, 0.8);
     } completion:^(BOOL finished) {
+        self.upSolidCircleView.transform = CGAffineTransformMakeScale(1, 1);
         if (self.takePicture) {
             self.takePicture();
         }
@@ -98,7 +99,7 @@
 }
 
 - (void)finishSavePic{
-    self.upSolidCircleView.transform = CGAffineTransformMakeScale(1, 1);
+//    self.upSolidCircleView.transform = CGAffineTransformMakeScale(1, 1);
 }
 
 - (void)takeVideo:(UILongPressGestureRecognizer *)renderer{
@@ -116,14 +117,14 @@
 - (void)startRecord{
     [UIView animateWithDuration:0.2 animations:^{
         self.bgSolidCircleView.transform = CGAffineTransformMakeScale(1.2, 1.2);
-        self.upSolidCircleView.transform = CGAffineTransformMakeScale(0.5, 0.5);
+        self.upSolidCircleView.transform = CGAffineTransformMakeScale(0.6, 0.6);
         self.circleView.transform = CGAffineTransformMakeScale(1.2, 1.2);
     } completion:^(BOOL finished) {
         if (self.takeVideo) {
             self.takeVideo(1);
         }
         
-        NSTimeInterval timeInterval = 0.2f;
+        NSTimeInterval timeInterval = 0.15f;
         self.recordStartTime = [NSDate date];
         self.recordTimer = [NSTimer scheduledTimerWithTimeInterval:timeInterval
                                                        target:self

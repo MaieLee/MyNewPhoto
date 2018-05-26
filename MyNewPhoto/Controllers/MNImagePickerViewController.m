@@ -38,7 +38,7 @@ static NSString *const collectCellIdentf = @"collectionCell";
     _headerView = [[ImgHeaderView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 68)];
     WEAKSELF
     _headerView.backBlock = ^{
-        [weakSelf dismissViewControllerAnimated:YES completion:nil];
+        [weakSelf.navigationController popViewControllerAnimated:YES];
     };
     _headerView.titleBlock = ^(BOOL isShowTitle){
         [weakSelf showPicCollectView:isShowTitle];

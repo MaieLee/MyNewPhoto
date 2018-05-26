@@ -1081,6 +1081,7 @@
 			baseConfigurationReference = F2B2517B06B0B5686E9676E8 /* Pods-MyNewPhoto.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = NUUHR5LBN2;
 				GCC_PREFIX_HEADER = MyNewPhoto/Macros/PrefixHeader.pch;
@@ -1098,6 +1099,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.cardlan.realm.work.MyNewPhoto;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
@@ -1107,6 +1109,7 @@
 			baseConfigurationReference = 1312EE20BA627F33388B0604 /* Pods-MyNewPhoto.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = NUUHR5LBN2;
 				GCC_PREFIX_HEADER = MyNewPhoto/Macros/PrefixHeader.pch;
@@ -1124,6 +1127,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.cardlan.realm.work.MyNewPhoto;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
