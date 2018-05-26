@@ -17,6 +17,7 @@
 @property (nonatomic, strong) MNSolidCircleView *upSolidCircleView;
 @property (nonatomic, strong) NSTimer *recordTimer;
 @property (nonatomic, strong) NSDate *recordStartTime;
+@property (nonatomic, assign) BOOL isEndRecord;
 
 @property (nonatomic, strong) UITapGestureRecognizer *tapGesture;
 @property (nonatomic, strong) UILongPressGestureRecognizer *longGesture;
@@ -105,6 +106,7 @@
 - (void)takeVideo:(UILongPressGestureRecognizer *)renderer{
     if (renderer.state == UIGestureRecognizerStateBegan) {
         NSLog(@"长按手势开启");
+        self.isEndRecord = NO;
         if (self.takeVideo) {
             self.takeVideo(0);
         }
@@ -124,7 +126,7 @@
             self.takeVideo(1);
         }
         
-        NSTimeInterval timeInterval = 0.15f;
+        NSTimeInterval timeInterval = 0.1f;
         self.recordStartTime = [NSDate date];
         self.recordTimer = [NSTimer scheduledTimerWithTimeInterval:timeInterval
                                                        target:self
@@ -149,6 +151,12 @@
 
 - (void)stopRecord
 {
+    if (self.isEndRecord) {
+        return;
+    }
+    
+    self.isEndRecord = YES;
+    
     [self.recordTimer invalidate];
     self.recordTimer = nil;
     

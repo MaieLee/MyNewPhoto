@@ -34,6 +34,7 @@ typedef NS_ENUM(NSInteger, CameraManagerFlashMode) {
 @property (nonatomic, strong) GPUImageStillCamera *gpuStillCamera;
 @property (nonatomic, strong) GPUImageVideoCamera *gpuVideoCamera;
 @property (nonatomic, strong) GPUImageBeautifyFilter *beautifyFilter;
+@property (nonatomic, strong) id selFilter;
 @property (nonatomic, strong) CameraButtonView *camera;
 @property (nonatomic, strong) BottomBarView *bottomView;
 @property (nonatomic, assign) CGFloat beginGestureScale;//开始的缩放比例
@@ -94,10 +95,12 @@ typedef NS_ENUM(NSInteger, CameraManagerFlashMode) {
         }
     };
     
-    
-    _bottomView = [[BottomBarView alloc] initWithFrame:CGRectMake(0, viewFrame.size.height+63, viewFrame.size.width, 63)];
-    _bottomView.hidden = YES;
+    _bottomView = [[BottomBarView alloc] initWithFrame:CGRectMake(0, viewFrame.size.height-63, viewFrame.size.width, 63)];
     [self.view addSubview:_bottomView];
+    _bottomView.transform = CGAffineTransformMakeTranslation(0, 63);
+    _bottomView.filterBlock = ^(id filter, NSString *desc) {
+        [weakSelf showFilters:filter Desc:desc];
+    };
     
     self.lblDesc = [UILabel new];
     self.lblDesc.font = mnFont(26);
@@ -130,15 +133,18 @@ typedef NS_ENUM(NSInteger, CameraManagerFlashMode) {
 
 - (void)preFilter{
     self.beautifyFilter = [[GPUImageBeautifyFilter alloc] init];
+//    GPUImageExposureFilter *missEtikate = [[GPUImageExposureFilter alloc] init];
+//    missEtikate.exposure = 0;
+    self.selFilter = self.beautifyFilter;
 }
 
 - (void)setUpStillCamera{
     self.isTakeVideo = NO;
     [self.gpuStillCamera removeAllTargets];
-    [self.beautifyFilter removeAllTargets];
+    [self.selFilter removeAllTargets];
     
-    [self.gpuStillCamera addTarget:self.beautifyFilter];
-    [self.beautifyFilter addTarget:self.gpuImageView];
+    [self.gpuStillCamera addTarget:self.selFilter];
+    [self.selFilter addTarget:self.gpuImageView];
     
     dispatch_async(dispatch_get_main_queue(), ^{
         [self.gpuStillCamera startCameraCapture];
@@ -147,7 +153,7 @@ typedef NS_ENUM(NSInteger, CameraManagerFlashMode) {
 
 - (GPUImageStillCamera *)gpuStillCamera{
     if (_gpuStillCamera == nil) {
-        _gpuStillCamera = [[GPUImageStillCamera alloc] initWithSessionPreset:AVCaptureSessionPreset1280x720 cameraPosition:AVCaptureDevicePositionBack];
+        _gpuStillCamera = [[GPUImageStillCamera alloc] initWithSessionPreset:AVCaptureSessionPresetHigh cameraPosition:AVCaptureDevicePositionBack];
         _gpuStillCamera.outputImageOrientation = UIInterfaceOrientationPortrait;
         _gpuStillCamera.horizontallyMirrorFrontFacingCamera = YES;
         _gpuStillCamera.horizontallyMirrorRearFacingCamera  = NO;
@@ -158,10 +164,10 @@ typedef NS_ENUM(NSInteger, CameraManagerFlashMode) {
 
 - (void)setUpVideoCamera{
     [self.gpuVideoCamera removeAllTargets];
-    [self.beautifyFilter removeAllTargets];
+    [self.selFilter removeAllTargets];
     
-    [self.gpuVideoCamera addTarget:self.beautifyFilter];
-    [self.beautifyFilter addTarget:self.gpuImageView];
+    [self.gpuVideoCamera addTarget:self.selFilter];
+    [self.selFilter addTarget:self.gpuImageView];
     
     [self.gpuVideoCamera startCameraCapture];
     
@@ -182,14 +188,10 @@ typedef NS_ENUM(NSInteger, CameraManagerFlashMode) {
 
 - (void)handleSwipeFrom:(UISwipeGestureRecognizer *)recognizer{
     if(recognizer.direction == UISwipeGestureRecognizerDirectionUp) {
-        if (self.bottomView.hidden) {
-            [self.bottomView show];
-        }
+        [self.bottomView show];
     }
     if(recognizer.direction == UISwipeGestureRecognizerDirectionDown) {
-        if (!self.bottomView.hidden) {
-            [self.bottomView hide];
-        }
+        [self.bottomView hide];
     }
     if(recognizer.direction == UISwipeGestureRecognizerDirectionLeft) {
         [self showPickerVc];
@@ -394,19 +396,15 @@ typedef NS_ENUM(NSInteger, CameraManagerFlashMode) {
 }
 
 - (void)takePicture{
-//    [self.bottomView.activityIndicator startAnimating];
-
-    [self.gpuStillCamera capturePhotoAsImageProcessedUpToFilter:self.beautifyFilter withCompletionHandler:^(UIImage *processedImage, NSError *error) {
-        UIImageWriteToSavedPhotosAlbum(processedImage, self, @selector(saveImage:didFinishSavingWithError:contextInfo:), nil);
+    [self.gpuStillCamera capturePhotoAsImageProcessedUpToFilter:self.selFilter withCompletionHandler:^(UIImage *processedImage, NSError *error) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            UIImageWriteToSavedPhotosAlbum(processedImage, self, @selector(saveImage:didFinishSavingWithError:contextInfo:), nil);
+        });
     }];
 }
 
 - (void)saveImage:(UIImage *)image didFinishSavingWithError:(NSError *)error contextInfo:(void *)contextInfo{
-//    CGSize imgSize = CGSizeMake(self.bottomView.imgView.frame.size.width*3, self.bottomView.imgView.frame.size.height*3);
-//    UIImage *thumImg = [UIImage thumbnailWithImage:image size:imgSize];
-//    self.bottomView.imgView.image = [thumImg imageWithRect:imgSize];
-//    [self.bottomView.activityIndicator stopAnimating];
-    
+
     [self.camera finishSavePic];
     
     if(!error) {
@@ -432,7 +430,7 @@ typedef NS_ENUM(NSInteger, CameraManagerFlashMode) {
 
     movieWriter.encodingLiveVideo = YES;
     movieWriter.shouldPassthroughAudio = YES;
-    [self.beautifyFilter addTarget:movieWriter];
+    [self.selFilter addTarget:movieWriter];
     self.gpuVideoCamera.audioEncodingTarget = movieWriter;
     [movieWriter startRecording];
 }}
@@ -442,19 +440,14 @@ typedef NS_ENUM(NSInteger, CameraManagerFlashMode) {
         return;
     }
     self.gpuVideoCamera.audioEncodingTarget = nil;
-    NSLog(@"Path %@",pathToMovie);
-//    [self.bottomView.activityIndicator startAnimating];
+
     UISaveVideoAtPathToSavedPhotosAlbum(pathToMovie, self, @selector(saveVideo:didFinishSavingWithError:contextInfo:), nil);
     [movieWriter finishRecording];
-    [self.beautifyFilter removeTarget:movieWriter];
+    [self.selFilter removeTarget:movieWriter];
 }
 
 - (void)saveVideo:(NSString *)videoPath didFinishSavingWithError:(NSError *)error
   contextInfo:(void *)contextInfo {
-//    CGSize imgSize = CGSizeMake(self.bottomView.imgView.frame.size.width*3, self.bottomView.imgView.frame.size.height*3);
-//    UIImage *thumImg =[[MNGetPhotoAlbums shareManager] firstFrameWithVideoURL:videoPath size:imgSize];
-//    self.bottomView.imgView.image = [thumImg imageWithRect:imgSize];
-//    [self.bottomView.activityIndicator stopAnimating];
     
     [self.gpuVideoCamera stopCameraCapture];
     [self.gpuVideoCamera removeInputsAndOutputs];
@@ -467,14 +460,15 @@ typedef NS_ENUM(NSInteger, CameraManagerFlashMode) {
 - (void)showFilters:(id)filter Desc:(NSString *)desc
 {
     [self.gpuStillCamera removeAllTargets];
-    [self.beautifyFilter removeAllTargets];
+    [self.selFilter removeAllTargets];
     
     GPUImageBilateralFilter *bilateralFilter = [[GPUImageBilateralFilter alloc] init];
     bilateralFilter.distanceNormalizationFactor = 9.0;
     
-    [self.gpuStillCamera addTarget:filter];
-    [filter addTarget:bilateralFilter];
-    [bilateralFilter addTarget:self.gpuImageView];
+    [self.gpuStillCamera addTarget:bilateralFilter];
+    [bilateralFilter addTarget:filter];
+    [filter addTarget:self.gpuImageView];
+    self.selFilter = filter;
     
     self.lblDesc.hidden = NO;
     self.lblDesc.text = desc;

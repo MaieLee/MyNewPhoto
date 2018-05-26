@@ -104,9 +104,8 @@
         [self addSubview:self.cameraFilterView];
     }
     
-    self.hidden = NO;
     [UIView animateWithDuration:0.1 delay:0.2 options:0 animations:^{
-        self.transform = CGAffineTransformMakeTranslation(0, -63);
+        self.transform = CGAffineTransformMakeTranslation(0, 0);
     } completion:^(BOOL finished) {
     }];
 }
@@ -114,9 +113,9 @@
 - (void)hide
 {
     [UIView animateWithDuration:0.1 delay:0.2 options:0 animations:^{
-        self.transform = CGAffineTransformMakeTranslation(0, 0);
+        self.transform = CGAffineTransformMakeTranslation(0, 63);
     } completion:^(BOOL finished) {
-        self.hidden = YES;
+//        self.hidden = YES;
     }];
 }
 
