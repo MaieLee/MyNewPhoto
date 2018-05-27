@@ -171,7 +171,7 @@
      PHImageRequestOptionsResizeModeFast, //根据传入的size，迅速加载大小相匹配(略大于或略小于)的图像
      PHImageRequestOptionsResizeModeExact //精确的加载与传入size相匹配的图像
      */
-    option.resizeMode = PHImageRequestOptionsResizeModeFast;
+    option.resizeMode = PHImageRequestOptionsResizeModeNone;
     option.networkAccessAllowed = YES;
     option.synchronous = NO;
     //param：targetSize 即你想要的图片尺寸，若想要原尺寸则可输入PHImageManagerMaximumSize

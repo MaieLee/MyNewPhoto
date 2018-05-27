@@ -42,6 +42,7 @@ typedef NS_ENUM(NSInteger, CameraManagerFlashMode) {
 @property (nonatomic, assign) CameraManagerFlashMode flashMode;
 @property (nonatomic, strong) UILabel *lblDesc;
 @property (nonatomic, assign) BOOL isTakeVideo;
+@property (nonatomic, assign) BOOL isHadStopCamera;
 @end
 
 @implementation MainViewController
@@ -57,8 +58,12 @@ typedef NS_ENUM(NSInteger, CameraManagerFlashMode) {
 
 - (void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
-    
     [self.navigationController setNavigationBarHidden:YES animated:YES];
+
+    if (self.isHadStopCamera) {
+        [self.gpuStillCamera startCameraCapture];
+        self.isHadStopCamera = NO;
+    }
 }
 
 - (void)setUpUI{
@@ -187,6 +192,10 @@ typedef NS_ENUM(NSInteger, CameraManagerFlashMode) {
 }
 
 - (void)handleSwipeFrom:(UISwipeGestureRecognizer *)recognizer{
+    if (self.isTakeVideo) {
+        return;
+    }
+    
     if(recognizer.direction == UISwipeGestureRecognizerDirectionUp) {
         [self.bottomView show];
         [UIView animateWithDuration:0.2 animations:^{
@@ -204,6 +213,8 @@ typedef NS_ENUM(NSInteger, CameraManagerFlashMode) {
         }];
     }
     if(recognizer.direction == UISwipeGestureRecognizerDirectionLeft) {
+        [self.gpuStillCamera stopCameraCapture];
+        self.isHadStopCamera = YES;
         [self showPickerVc];
     }
 }
