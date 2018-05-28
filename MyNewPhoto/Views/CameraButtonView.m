@@ -16,12 +16,12 @@
 @property (nonatomic, strong) MNCircleView *circleView;
 @property (nonatomic, strong) MNSolidCircleView *upSolidCircleView;
 @property (nonatomic, strong) NSTimer *recordTimer;
-@property (nonatomic, strong) NSDate *recordStartTime;
+//@property (nonatomic, strong) NSDate *recordStartTime;
 @property (nonatomic, assign) BOOL isEndRecord;
+@property (nonatomic, assign) BOOL isHadStartRecord;//已经开始录制
 
 @property (nonatomic, strong) UITapGestureRecognizer *tapGesture;
 @property (nonatomic, strong) UILongPressGestureRecognizer *longGesture;
-
 @end
 
 @implementation CameraButtonView
@@ -117,17 +117,18 @@
 }
 
 - (void)startRecord{
+    self.isHadStartRecord = YES;
     [UIView animateWithDuration:0.2 animations:^{
-        self.bgSolidCircleView.transform = CGAffineTransformMakeScale(1.2, 1.2);
-        self.upSolidCircleView.transform = CGAffineTransformMakeScale(0.6, 0.6);
-        self.circleView.transform = CGAffineTransformMakeScale(1.2, 1.2);
+        self.bgSolidCircleView.transform = CGAffineTransformMakeScale(1.6, 1.6);
+        self.upSolidCircleView.transform = CGAffineTransformMakeScale(0.75, 0.75);
+        self.circleView.transform = CGAffineTransformMakeScale(1.6, 1.6);
     } completion:^(BOOL finished) {
         if (self.takeVideo) {
             self.takeVideo(1);
         }
         
         NSTimeInterval timeInterval = 0.1f;
-        self.recordStartTime = [NSDate date];
+//        self.recordStartTime = [NSDate date];
         self.recordTimer = [NSTimer scheduledTimerWithTimeInterval:timeInterval
                                                        target:self
                                                      selector:@selector(updateProgress)
@@ -138,9 +139,9 @@
 
 - (void)updateProgress
 {
-    NSDate *nowDate = [NSDate date];
-    NSTimeInterval time = [nowDate timeIntervalSinceDate:self.recordStartTime];
-    NSLog(@"timeInterval:%f",time);
+//    NSDate *nowDate = [NSDate date];
+//    NSTimeInterval time = [nowDate timeIntervalSinceDate:self.recordStartTime];
+//    NSLog(@"timeInterval:%f",time);
     
     self.circleView.progress += 0.01;
     
@@ -151,10 +152,14 @@
 
 - (void)stopRecord
 {
+    if (!self.isHadStartRecord) {
+        return;
+    }
+    self.isHadStartRecord = NO;
+    
     if (self.isEndRecord) {
         return;
     }
-    
     self.isEndRecord = YES;
     
     [self.recordTimer invalidate];

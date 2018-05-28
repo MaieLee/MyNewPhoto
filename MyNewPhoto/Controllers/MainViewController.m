@@ -23,7 +23,7 @@ typedef NS_ENUM(NSInteger, CameraManagerFlashMode) {
     CameraManagerFlashModeOn /**<打开*/
 };
 
-@interface MainViewController ()<UIGestureRecognizerDelegate,CAAnimationDelegate>
+@interface MainViewController ()<UIGestureRecognizerDelegate,CAAnimationDelegate,UIAlertViewDelegate>
 {
     CALayer *_focusLayer; //聚焦层
     NSString *pathToMovie;
@@ -230,6 +230,17 @@ typedef NS_ENUM(NSInteger, CameraManagerFlashMode) {
     }else{
         MNImagePickerViewController *imagePickerVc = [[MNImagePickerViewController alloc] init];
         [self.navigationController pushViewController:imagePickerVc animated:YES];
+    }
+}
+
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    if (buttonIndex == 1) {
+        NSURL *url = [NSURL URLWithString:UIApplicationOpenSettingsURLString];
+        if ([ [UIApplication sharedApplication] canOpenURL:url])
+        {
+            [[UIApplication sharedApplication] openURL:url];
+        }
     }
 }
 
@@ -443,7 +454,7 @@ typedef NS_ENUM(NSInteger, CameraManagerFlashMode) {
 - (void)startVideoRecording{
 {
     self.isTakeVideo = YES;
-    pathToMovie = [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/Movie.m4v"];
+    pathToMovie = [NSTemporaryDirectory() stringByAppendingPathComponent:@"Movie.m4v"];
     // If a file already exists, AVAssetWriter won't let you record new frames, so delete the old movie
     unlink([pathToMovie UTF8String]);
     NSURL *movieURL = [NSURL fileURLWithPath:pathToMovie];
@@ -475,6 +486,7 @@ typedef NS_ENUM(NSInteger, CameraManagerFlashMode) {
     [self.gpuVideoCamera removeAllTargets];
     [self setUpStillCamera];
     
+    self.isTakeVideo = NO;
     [self.cameraBtn finishSaveVideo];
 }
 
