@@ -11,6 +11,7 @@
 		342EB0CA209C3CB3006F762B /* CyclesView.m in Sources */ = {isa = PBXBuildFile; fileRef = 342EB0C9209C3CB3006F762B /* CyclesView.m */; };
 		3432591920AD652D00C11FFE /* MNPictrueCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 3432591820AD652D00C11FFE /* MNPictrueCollectionViewCell.m */; };
 		3432591C20AD6F0000C11FFE /* PicCollectTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 3432591B20AD6F0000C11FFE /* PicCollectTableViewCell.m */; };
+		3441B8C720BD53BB001D64BA /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 3441B8C620BD53BB001D64BA /* InfoPlist.strings */; };
 		3446A7E220B26D88002BAC6E /* SysPictureModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 3446A7E120B26D88002BAC6E /* SysPictureModel.m */; };
 		3470A85420994DD1003972FD /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 3470A85320994DD1003972FD /* AppDelegate.m */; };
 		3470A85720994DD1003972FD /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3470A85620994DD1003972FD /* ViewController.m */; };
@@ -152,6 +153,7 @@
 		3432591820AD652D00C11FFE /* MNPictrueCollectionViewCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MNPictrueCollectionViewCell.m; sourceTree = "<group>"; };
 		3432591A20AD6F0000C11FFE /* PicCollectTableViewCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PicCollectTableViewCell.h; sourceTree = "<group>"; };
 		3432591B20AD6F0000C11FFE /* PicCollectTableViewCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PicCollectTableViewCell.m; sourceTree = "<group>"; };
+		3441B8C620BD53BB001D64BA /* InfoPlist.strings */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; path = InfoPlist.strings; sourceTree = "<group>"; };
 		3446A7E020B26D88002BAC6E /* SysPictureModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SysPictureModel.h; sourceTree = "<group>"; };
 		3446A7E120B26D88002BAC6E /* SysPictureModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SysPictureModel.m; sourceTree = "<group>"; };
 		3470A84F20994DD1003972FD /* MyNewPhoto.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MyNewPhoto.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -533,6 +535,7 @@
 				3470A85820994DD1003972FD /* Main.storyboard */,
 				3470A85D20994DD4003972FD /* LaunchScreen.storyboard */,
 				3470A86120994DD4003972FD /* main.m */,
+				3441B8C620BD53BB001D64BA /* InfoPlist.strings */,
 			);
 			path = AppInfo;
 			sourceTree = "<group>";
@@ -768,6 +771,7 @@
 				3472098E20A9767D009A8DB9 /* toasterOverlayMapWarm.png in Resources */,
 				3472097520A9767D009A8DB9 /* earlyBirdCurves.png in Resources */,
 				3472098620A9767D009A8DB9 /* sierraVignette.png in Resources */,
+				3441B8C720BD53BB001D64BA /* InfoPlist.strings in Resources */,
 				3472096D20A9767D009A8DB9 /* amaroMap.png in Resources */,
 				3470A85A20994DD1003972FD /* Main.storyboard in Resources */,
 				3472098B20A9767D009A8DB9 /* toasterColorShift.png in Resources */,

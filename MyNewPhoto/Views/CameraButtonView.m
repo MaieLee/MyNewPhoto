@@ -38,7 +38,7 @@
 }
 
 - (void)setUpUI{
-    _bgSolidCircleView = [[MNSolidCircleView alloc] initWithFrame:CGRectMake(0, 0, self.frame.size.width, self.frame.size.height) BgColor:mnColor(1, 1, 1, 0.3)];
+    _bgSolidCircleView = [[MNSolidCircleView alloc] initWithFrame:CGRectMake(0, 0, self.frame.size.width, self.frame.size.height) BgColor:[UIColor colorWithRed:1.0 green:1.0 blue:1.0 alpha:0.3]];
     [self addSubview:_bgSolidCircleView];
     
     _circleView = [[MNCircleView alloc] initWithFrame:CGRectMake(0, 0, self.frame.size.width, self.frame.size.height)];

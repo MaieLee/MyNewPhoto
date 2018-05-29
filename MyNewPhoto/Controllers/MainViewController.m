@@ -174,9 +174,10 @@ typedef NS_ENUM(NSInteger, CameraManagerFlashMode) {
     [self.gpuVideoCamera addTarget:self.selFilter];
     [self.selFilter addTarget:self.gpuImageView];
     
-    [self.gpuVideoCamera startCameraCapture];
-    
-    [self.cameraBtn startRecord];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self.gpuVideoCamera startCameraCapture];
+        [self.cameraBtn startRecord];
+    });
 }
 
 - (GPUImageVideoCamera *)gpuVideoCamera{
@@ -447,8 +448,41 @@ typedef NS_ENUM(NSInteger, CameraManagerFlashMode) {
 }
 
 - (void)preVideoRecording{
-    [self.gpuStillCamera removeAllTargets];
-    [self setUpVideoCamera];
+
+    AVAuthorizationStatus authStatus = [AVCaptureDevice authorizationStatusForMediaType:AVMediaTypeAudio];
+    
+    if (authStatus == AVAuthorizationStatusDenied) {
+        NSDictionary *infoDictionary = [[NSBundle mainBundle] infoDictionary];
+        NSString *app_Name = [infoDictionary objectForKey:@"CFBundleDisplayName"];
+        NSString *message = [NSString stringWithFormat:@"%@需要访问您的麦克风,请在设置/隐私/麦克风中启用麦克风",app_Name];
+        UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"无法访问麦克风" message:message delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"设置", nil];
+        [alert show];
+    }else if(authStatus == AVAuthorizationStatusNotDetermined){
+        [self requestAuthorizationWithCompletion:^{
+            
+        }];
+    }else{
+        [self.gpuStillCamera removeAllTargets];
+        [self setUpVideoCamera];
+        
+        [self.bottomView hide];
+    }
+}
+
+- (void)requestAuthorizationWithCompletion:(void (^)(void))completion {
+    void (^callCompletionBlock)(void) = ^(){
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if (completion) {
+                completion();
+            }
+        });
+    };
+    
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        [AVCaptureDevice requestAccessForMediaType:AVMediaTypeAudio completionHandler:^(BOOL granted) {
+            callCompletionBlock();
+        }];
+    });
 }
 
 - (void)startVideoRecording{
@@ -458,7 +492,7 @@ typedef NS_ENUM(NSInteger, CameraManagerFlashMode) {
     // If a file already exists, AVAssetWriter won't let you record new frames, so delete the old movie
     unlink([pathToMovie UTF8String]);
     NSURL *movieURL = [NSURL fileURLWithPath:pathToMovie];
-    movieWriter = [[GPUImageMovieWriter alloc] initWithMovieURL:movieURL size:self.gpuImageView.frame.size];
+    movieWriter = [[GPUImageMovieWriter alloc] initWithMovieURL:movieURL size:CGSizeMake(720.0, 1280.0)];
 
     movieWriter.encodingLiveVideo = YES;
     movieWriter.shouldPassthroughAudio = YES;
@@ -473,8 +507,12 @@ typedef NS_ENUM(NSInteger, CameraManagerFlashMode) {
     }
     self.gpuVideoCamera.audioEncodingTarget = nil;
 
-    UISaveVideoAtPathToSavedPhotosAlbum(pathToMovie, self, @selector(saveVideo:didFinishSavingWithError:contextInfo:), nil);
-    [movieWriter finishRecording];
+    [movieWriter finishRecordingWithCompletionHandler:^{
+        dispatch_async(dispatch_get_main_queue(), ^{
+            UISaveVideoAtPathToSavedPhotosAlbum(self->pathToMovie, self, @selector(saveVideo:didFinishSavingWithError:contextInfo:), nil);
+        });
+    }];
+    
     [self.selFilter removeTarget:movieWriter];
 }
 
@@ -482,12 +520,11 @@ typedef NS_ENUM(NSInteger, CameraManagerFlashMode) {
   contextInfo:(void *)contextInfo {
     
     [self.gpuVideoCamera stopCameraCapture];
-    [self.gpuVideoCamera removeInputsAndOutputs];
     [self.gpuVideoCamera removeAllTargets];
     [self setUpStillCamera];
     
-    self.isTakeVideo = NO;
     [self.cameraBtn finishSaveVideo];
+    self.cameraBtn.transform = CGAffineTransformMakeTranslation(0,0);
 }
 
 - (void)showFilters:(id)filter Desc:(NSString *)desc

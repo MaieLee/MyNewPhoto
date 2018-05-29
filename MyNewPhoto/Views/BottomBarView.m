@@ -18,6 +18,7 @@
 @property (nonatomic, strong) FilterManager *filterManager;
 @property (nonatomic, strong) NSMutableArray *filtersArray;
 @property (nonatomic, assign) BOOL isHadLoadCameraView;
+@property (nonatomic, assign) BOOL isHadHide;
 @end
 
 @implementation BottomBarView
@@ -104,6 +105,7 @@
         [self addSubview:self.cameraFilterView];
     }
     
+    self.isHadHide = NO;
     [UIView animateWithDuration:0.2 animations:^{
         self.transform = CGAffineTransformMakeTranslation(0, 0);
     } completion:^(BOOL finished) {
@@ -112,10 +114,14 @@
 
 - (void)hide
 {
+    if (self.isHadHide) {
+        return;
+    }
+    
     [UIView animateWithDuration:0.2 animations:^{
         self.transform = CGAffineTransformMakeTranslation(0, 63);
     } completion:^(BOOL finished) {
-//        self.hidden = YES;
+        self.isHadHide = YES;
     }];
 }
 
