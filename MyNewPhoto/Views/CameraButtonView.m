@@ -19,6 +19,7 @@
 //@property (nonatomic, strong) NSDate *recordStartTime;
 @property (nonatomic, assign) BOOL isEndRecord;
 @property (nonatomic, assign) BOOL isHadStartRecord;//已经开始录制
+@property (nonatomic, assign) BOOL isLongPressEnd;//长按已经结束
 
 @property (nonatomic, strong) UITapGestureRecognizer *tapGesture;
 @property (nonatomic, strong) UILongPressGestureRecognizer *longGesture;
@@ -90,7 +91,7 @@
     NSLog(@"takePicture");
     
     [UIView animateWithDuration:0.2 animations:^{
-        self.upSolidCircleView.transform = CGAffineTransformMakeScale(0.8, 0.8);
+        self.upSolidCircleView.transform = CGAffineTransformMakeScale(0.7, 0.7);
     } completion:^(BOOL finished) {
         self.upSolidCircleView.transform = CGAffineTransformMakeScale(1, 1);
         if (self.takePicture) {
@@ -112,6 +113,7 @@
         }
     } else if (renderer.state == UIGestureRecognizerStateEnded){
         NSLog(@"长按手势结束");
+        self.isLongPressEnd = YES;
         [self stopRecord];
     }
 }
@@ -123,17 +125,23 @@
         self.upSolidCircleView.transform = CGAffineTransformMakeScale(0.75, 0.75);
         self.circleView.transform = CGAffineTransformMakeScale(1.6, 1.6);
     } completion:^(BOOL finished) {
-        if (self.takeVideo) {
-            self.takeVideo(1);
+        if (self.isLongPressEnd) {
+            if (self.takeVideo) {
+                self.takeVideo(3);
+            }
+            [self finishSaveVideo];
+        }else{
+            if (self.takeVideo) {
+                self.takeVideo(1);
+            }
+            
+            NSTimeInterval timeInterval = 0.1f;
+            self.recordTimer = [NSTimer scheduledTimerWithTimeInterval:timeInterval
+                                                                target:self
+                                                              selector:@selector(updateProgress)
+                                                              userInfo:nil
+                                                               repeats:YES];
         }
-        
-        NSTimeInterval timeInterval = 0.1f;
-//        self.recordStartTime = [NSDate date];
-        self.recordTimer = [NSTimer scheduledTimerWithTimeInterval:timeInterval
-                                                       target:self
-                                                     selector:@selector(updateProgress)
-                                                     userInfo:nil
-                                                      repeats:YES];
     }];
 }
 

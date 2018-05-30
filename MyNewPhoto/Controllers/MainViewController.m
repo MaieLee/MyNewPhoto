@@ -95,8 +95,12 @@ typedef NS_ENUM(NSInteger, CameraManagerFlashMode) {
             [weakSelf preVideoRecording];
         }else if (cameraStatus == 1) {
             [weakSelf startVideoRecording];
-        }else{
+        }else if (cameraStatus == 2) {
             [weakSelf stopVideoRecording];
+        }else if (cameraStatus == 3){
+            //还没开始录制长按手势已经结束
+            [weakSelf.gpuVideoCamera stopCameraCapture];
+            [weakSelf setUpStillCamera];
         }
     };
     
