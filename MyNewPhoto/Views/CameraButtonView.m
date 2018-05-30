@@ -108,6 +108,7 @@
     if (renderer.state == UIGestureRecognizerStateBegan) {
         NSLog(@"长按手势开启");
         self.isEndRecord = NO;
+        self.isLongPressEnd = NO;
         if (self.takeVideo) {
             self.takeVideo(0);
         }
