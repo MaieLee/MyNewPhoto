@@ -43,6 +43,10 @@ typedef NS_ENUM(NSInteger, CameraManagerFlashMode) {
 @property (nonatomic, strong) UILabel *lblDesc;
 @property (nonatomic, assign) BOOL isTakeVideo;
 @property (nonatomic, assign) BOOL isHadStopCamera;
+@property (nonatomic, assign) AVCaptureDevicePosition cameraPosition;//前置或者后置摄像头
+@property (nonatomic, strong) UIButton *flashBtn;
+@property (nonatomic, assign) BOOL isRefuseAccessAudio;
+
 @end
 
 @implementation MainViewController
@@ -51,9 +55,7 @@ typedef NS_ENUM(NSInteger, CameraManagerFlashMode) {
     [super viewDidLoad];
     self.view.backgroundColor = [UIColor whiteColor];
     
-    [self setUpUI];
-    [self preFilter];
-    [self setUpStillCamera];
+    [self checkoutCameraAuthority];
 }
 
 - (void)viewWillAppear:(BOOL)animated{
@@ -66,6 +68,27 @@ typedef NS_ENUM(NSInteger, CameraManagerFlashMode) {
     }
 }
 
+- (void)checkoutCameraAuthority{
+    AVAuthorizationStatus authStatus = [MNGetPhotoAlbums mediaAuthorizationStatus:AVMediaTypeVideo];
+    
+    if (authStatus == AVAuthorizationStatusDenied) {
+        NSString *app_Name = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleDisplayName"];
+        NSString *message = [NSString stringWithFormat:@"%@需要访问您的相机,请在设置/隐私/相机中允许访问相机",app_Name];
+        UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"无法访问相机" message:message delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"设置", nil];
+        alert.tag = 1001;
+        [alert show];
+    }else if(authStatus == AVAuthorizationStatusNotDetermined){
+        [[MNGetPhotoAlbums shareManager] requestAuthorizationWithType:AVMediaTypeVideo Completion:^{
+            [self checkoutCameraAuthority];
+        }];
+    }else{
+        [self setUpUI];
+        [self preFilter];
+        [self setUpStillCamera];
+        [self setupCameraFlash];
+    }
+}
+
 - (void)setUpUI{
     CGRect viewFrame = self.view.frame;
     self.gpuImageView = [[GPUImageView alloc] initWithFrame:CGRectMake(0, 0, viewFrame.size.width, viewFrame.size.height)];
@@ -74,14 +97,21 @@ typedef NS_ENUM(NSInteger, CameraManagerFlashMode) {
     
     [self addSwipeGesture];
     
+    UIButton *flashBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+    [flashBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    [flashBtn setImage:[UIImage imageNamed:@"flash_0"] forState:UIControlStateNormal];
+    flashBtn.frame = CGRectMake(10, 15, 60, 40);
+    [self.view addSubview:flashBtn];
+    [flashBtn addTarget:self action:@selector(changeFlashMode:) forControlEvents:UIControlEventTouchUpInside];
+    self.flashBtn = flashBtn;
+    
     UIButton *switchCameraBtn = [UIButton buttonWithType:UIButtonTypeCustom];
     [switchCameraBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-    [switchCameraBtn setTitle:@"切换镜头" forState:UIControlStateNormal];
+    [switchCameraBtn setImage:[UIImage imageNamed:@"switchcamera"] forState:UIControlStateNormal];
     switchCameraBtn.titleLabel.font = mnFont(14);
-    switchCameraBtn.frame = CGRectMake(viewFrame.size.width-80, 10, 60, 40);
+    switchCameraBtn.frame = CGRectMake(viewFrame.size.width-70, 15, 60, 40);
     [self.view addSubview:switchCameraBtn];
-    
-    [switchCameraBtn addTarget:self action:@selector(switchCamera) forControlEvents:UIControlEventTouchUpInside];
+    [switchCameraBtn addTarget:self action:@selector(switchCamera:) forControlEvents:UIControlEventTouchUpInside];
     
     WEAKSELF
     _cameraBtn = [[CameraButtonView alloc] initWithFrame:CGRectMake(0, viewFrame.size.height - 140, 87, 87)];
@@ -118,7 +148,10 @@ typedef NS_ENUM(NSInteger, CameraManagerFlashMode) {
     self.lblDesc.hidden = YES;
     
     [self setfocusImage:[UIImage createImageWithColor:[UIColor whiteColor] Size:CGSizeMake(60, 60)]];
-    
+    self.cameraPosition = AVCaptureDevicePositionBack;
+}
+
+- (void)setupCameraFlash{
     //初始化闪光灯模式为Auto
     [self setFlashMode:CameraManagerFlashModeAuto];
     //初始化开始及结束的缩放比例都为1.0
@@ -142,8 +175,6 @@ typedef NS_ENUM(NSInteger, CameraManagerFlashMode) {
 
 - (void)preFilter{
     self.beautifyFilter = [[GPUImageBeautifyFilter alloc] init];
-//    GPUImageExposureFilter *missEtikate = [[GPUImageExposureFilter alloc] init];
-//    missEtikate.exposure = 0;
     self.selFilter = self.beautifyFilter;
 }
 
@@ -155,7 +186,12 @@ typedef NS_ENUM(NSInteger, CameraManagerFlashMode) {
     [self.gpuStillCamera addTarget:self.selFilter];
     [self.selFilter addTarget:self.gpuImageView];
     
-    dispatch_async(dispatch_get_main_queue(), ^{
+    self.flashBtn.hidden = self.cameraPosition == AVCaptureDevicePositionBack?NO:YES;
+    
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        if (self.gpuStillCamera.cameraPosition != self.cameraPosition) {
+            [self.gpuStillCamera rotateCamera];
+        }
         [self.gpuStillCamera startCameraCapture];
     });
 }
@@ -178,19 +214,29 @@ typedef NS_ENUM(NSInteger, CameraManagerFlashMode) {
     [self.gpuVideoCamera addTarget:self.selFilter];
     [self.selFilter addTarget:self.gpuImageView];
     
-    dispatch_async(dispatch_get_main_queue(), ^{
+    if (self.gpuVideoCamera.cameraPosition != self.cameraPosition) {
+        [self.gpuVideoCamera rotateCamera];
+    }
+    
+    self.flashBtn.hidden = YES;
+    
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         [self.gpuVideoCamera startCameraCapture];
-        [self.cameraBtn startRecord];
+        dispatch_async(dispatch_get_main_queue(), ^{
+           [self.cameraBtn startRecord];
+        });
     });
 }
 
 - (GPUImageVideoCamera *)gpuVideoCamera{
     if (_gpuVideoCamera == nil) {
-        _gpuVideoCamera = [[GPUImageVideoCamera alloc] initWithSessionPreset:AVCaptureSessionPreset1280x720 cameraPosition:AVCaptureDevicePositionBack];
+        _gpuVideoCamera = [[GPUImageVideoCamera alloc] initWithSessionPreset:AVCaptureSessionPresetHigh cameraPosition:AVCaptureDevicePositionBack];
         _gpuVideoCamera.outputImageOrientation = UIInterfaceOrientationPortrait;
         _gpuVideoCamera.horizontallyMirrorFrontFacingCamera = YES;
         _gpuVideoCamera.horizontallyMirrorRearFacingCamera  = NO;
-        [_gpuVideoCamera addAudioInputsAndOutputs];
+        if (!self.isRefuseAccessAudio) {
+            [_gpuVideoCamera addAudioInputsAndOutputs];
+        }
     }
     
     return _gpuVideoCamera;
@@ -225,11 +271,14 @@ typedef NS_ENUM(NSInteger, CameraManagerFlashMode) {
 }
 
 - (void)showPickerVc{
-    if ([MNGetPhotoAlbums authorizationStatus] == 2) { // 已被拒绝，没有相册权限，将无法保存拍的照片
-        UIAlertView * alert = [[UIAlertView alloc]initWithTitle:@"无法访问相册" message:@"请在iPhone的""设置-隐私-相册""中允许访问相册" delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"设置", nil];
+    NSInteger AuthorizationStatus = [MNGetPhotoAlbums photoAuthorizationStatus];
+    if (AuthorizationStatus == 2) { // 已被拒绝，没有相册权限，将无法保存拍的照片
+        NSString *app_Name = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleDisplayName"];
+        NSString *message = [NSString stringWithFormat:@"%@需要访问您的相册,请在设置/隐私/相册中允许访问相册",app_Name];
+        UIAlertView * alert = [[UIAlertView alloc]initWithTitle:@"无法访问相册" message:message delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"设置", nil];
         [alert show];
-    } else if ([MNGetPhotoAlbums authorizationStatus] == 0) { // 未请求过相册权限
-        [[MNGetPhotoAlbums shareManager] requestAuthorizationWithCompletion:^{
+    } else if (AuthorizationStatus == 0) { // 未请求过相册权限
+        [[MNGetPhotoAlbums shareManager] requestAuthorizationWithType:@"photo" Completion:^{
             [self showPickerVc];
         }];
     }else{
@@ -240,6 +289,13 @@ typedef NS_ENUM(NSInteger, CameraManagerFlashMode) {
 
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
 {
+    if (buttonIndex == 0) {
+        if (alertView.tag == 1002) {
+            self.isRefuseAccessAudio = YES;
+            return;
+        }
+    }
+    
     if (buttonIndex == 1) {
         NSURL *url = [NSURL URLWithString:UIApplicationOpenSettingsURLString];
         if ([ [UIApplication sharedApplication] canOpenURL:url])
@@ -249,10 +305,14 @@ typedef NS_ENUM(NSInteger, CameraManagerFlashMode) {
     }
 }
 
-- (void)switchCamera{
+- (void)switchCamera:(UIButton *)button{
+    button.selected = !button.isSelected;
+    self.cameraPosition = button.selected?AVCaptureDevicePositionFront:AVCaptureDevicePositionBack;
+    
     if (self.isTakeVideo) {
         [self.gpuVideoCamera rotateCamera];
     }else{
+        self.flashBtn.hidden = button.selected;
         [self.gpuStillCamera rotateCamera];
     }
 }
@@ -277,7 +337,6 @@ typedef NS_ENUM(NSInteger, CameraManagerFlashMode) {
     layer.hidden = YES;
     [self.gpuImageView.layer addSublayer:layer];
     _focusLayer = layer;
-    
 }
 
 //调整焦距方法
@@ -295,8 +354,7 @@ typedef NS_ENUM(NSInteger, CameraManagerFlashMode) {
     if([self.gpuStillCamera.inputCamera lockForConfiguration:&error]){
         [self.gpuStillCamera.inputCamera setVideoZoomFactor:self.effectiveScale];
         [self.gpuStillCamera.inputCamera unlockForConfiguration];
-    }
-    else {
+    }else {
         NSLog(@"ERROR = %@", error);
     }
     
@@ -414,17 +472,17 @@ typedef NS_ENUM(NSInteger, CameraManagerFlashMode) {
 #pragma mark 改变闪光灯状态
 - (void)changeFlashMode:(UIButton *)button {
     switch (self.flashMode) {
-        case CameraManagerFlashModeAuto:
-            self.flashMode = CameraManagerFlashModeOn;
-            [button setImage:[UIImage imageNamed:@"flashing_on"] forState:UIControlStateNormal];
-            break;
         case CameraManagerFlashModeOff:
             self.flashMode = CameraManagerFlashModeAuto;
-            [button setImage:[UIImage imageNamed:@"flashing_auto"] forState:UIControlStateNormal];
+            [button setImage:[UIImage imageNamed:@"flash_0"] forState:UIControlStateNormal];
+            break;
+        case CameraManagerFlashModeAuto:
+            self.flashMode = CameraManagerFlashModeOn;
+            [button setImage:[UIImage imageNamed:@"flash_1"] forState:UIControlStateNormal];
             break;
         case CameraManagerFlashModeOn:
             self.flashMode = CameraManagerFlashModeOff;
-            [button setImage:[UIImage imageNamed:@"flashing_off"] forState:UIControlStateNormal];
+            [button setImage:[UIImage imageNamed:@"flash_2"] forState:UIControlStateNormal];
             break;
             
         default:
@@ -453,40 +511,22 @@ typedef NS_ENUM(NSInteger, CameraManagerFlashMode) {
 
 - (void)preVideoRecording{
 
-    AVAuthorizationStatus authStatus = [AVCaptureDevice authorizationStatusForMediaType:AVMediaTypeAudio];
+    AVAuthorizationStatus authStatus = [MNGetPhotoAlbums mediaAuthorizationStatus:AVMediaTypeAudio];
     
     if (authStatus == AVAuthorizationStatusDenied) {
-        NSDictionary *infoDictionary = [[NSBundle mainBundle] infoDictionary];
-        NSString *app_Name = [infoDictionary objectForKey:@"CFBundleDisplayName"];
+        NSString *app_Name = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleDisplayName"];
         NSString *message = [NSString stringWithFormat:@"%@需要访问您的麦克风,请在设置/隐私/麦克风中启用麦克风",app_Name];
-        UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"无法访问麦克风" message:message delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"设置", nil];
+        UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"无法访问麦克风" message:message delegate:self cancelButtonTitle:@"不需要" otherButtonTitles:@"设置", nil];
+        alert.tag = 1002;
         [alert show];
     }else if(authStatus == AVAuthorizationStatusNotDetermined){
-        [self requestAuthorizationWithCompletion:^{
-            
-        }];
+        [[MNGetPhotoAlbums shareManager] requestAuthorizationWithType:AVMediaTypeAudio Completion:nil];
     }else{
         [self.gpuStillCamera removeAllTargets];
         [self setUpVideoCamera];
         
         [self.bottomView hide];
     }
-}
-
-- (void)requestAuthorizationWithCompletion:(void (^)(void))completion {
-    void (^callCompletionBlock)(void) = ^(){
-        dispatch_async(dispatch_get_main_queue(), ^{
-            if (completion) {
-                completion();
-            }
-        });
-    };
-    
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        [AVCaptureDevice requestAccessForMediaType:AVMediaTypeAudio completionHandler:^(BOOL granted) {
-            callCompletionBlock();
-        }];
-    });
 }
 
 - (void)startVideoRecording{
@@ -533,13 +573,21 @@ typedef NS_ENUM(NSInteger, CameraManagerFlashMode) {
 
 - (void)showFilters:(id)filter Desc:(NSString *)desc
 {
-    [self.gpuStillCamera removeAllTargets];
+    if (!self.isTakeVideo) {
+        [self.gpuStillCamera removeAllTargets];
+    }else{
+        [self.gpuVideoCamera removeAllTargets];
+    }
     [self.selFilter removeAllTargets];
     
     GPUImageBilateralFilter *bilateralFilter = [[GPUImageBilateralFilter alloc] init];
     bilateralFilter.distanceNormalizationFactor = 9.0;
     
-    [self.gpuStillCamera addTarget:filter];
+    if (!self.isTakeVideo) {
+        [self.gpuStillCamera addTarget:filter];
+    }else{
+        [self.gpuVideoCamera addTarget:filter];
+    }
     [filter addTarget:bilateralFilter];
     [bilateralFilter addTarget:self.gpuImageView];
     self.selFilter = filter;

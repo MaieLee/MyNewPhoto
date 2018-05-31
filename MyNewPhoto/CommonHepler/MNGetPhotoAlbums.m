@@ -28,11 +28,15 @@
     return shareGetPhotoAlbumsManagerInstance;
 }
 
-+ (NSInteger)authorizationStatus {
++ (NSInteger)photoAuthorizationStatus {
     return [PHPhotoLibrary authorizationStatus];
 }
 
-- (void)requestAuthorizationWithCompletion:(void (^)(void))completion {
++ (NSInteger)mediaAuthorizationStatus:(AVMediaType)mediaType {
+    return [AVCaptureDevice authorizationStatusForMediaType:mediaType];
+}
+
+- (void)requestAuthorizationWithType:(NSString *)type Completion:(void (^)(void))completion {
     void (^callCompletionBlock)(void) = ^(){
         dispatch_async(dispatch_get_main_queue(), ^{
             if (completion) {
@@ -42,9 +46,15 @@
     };
     
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        [PHPhotoLibrary requestAuthorization:^(PHAuthorizationStatus status) {
-            callCompletionBlock();
-        }];
+        if ([type isEqualToString:@"photo"]) {
+            [PHPhotoLibrary requestAuthorization:^(PHAuthorizationStatus status) {
+                callCompletionBlock();
+            }];
+        }else{
+            [AVCaptureDevice requestAccessForMediaType:type completionHandler:^(BOOL granted) {
+                callCompletionBlock();
+            }];
+        }
     });
 }
 

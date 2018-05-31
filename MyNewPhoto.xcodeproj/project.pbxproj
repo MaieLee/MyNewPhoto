@@ -95,6 +95,7 @@
 		3480DF5720B79F0200289A08 /* CameraButtonView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3480DF5620B79F0200289A08 /* CameraButtonView.m */; };
 		3480DF5A20B7A57500289A08 /* MNCircleView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3480DF5920B7A57500289A08 /* MNCircleView.m */; };
 		3480DF5D20B7A68700289A08 /* MNSolidCircleView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3480DF5C20B7A68700289A08 /* MNSolidCircleView.m */; };
+		3482675320BFEBD100E17BEE /* ShowPicView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3482675220BFEBD100E17BEE /* ShowPicView.m */; };
 		34922BB0209BE4090009FEB5 /* BottomBarView.m in Sources */ = {isa = PBXBuildFile; fileRef = 34922BAC209BE4090009FEB5 /* BottomBarView.m */; };
 		34922BB1209BE4090009FEB5 /* ToolBarView.m in Sources */ = {isa = PBXBuildFile; fileRef = 34922BAF209BE4090009FEB5 /* ToolBarView.m */; };
 		349A982F20ABD1CF0064E2A1 /* MNImagePickerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 349A982E20ABD1CF0064E2A1 /* MNImagePickerViewController.m */; };
@@ -272,6 +273,8 @@
 		3480DF5920B7A57500289A08 /* MNCircleView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MNCircleView.m; sourceTree = "<group>"; };
 		3480DF5B20B7A68700289A08 /* MNSolidCircleView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MNSolidCircleView.h; sourceTree = "<group>"; };
 		3480DF5C20B7A68700289A08 /* MNSolidCircleView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MNSolidCircleView.m; sourceTree = "<group>"; };
+		3482675120BFEBD100E17BEE /* ShowPicView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ShowPicView.h; sourceTree = "<group>"; };
+		3482675220BFEBD100E17BEE /* ShowPicView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ShowPicView.m; sourceTree = "<group>"; };
 		34922BAC209BE4090009FEB5 /* BottomBarView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BottomBarView.m; sourceTree = "<group>"; };
 		34922BAD209BE4090009FEB5 /* BottomBarView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BottomBarView.h; sourceTree = "<group>"; };
 		34922BAE209BE4090009FEB5 /* ToolBarView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ToolBarView.h; sourceTree = "<group>"; };
@@ -611,6 +614,8 @@
 				3480DF5920B7A57500289A08 /* MNCircleView.m */,
 				3480DF5B20B7A68700289A08 /* MNSolidCircleView.h */,
 				3480DF5C20B7A68700289A08 /* MNSolidCircleView.m */,
+				3482675120BFEBD100E17BEE /* ShowPicView.h */,
+				3482675220BFEBD100E17BEE /* ShowPicView.m */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -866,6 +871,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3482675320BFEBD100E17BEE /* ShowPicView.m in Sources */,
 				3470A85720994DD1003972FD /* ViewController.m in Sources */,
 				34A8146420AAE1BB00971CBA /* PictureFilterViewController.m in Sources */,
 				3472093F20A972C8009A8DB9 /* GPUImageFourInputFilter.m in Sources */,

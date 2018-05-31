@@ -60,7 +60,7 @@
     self.tapGesture = tapGesture;
     
     UILongPressGestureRecognizer *longGesture = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(takeVideo:)];
-    longGesture.minimumPressDuration = 1;
+    longGesture.minimumPressDuration = 0.4;
     longGesture.allowableMovement = 100;
     longGesture.delegate = self;
     [self addGestureRecognizer:longGesture];
@@ -148,10 +148,6 @@
 
 - (void)updateProgress
 {
-//    NSDate *nowDate = [NSDate date];
-//    NSTimeInterval time = [nowDate timeIntervalSinceDate:self.recordStartTime];
-//    NSLog(@"timeInterval:%f",time);
-    
     self.circleView.progress += 0.01;
     
     if (self.circleView.progress >= 1) {

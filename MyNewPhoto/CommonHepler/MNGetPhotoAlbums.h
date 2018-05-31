@@ -16,12 +16,16 @@
 /**
  * 获取是否有访问相册的权限
  **/
-+ (NSInteger)authorizationStatus;
++ (NSInteger)photoAuthorizationStatus;
+/**
+ * 获取是否有访问麦克风\相机的权限
+ **/
++ (NSInteger)mediaAuthorizationStatus:(AVMediaType)mediaType;
 
 /**
- * 处理打开提示访问相册的权限
+ * 处理打开提示访问权限
  **/
-- (void)requestAuthorizationWithCompletion:(void (^)(void))completion;
+- (void)requestAuthorizationWithType:(NSString *)type Completion:(void (^)(void))completion;
 
 /**
  *  获取相册列表
