@@ -100,10 +100,6 @@
     }];
 }
 
-- (void)finishSavePic{
-//    self.upSolidCircleView.transform = CGAffineTransformMakeScale(1, 1);
-}
-
 - (void)takeVideo:(UILongPressGestureRecognizer *)renderer{
     if (renderer.state == UIGestureRecognizerStateBegan) {
         NSLog(@"长按手势开启");

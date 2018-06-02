@@ -11,6 +11,7 @@
 
 #define mnColor(R,G,B,A) [UIColor colorWithRed:R/255.0 green:G/255.0 blue:B/255.0 alpha:A]
 #define mnFont(str) [UIFont systemFontOfSize:str]
+#define screenSize [UIScreen mainScreen].bounds.size
 #define WEAKSELF typeof(self) __weak weakSelf = self;
 #define kBorderWith 4.0
 #define IS_IOS_9_10_11    [[[UIDevice currentDevice] systemVersion] floatValue] >= 9.0

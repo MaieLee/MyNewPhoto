@@ -8,6 +8,11 @@
 
 #import <UIKit/UIKit.h>
 
+typedef void (^ShowPicViewBlock)(BOOL isSavePic,UIImage *saveImage);
+
 @interface ShowPicView : UIView
 
+@property (nonatomic, copy) ShowPicViewBlock complete;
+
+- (void)showCameraImage:(UIImage *)image IsSavePic:(BOOL)isSavePic Complete:(void (^)(void))complete;
 @end

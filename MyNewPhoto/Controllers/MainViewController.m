@@ -15,6 +15,7 @@
 #import "MNGetPhotoAlbums.h"
 #import "CameraButtonView.h"
 #import "MNImagePickerViewController.h"
+#import "ShowPicView.h"
 
 //闪光灯状态
 typedef NS_ENUM(NSInteger, CameraManagerFlashMode) {
@@ -46,6 +47,7 @@ typedef NS_ENUM(NSInteger, CameraManagerFlashMode) {
 @property (nonatomic, assign) AVCaptureDevicePosition cameraPosition;//前置或者后置摄像头
 @property (nonatomic, strong) UIButton *flashBtn;
 @property (nonatomic, assign) BOOL isRefuseAccessAudio;
+@property (nonatomic, strong) ShowPicView *showPicView;
 
 @end
 
@@ -146,6 +148,16 @@ typedef NS_ENUM(NSInteger, CameraManagerFlashMode) {
     self.lblDesc.textColor = [UIColor whiteColor];
     [self.view addSubview:self.lblDesc];
     self.lblDesc.hidden = YES;
+    
+    CGFloat showviewWidth = screenSize.width*0.15;
+    CGFloat showviewHeight = screenSize.height*0.15;
+    _showPicView = [[ShowPicView alloc] initWithFrame:CGRectMake(screenSize.width-showviewWidth-10, screenSize.height-showviewHeight-10, showviewWidth, showviewHeight)];
+    [self.view addSubview:_showPicView];
+    _showPicView.complete = ^(BOOL isSavePic, UIImage *saveImage) {
+        if (isSavePic) {
+            [weakSelf savedPhotosAlbum:saveImage];
+        }
+    };
     
     [self setfocusImage:[UIImage createImageWithColor:[UIColor whiteColor] Size:CGSizeMake(60, 60)]];
     self.cameraPosition = AVCaptureDevicePositionBack;
@@ -372,6 +384,9 @@ typedef NS_ENUM(NSInteger, CameraManagerFlashMode) {
 
 //对焦方法
 - (void)focus:(UITapGestureRecognizer *)tap {
+    if (self.isTakeVideo) {
+        return;
+    }
     self.gpuImageView.userInteractionEnabled = NO;
     CGPoint touchPoint = [tap locationInView:tap.view];
     [self layerAnimationWithPoint:touchPoint];
@@ -492,16 +507,21 @@ typedef NS_ENUM(NSInteger, CameraManagerFlashMode) {
 
 - (void)takePicture{
     [self.gpuStillCamera capturePhotoAsImageProcessedUpToFilter:self.selFilter withCompletionHandler:^(UIImage *processedImage, NSError *error) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            UIImageWriteToSavedPhotosAlbum(processedImage, self, @selector(saveImage:didFinishSavingWithError:contextInfo:), nil);
-        });
+        [self.gpuStillCamera stopCameraCapture];
+        
+        [self.showPicView showCameraImage:processedImage IsSavePic:YES Complete:^{
+            [self.gpuStillCamera startCameraCapture];
+        }];
     }];
 }
 
-- (void)saveImage:(UIImage *)image didFinishSavingWithError:(NSError *)error contextInfo:(void *)contextInfo{
+- (void)savedPhotosAlbum:(UIImage *)processedImage{
+    dispatch_async(dispatch_get_main_queue(), ^{
+        UIImageWriteToSavedPhotosAlbum(processedImage, self, @selector(saveImage:didFinishSavingWithError:contextInfo:), nil);
+    });
+}
 
-    [self.cameraBtn finishSavePic];
-    
+- (void)saveImage:(UIImage *)image didFinishSavingWithError:(NSError *)error contextInfo:(void *)contextInfo{
     if(!error) {
         NSLog(@"保存成功！");
     }else{
@@ -553,22 +573,37 @@ typedef NS_ENUM(NSInteger, CameraManagerFlashMode) {
 
     [movieWriter finishRecordingWithCompletionHandler:^{
         dispatch_async(dispatch_get_main_queue(), ^{
-            UISaveVideoAtPathToSavedPhotosAlbum(self->pathToMovie, self, @selector(saveVideo:didFinishSavingWithError:contextInfo:), nil);
+            UIImage *image = [[MNGetPhotoAlbums shareManager] firstFrameWithVideoURL:self->pathToMovie size:self.showPicView.frame.size];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self.showPicView showCameraImage:image IsSavePic:NO Complete:^{
+                    [self.gpuVideoCamera stopCameraCapture];
+                    [self.gpuVideoCamera removeAllTargets];
+                    [self setUpStillCamera];
+                    
+                    [self.cameraBtn finishSaveVideo];
+                    self.cameraBtn.transform = CGAffineTransformMakeTranslation(0,0);
+                }];
+            });
         });
     }];
     
     [self.selFilter removeTarget:movieWriter];
 }
 
+- (void)saveVideoAlbum{
+    dispatch_async(dispatch_get_main_queue(), ^{
+        UISaveVideoAtPathToSavedPhotosAlbum(self->pathToMovie, self, @selector(saveVideo:didFinishSavingWithError:contextInfo:), nil);
+    });
+}
+
 - (void)saveVideo:(NSString *)videoPath didFinishSavingWithError:(NSError *)error
   contextInfo:(void *)contextInfo {
     
-    [self.gpuVideoCamera stopCameraCapture];
-    [self.gpuVideoCamera removeAllTargets];
-    [self setUpStillCamera];
-    
-    [self.cameraBtn finishSaveVideo];
-    self.cameraBtn.transform = CGAffineTransformMakeTranslation(0,0);
+    if(!error) {
+        NSLog(@"保存成功！");
+    }else{
+        NSLog(@"保存失败！");
+    }
 }
 
 - (void)showFilters:(id)filter Desc:(NSString *)desc
@@ -580,17 +615,35 @@ typedef NS_ENUM(NSInteger, CameraManagerFlashMode) {
     }
     [self.selFilter removeAllTargets];
     
-    GPUImageBilateralFilter *bilateralFilter = [[GPUImageBilateralFilter alloc] init];
-    bilateralFilter.distanceNormalizationFactor = 9.0;
+    id filterGroup = nil;
+    if ([desc isEqualToString:@"原图"]) {
+        filterGroup = filter;
+    }else{
+        GPUImageBilateralFilter *bilateralFilter = [[GPUImageBilateralFilter alloc] init];
+        bilateralFilter.distanceNormalizationFactor = 9.0;
+        if ([filter isKindOfClass:[GPUImageFilterGroup class]]) {
+            [self addGPUImageFilter:bilateralFilter InFilterGroup:(GPUImageFilterGroup *)filter];
+            filterGroup = filter;
+        }else{
+            GPUImageFilterGroup *fGroup = [[GPUImageFilterGroup alloc] init];
+            [fGroup addFilter:bilateralFilter];
+            [fGroup addFilter:filter];
+            
+            fGroup.initialFilters = @[bilateralFilter,filter];
+            fGroup.terminalFilter = filter;
+            
+            filterGroup = fGroup;
+        }
+    }
     
     if (!self.isTakeVideo) {
-        [self.gpuStillCamera addTarget:filter];
+        [self.gpuStillCamera addTarget:filterGroup];
     }else{
-        [self.gpuVideoCamera addTarget:filter];
+        [self.gpuVideoCamera addTarget:filterGroup];
     }
-    [filter addTarget:bilateralFilter];
-    [bilateralFilter addTarget:self.gpuImageView];
-    self.selFilter = filter;
+    [filterGroup addTarget:self.gpuImageView];
+    
+    self.selFilter = filterGroup;
     
     self.lblDesc.hidden = NO;
     self.lblDesc.text = desc;
@@ -604,6 +657,18 @@ typedef NS_ENUM(NSInteger, CameraManagerFlashMode) {
         self.lblDesc.hidden = YES;
         self.lblDesc.alpha = 1;
     }];
+}
+
+- (void)addGPUImageFilter:(GPUImageOutput<GPUImageInput> *)filter InFilterGroup:(GPUImageFilterGroup *)filterGroup
+{
+    [filterGroup addFilter:filter];
+    GPUImageOutput<GPUImageInput> *newTerminalFilter = filter;
+    GPUImageOutput<GPUImageInput> *terminalFilter    = filterGroup.terminalFilter;
+    NSArray *initialFilters                          = filterGroup.initialFilters;
+    [terminalFilter addTarget:newTerminalFilter];
+    
+    filterGroup.initialFilters = @[initialFilters[0]];
+    filterGroup.terminalFilter = newTerminalFilter;
 }
 
 - (void)didReceiveMemoryWarning {

@@ -18,6 +18,5 @@ typedef void(^TakeVideoComplete) (NSInteger cameraStatus);//0:pre 1:start 2:end
 @property (nonatomic, copy) TakeVideoComplete takeVideo;
 
 - (void)startRecord;
-- (void)finishSavePic;
 - (void)finishSaveVideo;
 @end
