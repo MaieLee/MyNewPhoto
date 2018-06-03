@@ -572,16 +572,17 @@ typedef NS_ENUM(NSInteger, CameraManagerFlashMode) {
     self.gpuVideoCamera.audioEncodingTarget = nil;
 
     [movieWriter finishRecordingWithCompletionHandler:^{
+        self.cameraBtn.transform = CGAffineTransformMakeTranslation(0,0);
         dispatch_async(dispatch_get_main_queue(), ^{
             UIImage *image = [[MNGetPhotoAlbums shareManager] firstFrameWithVideoURL:self->pathToMovie size:self.showPicView.frame.size];
             dispatch_async(dispatch_get_main_queue(), ^{
+                self.showPicView.vedioURL = [NSURL fileURLWithPath:self->pathToMovie];
                 [self.showPicView showCameraImage:image IsSavePic:NO Complete:^{
                     [self.gpuVideoCamera stopCameraCapture];
                     [self.gpuVideoCamera removeAllTargets];
                     [self setUpStillCamera];
                     
                     [self.cameraBtn finishSaveVideo];
-                    self.cameraBtn.transform = CGAffineTransformMakeTranslation(0,0);
                 }];
             });
         });
