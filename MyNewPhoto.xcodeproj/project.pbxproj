@@ -108,6 +108,7 @@
 		34CA5CCD20A5256B00FB988D /* FilterSampleModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 34CA5CCC20A5256B00FB988D /* FilterSampleModel.m */; };
 		34D5DD0F209DCCA000F9182D /* GPUImageBeautifyFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = 34D5DD0E209DCCA000F9182D /* GPUImageBeautifyFilter.m */; };
 		34E7A46E20A2DB4F00DEE629 /* CameraFilterView.m in Sources */ = {isa = PBXBuildFile; fileRef = 34E7A46D20A2DB4F00DEE629 /* CameraFilterView.m */; };
+		3F9659C920C642470029D381 /* MNStringHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 3F9659C820C642470029D381 /* MNStringHelper.m */; };
 		9D4027BD49C8E420A7B313D4 /* libPods-MyNewPhoto.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1EC42C55EF4D683FABD04253 /* libPods-MyNewPhoto.a */; };
 /* End PBXBuildFile section */
 
@@ -306,6 +307,8 @@
 		34D5DD0E209DCCA000F9182D /* GPUImageBeautifyFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GPUImageBeautifyFilter.m; sourceTree = "<group>"; };
 		34E7A46C20A2DB4F00DEE629 /* CameraFilterView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CameraFilterView.h; sourceTree = "<group>"; };
 		34E7A46D20A2DB4F00DEE629 /* CameraFilterView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CameraFilterView.m; sourceTree = "<group>"; };
+		3F9659C720C642470029D381 /* MNStringHelper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MNStringHelper.h; sourceTree = "<group>"; };
+		3F9659C820C642470029D381 /* MNStringHelper.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MNStringHelper.m; sourceTree = "<group>"; };
 		F2B2517B06B0B5686E9676E8 /* Pods-MyNewPhoto.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MyNewPhoto.debug.xcconfig"; path = "Pods/Target Support Files/Pods-MyNewPhoto/Pods-MyNewPhoto.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -581,6 +584,8 @@
 				3477242A20A42AA80082D57F /* FilterManager.m */,
 				349A983020ABDF9C0064E2A1 /* MNGetPhotoAlbums.h */,
 				349A983120ABDF9C0064E2A1 /* MNGetPhotoAlbums.m */,
+				3F9659C720C642470029D381 /* MNStringHelper.h */,
+				3F9659C820C642470029D381 /* MNStringHelper.m */,
 			);
 			path = CommonHepler;
 			sourceTree = "<group>";
@@ -900,6 +905,7 @@
 				347C65F320A59EAC004B07D8 /* FWInkwellFilter.m in Sources */,
 				342EB0C4209C391C006F762B /* UIImage+RoundCorner.m in Sources */,
 				347C65F820A59EAC004B07D8 /* FWRiseFilter.m in Sources */,
+				3F9659C920C642470029D381 /* MNStringHelper.m in Sources */,
 				34B1A504209B18870039B074 /* DrawCyclesButton.m in Sources */,
 				347C65FC20A59EAC004B07D8 /* FWToasterFilter.m in Sources */,
 				347C65F120A59EAC004B07D8 /* FWHefeFilter.m in Sources */,

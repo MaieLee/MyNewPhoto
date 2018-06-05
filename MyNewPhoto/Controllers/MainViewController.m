@@ -86,7 +86,11 @@ typedef NS_ENUM(NSInteger, CameraManagerFlashMode) {
     }else{
         [self setUpUI];
         [self preFilter];
-        [self setUpStillCamera];
+        
+        [self.gpuStillCamera addTarget:self.selFilter];
+        [self.selFilter addTarget:self.gpuImageView];
+        [self.gpuStillCamera startCameraCapture];
+        
         [self setupCameraFlash];
     }
 }

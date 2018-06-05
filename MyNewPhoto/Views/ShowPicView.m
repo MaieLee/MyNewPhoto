@@ -120,9 +120,9 @@
         self.delButton.hidden = YES;
         CGRect lastFrame = CGRectMake(self.oldFrame.origin.x, self.oldFrame.origin.y, self.oldFrame.size.width, self.oldFrame.size.height);
         if (self.isDelete) {
-            CGFloat lastX = self.oldFrame.origin.x+self.oldFrame.size.width-35;
-            CGFloat lastY = self.oldFrame.origin.y+self.oldFrame.size.height-35;
-            lastFrame = CGRectMake(lastX, lastY, 35, 35);
+            CGFloat lastX = self.oldFrame.origin.x+self.oldFrame.size.width;
+            CGFloat lastY = self.oldFrame.origin.y+self.oldFrame.size.height;
+            lastFrame = CGRectMake(lastX, lastY, 4, 4);
         }
         
         [UIView animateWithDuration:0.2 animations:^{

@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "MNTitleButton.h"
 
-typedef void(^BackBlock) ();
+typedef void(^BackBlock) (void);
 typedef void(^TitleChangeBlock) (BOOL isShowTitle);
 
 @interface ImgHeaderView : UIView

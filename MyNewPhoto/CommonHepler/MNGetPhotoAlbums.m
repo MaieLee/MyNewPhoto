@@ -126,7 +126,7 @@
     [smartAlbums enumerateObjectsUsingBlock:^(PHAssetCollection * _Nonnull collection, NSUInteger idx, BOOL *stop) {
         if ([collection isKindOfClass:[PHAssetCollection class]]) {
             PHFetchResult *fetchResult = [PHAsset fetchAssetsInAssetCollection:collection options:nil];
-            if (fetchResult.count > 0&&collection.assetCollectionSubtype != PHAssetCollectionSubtypeSmartAlbumVideos && collection.assetCollectionSubtype !=PHAssetCollectionSubtypeSmartAlbumTimelapses) {
+            if (fetchResult.count > 0 && collection.assetCollectionSubtype !=PHAssetCollectionSubtypeSmartAlbumTimelapses) {
                 
                 if ([collection.localizedTitle containsString:@"Hidden"] || [collection.localizedTitle isEqualToString:@"已隐藏"] || [collection.localizedTitle containsString:@"Deleted"] || [collection.localizedTitle isEqualToString:@"最近删除"]){
                     //不添加这些相册
@@ -167,6 +167,8 @@
         picModel.asset = asset;
         [arr addObject:picModel];
     }];
+    NSArray *reversedArray = [[arr reverseObjectEnumerator] allObjects];
+    arr = [NSMutableArray arrayWithArray:reversedArray];
     return arr;
 }
 

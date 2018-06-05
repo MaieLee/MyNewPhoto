@@ -11,5 +11,6 @@
 @interface MNPictrueCollectionViewCell : UICollectionViewCell
 
 @property (nonatomic, strong) UIImageView *picView;
+@property (nonatomic, strong) UILabel *timeLabel;
 
 @end

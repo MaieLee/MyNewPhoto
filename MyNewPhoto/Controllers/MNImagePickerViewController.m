@@ -12,6 +12,8 @@
 #import "MNPictrueCollectionViewCell.h"
 #import "PicCollectTableViewCell.h"
 #import "SysPictureModel.h"
+#import "MNStringHelper.h"
+#import "PictureFilterViewController.h"
 
 static NSString *const cellIdentf = @"showPictureCell";
 static NSString *const collectCellIdentf = @"collectionCell";
@@ -157,14 +159,24 @@ static NSString *const collectCellIdentf = @"collectionCell";
         }else{
             cell.picView.image = sysPicModel.assetImage;
         }
+        
+        if (sysPicModel.asset.mediaType == PHAssetMediaTypeVideo) {
+            cell.timeLabel.hidden = NO;
+            cell.timeLabel.text = [MNStringHelper getMMSSFromSS:sysPicModel.asset.duration];
+        }else{
+            cell.timeLabel.hidden = YES;
+        }
     }
     return cell;
 }
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
     SysPictureModel *sysPicModel = _picArray[indexPath.row];
+    WEAKSELF
     [[MNGetPhotoAlbums shareManager] getAlbumImageWithAsset:sysPicModel.asset resultImage:^(UIImage *image) {
-        
+        PictureFilterViewController *picVC = [[PictureFilterViewController alloc] init];
+        picVC.picture = image;
+        [weakSelf.navigationController pushViewController:picVC animated:YES];
     }];
 }
 
