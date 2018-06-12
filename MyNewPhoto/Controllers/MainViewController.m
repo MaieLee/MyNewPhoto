@@ -89,7 +89,12 @@ typedef NS_ENUM(NSInteger, CameraManagerFlashMode) {
         
         [self.gpuStillCamera addTarget:self.selFilter];
         [self.selFilter addTarget:self.gpuImageView];
-        [self.gpuStillCamera startCameraCapture];
+        dispatch_async(dispatch_get_global_queue(0, 0), ^{
+           [self.gpuStillCamera startCameraCapture];
+            dispatch_async(dispatch_get_main_queue(), ^{
+               self.cameraBtn.hidden = NO;
+            });
+        });
         
         [self setupCameraFlash];
     }
@@ -122,6 +127,7 @@ typedef NS_ENUM(NSInteger, CameraManagerFlashMode) {
     WEAKSELF
     _cameraBtn = [[CameraButtonView alloc] initWithFrame:CGRectMake(0, viewFrame.size.height - 140, 87, 87)];
     [self.view addSubview:_cameraBtn];
+    _cameraBtn.hidden = YES;
     _cameraBtn.center = CGPointMake(self.view.center.x, _cameraBtn.center.y);
     _cameraBtn.takePicture = ^{
         [weakSelf takePicture];

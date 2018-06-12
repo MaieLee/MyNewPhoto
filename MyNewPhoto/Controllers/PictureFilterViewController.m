@@ -73,10 +73,9 @@
 - (void)pinchView:(UIPinchGestureRecognizer *)pinchGestureRecognizer
 {
     if (pinchGestureRecognizer.state == UIGestureRecognizerStateBegan || pinchGestureRecognizer.state == UIGestureRecognizerStateChanged) {
-        if (self.pictureImageView.frame.size.width <= screenSize.width*3.0) {
+        CGFloat width = self.pictureImageView.frame.size.width*pinchGestureRecognizer.scale;
+        if (width < screenSize.width*3) {
             self.pictureImageView.transform = CGAffineTransformScale(self.pictureImageView.transform, pinchGestureRecognizer.scale, pinchGestureRecognizer.scale);
-        }else{
-            self.pictureImageView.frame = CGRectMake(self.pictureImageView.frame.origin.x, self.pictureImageView.frame.origin.y, screenSize.width*3.0, screenSize.height*3);
         }
         pinchGestureRecognizer.scale = 1;
     }
@@ -118,18 +117,17 @@
     }
     
     if (panGestureRecognizer.state == UIGestureRecognizerStateEnded) {
-        if (!self.isLessthen) {
-            CGPoint originCenter = self.view.center;
-            CGFloat newCenterX = 0.0;
-            CGFloat newCenterY = 0.0;
-            if (originCenter.x < self.pictureImageView.center.x && originCenter.y >= self.pictureImageView.center.y) {
-                //往右上角拖
-                newCenterX = originCenter.x+(self.pictureImageView.frame.size.width/2-self.view.frame.size.width/2);
-                newCenterY = originCenter.y-(self.pictureImageView.frame.size.height/2-self.view.frame.size.height/2);
-            }
-            
-            [self.pictureImageView setCenter:(CGPoint){newCenterX, newCenterY}];
-        }
+//        if (!self.isLessthen) {
+//            CGPoint originCenter = self.view.center;
+//            CGFloat newCenterX = 0.0;
+//            CGFloat newCenterY = 0.0;
+//            if (originCenter.x < self.pictureImageView.center.x && originCenter.y >= self.pictureImageView.center.y) {
+//                //往右上角拖
+//                newCenterX = originCenter.x+(self.pictureImageView.frame.size.width/2-self.view.frame.size.width/2);
+//                newCenterY = originCenter.y-(self.pictureImageView.frame.size.height/2-self.view.frame.size.height/2);
+//                [self.pictureImageView setCenter:(CGPoint){newCenterX, newCenterY}];
+//            }
+//        }
     }
 }
 
