@@ -47,6 +47,7 @@
     _bottomView.filterBlock = ^(id filter, NSString *desc) {
         [weakSelf showFilters:filter Desc:desc];
     };
+    [_bottomView show];
     
     [self addGestureRecognizer];
 }
@@ -117,16 +118,16 @@
     }
     
     if (panGestureRecognizer.state == UIGestureRecognizerStateEnded) {
-//        if (!self.isLessthen) {
-//            CGPoint originCenter = self.view.center;
-//            CGFloat newCenterX = 0.0;
-//            CGFloat newCenterY = 0.0;
-//            if (originCenter.x < self.pictureImageView.center.x && originCenter.y >= self.pictureImageView.center.y) {
-//                //往右上角拖
-//                newCenterX = originCenter.x+(self.pictureImageView.frame.size.width/2-self.view.frame.size.width/2);
-//                newCenterY = originCenter.y-(self.pictureImageView.frame.size.height/2-self.view.frame.size.height/2);
-//                [self.pictureImageView setCenter:(CGPoint){newCenterX, newCenterY}];
-//            }
+        CGFloat topLeftX = self.pictureImageView.frame.origin.x;
+        CGFloat topLeftY = self.pictureImageView.frame.origin.y;
+        CGFloat topRightX = topLeftX+self.pictureImageView.frame.size.width;
+        CGFloat topRightY = topLeftY;
+        CGFloat bottomLeftX = topLeftX;
+        CGFloat bottomLeftY = topLeftY+self.pictureImageView.frame.size.height;
+        CGFloat bottomRightX = topRightX;
+        CGFloat bottomRightY = bottomLeftY;
+//        if (topLeftX<screenSize.width/2 && topLeftY) {
+//            <#statements#>
 //        }
     }
 }
