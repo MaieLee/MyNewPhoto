@@ -10,5 +10,6 @@
 
 @interface PictureFilterViewController : ViewController
 @property (nonatomic, strong) UIImage *picture;
-
+@property (nonatomic, assign) BOOL isVideo;
+@property (nonatomic, strong) NSURL *videoURL;
 @end

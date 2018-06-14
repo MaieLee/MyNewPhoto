@@ -20,4 +20,7 @@
 #define kScreenHeight  [UIScreen mainScreen].bounds.size.height
 #define kScreenWidth   [UIScreen mainScreen].bounds.size.width
 
+#define MNCache @"MNCache"
+#define FiltersCache @"FiltersCache"
+
 #endif /* Macros_h */

@@ -3,19 +3,30 @@ PODS:
   - IQKeyboardManager (4.0.13)
   - Masonry (1.0.2)
   - MBProgressHUD (1.0.0)
+  - YYCache (1.0.4)
 
 DEPENDENCIES:
   - GPUImage
   - IQKeyboardManager (~> 4.0.9)
   - Masonry (~> 1.0.2)
   - MBProgressHUD (~> 1.0.0)
+  - YYCache
+
+SPEC REPOS:
+  https://github.com/cocoapods/specs.git:
+    - GPUImage
+    - IQKeyboardManager
+    - Masonry
+    - MBProgressHUD
+    - YYCache
 
 SPEC CHECKSUMS:
   GPUImage: 733a5f0fab92df9de1c37ba9df520a833ccb406d
   IQKeyboardManager: 8eab4d8111418414619d1df8e4779ce5d0f8d7e2
   Masonry: 7c429b56da9d4ee0bbb3ed77a5ea710d6a5df39e
   MBProgressHUD: 4890f671c94e8a0f3cf959aa731e9de2f036d71a
+  YYCache: 8105b6638f5e849296c71f331ff83891a4942952
 
-PODFILE CHECKSUM: 79014debf7900febefe4692591bec26212546cd9
+PODFILE CHECKSUM: 2920be144f14357c81ac4270892eaa2433c0c358
 
-COCOAPODS: 1.2.1
+COCOAPODS: 1.5.3

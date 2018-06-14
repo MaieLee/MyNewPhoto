@@ -14,5 +14,6 @@
 @property (nonatomic, strong) PHAsset *asset;
 
 @property (nonatomic, strong) UIImage *assetImage;
+@property (nonatomic, strong) NSURL *assetURL;
 
 @end

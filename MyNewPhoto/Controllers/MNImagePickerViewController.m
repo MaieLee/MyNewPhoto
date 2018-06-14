@@ -150,11 +150,18 @@ static NSString *const collectCellIdentf = @"collectionCell";
         __block SysPictureModel *sysPicModel = _picArray[indexPath.row];
         
         if (sysPicModel.assetImage == nil) {
-            dispatch_async(dispatch_get_main_queue(), ^{
+            dispatch_async(dispatch_get_global_queue(0, 0), ^{
                 [[MNGetPhotoAlbums shareManager] getAlbumImageWithAsset:sysPicModel.asset andParamSize:CGSizeMake(self.itemSize.width, self.itemSize.height) resultImage:^(UIImage *image) {
-                    cell.picView.image = image;
-                    sysPicModel.assetImage = image;
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        cell.picView.image = image;
+                        sysPicModel.assetImage = image;
+                    });
                 }];
+                if (sysPicModel.asset.mediaType == PHAssetMediaTypeVideo) {
+                    [[MNGetPhotoAlbums shareManager] getVideoURLWithAsset:sysPicModel.asset resultURL:^(NSURL *videoURL) {
+                        sysPicModel.assetURL = videoURL;
+                    }];
+                }
             });
         }else{
             cell.picView.image = sysPicModel.assetImage;
@@ -176,6 +183,8 @@ static NSString *const collectCellIdentf = @"collectionCell";
     [[MNGetPhotoAlbums shareManager] getAlbumImageWithAsset:sysPicModel.asset resultImage:^(UIImage *image) {
         PictureFilterViewController *picVC = [[PictureFilterViewController alloc] init];
         picVC.picture = image;
+        picVC.isVideo = sysPicModel.asset.mediaType == PHAssetMediaTypeVideo;
+        picVC.videoURL = sysPicModel.assetURL;
         [weakSelf.navigationController pushViewController:picVC animated:YES];
     }];
 }

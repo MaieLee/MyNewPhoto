@@ -1,4 +1,4 @@
- [{"type":0,"name":"GPUImageBeautifyFilter","desc":"原图"},
+ [{"type":0,"name":"GPUImageFilter","desc":"原图"},
   {"type":0,"name":"FWAmaroFilter","desc":"经典"},
   {"type":0,"name":"GPUImageSoftEleganceFilter","desc":"流年"},
   {"type":0,"name":"GPUImageMissEtikateFilter","desc":"HDR"},

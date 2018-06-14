@@ -55,7 +55,6 @@ typedef NS_ENUM(NSInteger, CameraManagerFlashMode) {
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    self.view.backgroundColor = [UIColor whiteColor];
     
     [self checkoutCameraAuthority];
 }
@@ -580,21 +579,21 @@ typedef NS_ENUM(NSInteger, CameraManagerFlashMode) {
         return;
     }
     self.gpuVideoCamera.audioEncodingTarget = nil;
+    
+    CGSize showPicViewFrameSize = CGSizeMake(self.showPicView.frame.size.width, self.showPicView.frame.size.height);
 
     [movieWriter finishRecordingWithCompletionHandler:^{
-        self.cameraBtn.transform = CGAffineTransformMakeTranslation(0,0);
+        UIImage *image = [[MNGetPhotoAlbums shareManager] firstFrameWithVideoURL:self->pathToMovie size:showPicViewFrameSize];
         dispatch_async(dispatch_get_main_queue(), ^{
-            UIImage *image = [[MNGetPhotoAlbums shareManager] firstFrameWithVideoURL:self->pathToMovie size:self.showPicView.frame.size];
-            dispatch_async(dispatch_get_main_queue(), ^{
-                self.showPicView.vedioURL = [NSURL fileURLWithPath:self->pathToMovie];
-                [self.showPicView showCameraImage:image IsSavePic:NO Complete:^{
-                    [self.gpuVideoCamera stopCameraCapture];
-                    [self.gpuVideoCamera removeAllTargets];
-                    [self setUpStillCamera];
-                    
-                    [self.cameraBtn finishSaveVideo];
-                }];
-            });
+            self.cameraBtn.transform = CGAffineTransformMakeTranslation(0,0);
+            self.showPicView.vedioURL = [NSURL fileURLWithPath:self->pathToMovie];
+            [self.showPicView showCameraImage:image IsSavePic:NO Complete:^{
+                [self.gpuVideoCamera stopCameraCapture];
+                [self.gpuVideoCamera removeAllTargets];
+                [self setUpStillCamera];
+                
+                [self.cameraBtn finishSaveVideo];
+            }];
         });
     }];
     

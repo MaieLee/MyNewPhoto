@@ -74,6 +74,14 @@
                   resultImage:(void (^)(UIImage *image))resultImage;
 
 /**
+ *  获取视频URL
+ *
+ *  @param asset       视频对象
+ *  @param resultURL   返回URL
+ */
+- (void)getVideoURLWithAsset:(PHAsset *)asset resultURL:(void (^)(NSURL *videoURL))resultURL;
+
+/**
  * 获取视频第一帧图像
  *
  **/

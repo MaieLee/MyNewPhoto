@@ -12,6 +12,7 @@
 #import "GPUImage.h"
 #import "FilterSampleModel.h"
 #import "FilterManager.h"
+#import "MNAppDataHelper.h"
 
 @interface BottomBarView ()<CameraFilterViewDelegate>
 @property (nonatomic, strong) CameraFilterView *cameraFilterView;//自定义滤镜视图
@@ -39,22 +40,32 @@
 
 - (void)setUpFsModels
 {
-    dispatch_async(dispatch_get_main_queue(), ^{
-        NSInteger cameraFilterCount = self.filterManager.filterArray.count;
-        NSMutableArray *filterArray = [[NSMutableArray alloc] initWithCapacity:cameraFilterCount];
-        for (NSInteger index = 0; index < cameraFilterCount; index++) {
-            UIImage *image = [UIImage imageNamed:@"filter"];
-            FilterSampleModel *fSModel = [[FilterSampleModel alloc] init];
-            fSModel.index = index;
-            fSModel.filter = [self.filterManager filterTheImage:index];
-            fSModel.image = [self setTheSampleImageFilter:[self.filterManager filterTheImage:index] SampleImg:image];
-            fSModel.isSel = NO;
-            fSModel.desc = self.filterManager.filterArray[index][@"desc"];
-            [filterArray addObject:fSModel];
-        }
-        
-        self.filtersArray = filterArray;
-    });
+    if ([MNAppDataHelper shareManager].filtersArray) {
+        self.filtersArray = [MNAppDataHelper shareManager].filtersArray;
+        [self addSubview:self.cameraFilterView];
+    }else{
+        dispatch_async(dispatch_get_global_queue(0, 0), ^{
+            NSInteger cameraFilterCount = self.filterManager.filterArray.count;
+            NSMutableArray *filterArray = [[NSMutableArray alloc] initWithCapacity:cameraFilterCount];
+            for (NSInteger index = 0; index < cameraFilterCount; index++) {
+                UIImage *image = [UIImage imageNamed:@"filter"];
+                FilterSampleModel *fSModel = [[FilterSampleModel alloc] init];
+                fSModel.index = index;
+                fSModel.filter = [self.filterManager filterTheImage:index];
+                fSModel.image = [self setTheSampleImageFilter:[self.filterManager filterTheImage:index] SampleImg:image];
+                fSModel.isSel = NO;
+                fSModel.desc = self.filterManager.filterArray[index][@"desc"];
+                [filterArray addObject:fSModel];
+            }
+            
+            self.filtersArray = filterArray;
+            [MNAppDataHelper shareManager].filtersArray = filterArray;
+            
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self addSubview:self.cameraFilterView];
+            });
+        });
+    }
 }
 
 - (FilterManager *)filterManager{
@@ -100,10 +111,10 @@
 
 - (void)show
 {
-    if (!self.isHadLoadCameraView) {
-        self.isHadLoadCameraView = YES;
-        [self addSubview:self.cameraFilterView];
-    }
+//    if (!self.isHadLoadCameraView) {
+//        self.isHadLoadCameraView = YES;
+//        [self addSubview:self.cameraFilterView];
+//    }
     
     self.isHadHide = NO;
     [UIView animateWithDuration:0.2 animations:^{

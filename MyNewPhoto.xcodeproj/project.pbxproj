@@ -108,6 +108,7 @@
 		34CA5CCD20A5256B00FB988D /* FilterSampleModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 34CA5CCC20A5256B00FB988D /* FilterSampleModel.m */; };
 		34D5DD0F209DCCA000F9182D /* GPUImageBeautifyFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = 34D5DD0E209DCCA000F9182D /* GPUImageBeautifyFilter.m */; };
 		34E7A46E20A2DB4F00DEE629 /* CameraFilterView.m in Sources */ = {isa = PBXBuildFile; fileRef = 34E7A46D20A2DB4F00DEE629 /* CameraFilterView.m */; };
+		3F7F324420D115D4006B2ED7 /* MNAppDataHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 3F7F324320D115D4006B2ED7 /* MNAppDataHelper.m */; };
 		3F9659C920C642470029D381 /* MNStringHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 3F9659C820C642470029D381 /* MNStringHelper.m */; };
 		9D4027BD49C8E420A7B313D4 /* libPods-MyNewPhoto.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1EC42C55EF4D683FABD04253 /* libPods-MyNewPhoto.a */; };
 /* End PBXBuildFile section */
@@ -307,6 +308,8 @@
 		34D5DD0E209DCCA000F9182D /* GPUImageBeautifyFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GPUImageBeautifyFilter.m; sourceTree = "<group>"; };
 		34E7A46C20A2DB4F00DEE629 /* CameraFilterView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CameraFilterView.h; sourceTree = "<group>"; };
 		34E7A46D20A2DB4F00DEE629 /* CameraFilterView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CameraFilterView.m; sourceTree = "<group>"; };
+		3F7F324220D115D4006B2ED7 /* MNAppDataHelper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MNAppDataHelper.h; sourceTree = "<group>"; };
+		3F7F324320D115D4006B2ED7 /* MNAppDataHelper.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MNAppDataHelper.m; sourceTree = "<group>"; };
 		3F9659C720C642470029D381 /* MNStringHelper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MNStringHelper.h; sourceTree = "<group>"; };
 		3F9659C820C642470029D381 /* MNStringHelper.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MNStringHelper.m; sourceTree = "<group>"; };
 		F2B2517B06B0B5686E9676E8 /* Pods-MyNewPhoto.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MyNewPhoto.debug.xcconfig"; path = "Pods/Target Support Files/Pods-MyNewPhoto/Pods-MyNewPhoto.debug.xcconfig"; sourceTree = "<group>"; };
@@ -586,6 +589,8 @@
 				349A983120ABDF9C0064E2A1 /* MNGetPhotoAlbums.m */,
 				3F9659C720C642470029D381 /* MNStringHelper.h */,
 				3F9659C820C642470029D381 /* MNStringHelper.m */,
+				3F7F324220D115D4006B2ED7 /* MNAppDataHelper.h */,
+				3F7F324320D115D4006B2ED7 /* MNAppDataHelper.m */,
 			);
 			path = CommonHepler;
 			sourceTree = "<group>";
@@ -657,7 +662,6 @@
 				3470A84C20994DD1003972FD /* Frameworks */,
 				3470A84D20994DD1003972FD /* Resources */,
 				34B1A4D3209AAC1B0039B074 /* Embed Frameworks */,
-				50D4A0EE53FB11C5F4684353 /* [CP] Embed Pods Frameworks */,
 				F213E92567D38DCFC32C0F82 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
@@ -824,34 +828,22 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		50D4A0EE53FB11C5F4684353 /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-MyNewPhoto/Pods-MyNewPhoto-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
 		D30C3040D57EA261D5845E31 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
 			);
 			name = "[CP] Check Pods Manifest.lock";
 			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-MyNewPhoto-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
 		F213E92567D38DCFC32C0F82 /* [CP] Copy Pods Resources */ = {
@@ -860,9 +852,22 @@
 			files = (
 			);
 			inputPaths = (
+				"${SRCROOT}/Pods/Target Support Files/Pods-MyNewPhoto/Pods-MyNewPhoto-resources.sh",
+				"${PODS_ROOT}/GPUImage/framework/Resources/lookup.png",
+				"${PODS_ROOT}/GPUImage/framework/Resources/lookup_amatorka.png",
+				"${PODS_ROOT}/GPUImage/framework/Resources/lookup_miss_etikate.png",
+				"${PODS_ROOT}/GPUImage/framework/Resources/lookup_soft_elegance_1.png",
+				"${PODS_ROOT}/GPUImage/framework/Resources/lookup_soft_elegance_2.png",
+				"${PODS_ROOT}/IQKeyboardManager/IQKeyboardManager/Resources/IQKeyboardManager.bundle",
 			);
 			name = "[CP] Copy Pods Resources";
 			outputPaths = (
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/lookup.png",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/lookup_amatorka.png",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/lookup_miss_etikate.png",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/lookup_soft_elegance_1.png",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/lookup_soft_elegance_2.png",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/IQKeyboardManager.bundle",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -914,6 +919,7 @@
 				3432591C20AD6F0000C11FFE /* PicCollectTableViewCell.m in Sources */,
 				347C65FA20A59EAC004B07D8 /* FWSixInputFilter.m in Sources */,
 				347C65F620A59EAC004B07D8 /* FWLordKelvinFilter.m in Sources */,
+				3F7F324420D115D4006B2ED7 /* MNAppDataHelper.m in Sources */,
 				347C65FF20A59EAC004B07D8 /* FWXproIIFilter.m in Sources */,
 				347C65F920A59EAC004B07D8 /* FWSierraFilter.m in Sources */,
 				349A982F20ABD1CF0064E2A1 /* MNImagePickerViewController.m in Sources */,

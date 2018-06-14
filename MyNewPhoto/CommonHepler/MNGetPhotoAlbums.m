@@ -204,6 +204,20 @@
     }];
 }
 
+- (void)getVideoURLWithAsset:(PHAsset *)asset resultURL:(void (^)(NSURL *videoURL))resultURL{
+    PHVideoRequestOptions * options = [[PHVideoRequestOptions alloc] init];
+    options.version = PHImageRequestOptionsVersionCurrent;
+    options.deliveryMode = PHImageRequestOptionsDeliveryModeHighQualityFormat;
+    [[PHCachingImageManager defaultManager] requestAVAssetForVideo:asset options:options resultHandler:^(AVAsset * _Nullable asset, AVAudioMix * _Nullable audioMix, NSDictionary * _Nullable info) {
+        NSLog(@"info:%@",info);
+        NSString *sandboxExtensionTokenKey = info[@"PHImageFileSandboxExtensionTokenKey"];
+        NSArray * arr = [sandboxExtensionTokenKey componentsSeparatedByString:@";"];
+        NSString *filePath = arr[arr.count - 1];
+        NSURL *videoURL = [NSURL fileURLWithPath:filePath];
+        resultURL(videoURL);
+    }];
+}
+
 #pragma mark ---- 获取图片第一帧
 - (UIImage *)firstFrameWithVideoURL:(NSString *)urlString size:(CGSize)size
 {
