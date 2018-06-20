@@ -243,18 +243,11 @@ typedef NS_ENUM(NSInteger, CameraManagerFlashMode) {
     [self.selFilter removeAllTargets];
     
     [self.gpuVideoCamera addTarget:self.selFilter];
-    [self.uiElement addTarget:self.selFilter];
     [self.selFilter addTarget:self.gpuImageView];
     
     if (self.gpuVideoCamera.cameraPosition != self.cameraPosition) {
         [self.gpuVideoCamera rotateCamera];
     }
-    
-    __unsafe_unretained GPUImageUIElement *weakOverlay = self.uiElement;
-    [self.selFilter disableSecondFrameCheck];//这样只是在需要更新水印的时候检查更新就不会调用很多次
-    runAsynchronouslyOnVideoProcessingQueue(^{
-        [weakOverlay update];
-    });
     
     self.flashBtn.hidden = YES;
     
@@ -680,13 +673,6 @@ typedef NS_ENUM(NSInteger, CameraManagerFlashMode) {
         [self.gpuStillCamera addTarget:filterGroup];
     }else{
         [self.gpuVideoCamera addTarget:filterGroup];
-        [self.uiElement addTarget:filterGroup];
-        
-        __unsafe_unretained GPUImageUIElement *weakOverlay = self.uiElement;
-        [filterGroup disableSecondFrameCheck];//这样只是在需要更新水印的时候检查更新就不会调用很多次
-        runAsynchronouslyOnVideoProcessingQueue(^{
-            [weakOverlay update];
-        });
     }
     [filterGroup addTarget:self.gpuImageView];
     
