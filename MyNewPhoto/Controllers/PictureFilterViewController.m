@@ -9,19 +9,26 @@
 #import "PictureFilterViewController.h"
 #import "BottomBarView.h"
 #import "GPUImage.h"
+#import "MNAppDataHelper.h"
+#import <Social/Social.h>
+#import "MNGetPhotoAlbums.h"
 
 @interface PictureFilterViewController ()<UIGestureRecognizerDelegate>
 
+@property (nonatomic, strong) GPUImagePicture *imageSource;
+@property (nonatomic, strong) NSMutableDictionary *filterImageDictionary;
 @property (nonatomic, strong) UIImageView *pictureImageView;
+@property (nonatomic, strong) UIButton *saveBtn;
 @property (nonatomic, strong) UIView *headerView;
 @property (nonatomic, strong) UIView *footerView;
-@property (nonatomic, strong) BottomBarView *bottomView;
+@property (nonatomic, strong) UIView *bottomView;
 @property (nonatomic, assign) BOOL isHiddenView;
 @property (nonatomic, assign) BOOL isLessthen;
 @property (nonatomic, strong) UILabel *lblDesc;
 @property (strong, nonatomic) AVPlayer *myPlayer;//播放器
 @property (strong, nonatomic) AVPlayerItem *item;//播放单元
 @property (strong, nonatomic) AVPlayerLayer *playerLayer;//播放界面（layer）
+
 @end
 
 @implementation PictureFilterViewController
@@ -44,6 +51,12 @@
     [headerView addSubview:backBtn];
     [backBtn addTarget:self action:@selector(backAction:) forControlEvents:UIControlEventTouchUpInside];
     backBtn.center = CGPointMake(backBtn.center.x, headerView.center.y);
+    UIButton *shareBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+    [shareBtn setImage:[UIImage imageNamed:@"share"] forState:UIControlStateNormal];
+    shareBtn.frame = CGRectMake(screenSize.width-50, 0, 40, 40);
+    [headerView addSubview:shareBtn];
+    [shareBtn addTarget:self action:@selector(shareAction:) forControlEvents:UIControlEventTouchUpInside];
+    shareBtn.center = CGPointMake(shareBtn.center.x, headerView.center.y);
     self.headerView = headerView;
     
     if (self.isVideo) {
@@ -63,21 +76,35 @@
         
         [self addNotification];
     }else{
-        WEAKSELF
-        _bottomView = [[BottomBarView alloc] initWithFrame:CGRectMake(0, screenSize.height-63, screenSize.width, 63)];
-        _bottomView.isFilterPicture = YES;
-        _bottomView.backgroundColor = [[UIColor whiteColor] colorWithAlphaComponent:0];
+        _bottomView = [[UIView alloc] initWithFrame:CGRectMake(0, screenSize.height-63, screenSize.width, 68)];
+        _bottomView.backgroundColor = [[UIColor whiteColor] colorWithAlphaComponent:0.9];
         [self.view addSubview:_bottomView];
         
-        _bottomView.filterBlock = ^(id filter, NSString *desc) {
+        WEAKSELF
+        BottomBarView *bottomFilterView = [[BottomBarView alloc] initWithFrame:CGRectMake(0, 5, _bottomView.frame.size.width-_bottomView.frame.size.height, _bottomView.frame.size.height-5) IsFilterPic:YES];
+        bottomFilterView.backgroundColor = [[UIColor whiteColor] colorWithAlphaComponent:0];
+        [_bottomView addSubview:bottomFilterView];
+        bottomFilterView.filterBlock = ^(id filter, NSString *desc) {
             [weakSelf showFilters:filter Desc:desc];
         };
         
+        UIButton *saveBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+        [saveBtn setImage:[UIImage imageNamed:@"save"] forState:UIControlStateNormal];
+        saveBtn.frame = CGRectMake(_bottomView.frame.size.width-_bottomView.frame.size.height, 0, _bottomView.frame.size.height, _bottomView.frame.size.height);
+        saveBtn.backgroundColor = [UIColor yellowColor];
+        [_bottomView addSubview:saveBtn];
+        [saveBtn addTarget:self action:@selector(saveAction:) forControlEvents:UIControlEventTouchUpInside];
+        saveBtn.enabled = NO;
+        self.saveBtn = saveBtn;
+        
+        self.imageSource = [[GPUImagePicture alloc] initWithImage:self.picture];
         self.lblDesc = [UILabel new];
         self.lblDesc.font = mnFont(26);
         self.lblDesc.textColor = [UIColor whiteColor];
         [self.view addSubview:self.lblDesc];
         self.lblDesc.hidden = YES;
+        
+        self.filterImageDictionary = [NSMutableDictionary dictionaryWithCapacity:0];
         
         [self addGestureRecognizer];
     }
@@ -161,11 +188,59 @@
             [panGestureRecognizer setTranslation:CGPointZero inView:self.pictureImageView.superview];
         }
     }
-    
 }
 
 - (void)backAction:(id)sender{
     [self.navigationController popViewControllerAnimated:YES];
+}
+
+- (void)shareAction:(id)sender{
+    NSString *info = @"来自情迷相机的分享";
+    NSMutableArray *possItems = [NSMutableArray arrayWithCapacity:3];
+    [possItems addObject:info];
+    [possItems addObject:self.pictureImageView.image];
+    if (self.isVideo) {
+        [possItems addObject:self.videoURL];
+    }
+    UIActivityViewController *avc = [[UIActivityViewController alloc] initWithActivityItems:possItems applicationActivities:nil];
+    [self presentViewController:avc animated:YES completion:nil];
+}
+
+- (void)saveAction:(id)sender{
+    [self showLoadingHUD:nil];
+    if (@available(iOS 9.0, *)) {
+        WEAKSELF
+        id insertObject = self.isVideo?self.videoURL:self.pictureImageView.image;
+        [[MNGetPhotoAlbums shareManager] insertObject:insertObject isImage:!self.isVideo intoAlbumNamed:@"情迷相册" completionHandler:^(BOOL success) {
+            if (success) {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [weakSelf showLoadingHUD:@"保存成功"];
+                });
+            }else{
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [weakSelf showLoadingHUD:@"保存失败"];
+                });
+            }
+        }];
+    }else{
+        [self savedPhotosAlbum:self.pictureImageView.image];
+    }
+}
+
+- (void)savedPhotosAlbum:(UIImage *)processedImage{
+    UIImageWriteToSavedPhotosAlbum(processedImage, self, @selector(saveImage:didFinishSavingWithError:contextInfo:), nil);
+}
+
+- (void)saveImage:(UIImage *)image didFinishSavingWithError:(NSError *)error contextInfo:(void *)contextInfo{
+    if (!error) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self showLoadingHUD:@"保存成功"];
+        });
+    }else{
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self showLoadingHUD:@"保存失败"];
+        });
+    }
 }
 
 - (void)play:(UIButton *)btn{
@@ -200,21 +275,41 @@
 
 - (void)showFilters:(id)filter Desc:(NSString *)desc
 {
-    GPUImagePicture *imageSorce = [[GPUImagePicture alloc] initWithImage:self.picture smoothlyScaleOutput:YES];
-    [imageSorce addTarget:filter];
-    [imageSorce processImage];
-    
-    dispatch_async(dispatch_get_main_queue(), ^{
-        UIImage *filterImage = [filter imageFromCurrentFramebuffer];
-        dispatch_async(dispatch_get_main_queue(), ^{
-            self.pictureImageView.image = filterImage;
+    if ([desc isEqualToString:@"原图"]) {
+        self.saveBtn.enabled = NO;
+    }else{
+        self.saveBtn.enabled = YES;
+    }
+    UIImage *filterImage = nil;
+    if ([self.filterImageDictionary.allKeys containsObject:desc]) {
+        filterImage = [self.filterImageDictionary objectForKey:desc];
+        self.pictureImageView.image = filterImage;
+    }else{
+        [self.imageSource removeAllTargets];
+        [filter forceProcessingAtSize:self.picture.size];
+        [self.imageSource addTarget:filter];
+        [filter useNextFrameForImageCapture];
+        [self.imageSource processImage];
+        
+        dispatch_async(dispatch_get_global_queue(0, 0), ^{
+            UIImage *filterImage = [filter imageFromCurrentFramebuffer];
+            NSData *data = UIImageJPEGRepresentation(filterImage, 0.3);
+            UIImage *resultImage = [UIImage imageWithData:data];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                if (resultImage) {
+                    [self.filterImageDictionary setObject:resultImage forKey:desc];
+                    self.pictureImageView.image = resultImage;
+                }
+            });
         });
-    });
- 
+    }
+    
     self.lblDesc.hidden = NO;
     self.lblDesc.text = desc;
     [self.lblDesc sizeToFit];
     self.lblDesc.center = self.view.center;
+    self.lblDesc.alpha = 1;
+    self.lblDesc.transform = CGAffineTransformMakeScale(1, 1);
     [UIView animateWithDuration:0.6 delay:0.5 options:UIViewAnimationOptionCurveEaseInOut animations:^{
         self.lblDesc.transform = CGAffineTransformMakeScale(1.6, 1.6);
         self.lblDesc.alpha = 0.1;

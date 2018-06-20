@@ -10,6 +10,7 @@
 
 @interface ViewController : UIViewController
 
-
+- (void)showLoadingHUD:(NSString *)message;
+- (void)hideHUD;
 @end
 

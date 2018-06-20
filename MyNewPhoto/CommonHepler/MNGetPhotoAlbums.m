@@ -200,7 +200,10 @@
     option.resizeMode = PHImageRequestOptionsResizeModeFast;
     option.networkAccessAllowed = YES;
     [[PHCachingImageManager defaultManager] requestImageForAsset:asset targetSize:PHImageManagerMaximumSize contentMode:PHImageContentModeAspectFit options:option resultHandler:^(UIImage * _Nullable image, NSDictionary * _Nullable info) {
-        resultImage(image);
+//        NSLog(@"info:%@",info);
+        if ([info[@"PHImageResultIsDegradedKey"] intValue] == 0) {
+            resultImage(image);
+        }
     }];
 }
 
@@ -209,7 +212,7 @@
     options.version = PHImageRequestOptionsVersionCurrent;
     options.deliveryMode = PHImageRequestOptionsDeliveryModeHighQualityFormat;
     [[PHCachingImageManager defaultManager] requestAVAssetForVideo:asset options:options resultHandler:^(AVAsset * _Nullable asset, AVAudioMix * _Nullable audioMix, NSDictionary * _Nullable info) {
-        NSLog(@"info:%@",info);
+//        NSLog(@"info:%@",info);
         NSString *sandboxExtensionTokenKey = info[@"PHImageFileSandboxExtensionTokenKey"];
         NSArray * arr = [sandboxExtensionTokenKey componentsSeparatedByString:@";"];
         NSString *filePath = arr[arr.count - 1];
@@ -234,6 +237,115 @@
         return [UIImage imageWithCGImage:img];
     }
     return nil;
+}
+
+- (void)insertObject:(id)imageOrVideo isImage:(BOOL)isImage intoAlbumNamed:(NSString *)albumName completionHandler:(void (^)(BOOL success))complete {
+    //Fetch a collection in the photos library that has the title "albumNmame"
+    PHAssetCollection *collection = [self fetchAssetCollectionWithAlbumName:albumName];
+    
+    if (collection == nil) {
+        //If we were unable to find a collection named "albumName" we'll create it before inserting the image
+        [[PHPhotoLibrary sharedPhotoLibrary] performChanges:^{
+            [PHAssetCollectionChangeRequest creationRequestForAssetCollectionWithTitle:albumName];
+        } completionHandler:^(BOOL success, NSError * _Nullable error) {
+            if (error != nil) {
+                if (complete) {
+                    complete(NO);
+                }
+            }
+            
+            if (success) {
+                //Fetch the newly created collection (which we *assume* exists here)
+                PHAssetCollection *newCollection = [self fetchAssetCollectionWithAlbumName:albumName];
+                if (isImage) {
+                    [self insertImage:imageOrVideo intoAssetCollection:newCollection completionHandler:complete];
+                }else{
+                    [self insertVideo:imageOrVideo intoAssetCollection:newCollection completionHandler:complete];
+                }
+            }
+        }];
+    } else {
+        //If we found the existing AssetCollection with the title "albumName", insert into it
+        if (isImage) {
+            [self insertImage:imageOrVideo intoAssetCollection:collection completionHandler:complete];
+        }else{
+            [self insertVideo:imageOrVideo intoAssetCollection:collection completionHandler:complete];
+        }
+    }
+}
+
+- (PHAssetCollection *)fetchAssetCollectionWithAlbumName:(NSString *)albumName {
+    PHFetchOptions *fetchOptions = [PHFetchOptions new];
+    //Provide the predicate to match the title of the album.
+    fetchOptions.predicate = [NSPredicate predicateWithFormat:[NSString stringWithFormat:@"title == '%@'", albumName]];
+    //Fetch the album using the fetch option
+    PHFetchResult *fetchResult = [PHAssetCollection fetchAssetCollectionsWithType:PHAssetCollectionTypeAlbum subtype:PHAssetCollectionSubtypeAlbumRegular options:fetchOptions];
+    //Assuming the album exists and no album shares it's name, it should be the only result fetched
+    return fetchResult.firstObject;
+}
+
+- (void)insertImage:(UIImage *)image intoAssetCollection:(PHAssetCollection *)collection completionHandler:(void (^)(BOOL success))complete{
+    __block  NSString *assetLocalIdentifier;
+    [[PHPhotoLibrary sharedPhotoLibrary] performChanges:^{
+        if (@available(iOS 9.0, *)) {
+            assetLocalIdentifier = [PHAssetCreationRequest creationRequestForAssetFromImage:image].placeholderForCreatedAsset.localIdentifier;
+        }
+    } completionHandler:^(BOOL success, NSError * _Nullable error) {
+        if(success == NO){
+            if (complete) {
+                complete(NO);
+            }
+            return ;
+        }
+        
+        [[PHPhotoLibrary sharedPhotoLibrary] performChanges:^{
+            PHAsset *asset = [PHAsset fetchAssetsWithLocalIdentifiers:@[assetLocalIdentifier] options:nil].lastObject;
+            PHAssetCollectionChangeRequest *request = [PHAssetCollectionChangeRequest changeRequestForAssetCollection:collection];
+            [request addAssets:@[asset]];
+        } completionHandler:^(BOOL success, NSError * _Nullable error) {
+            if(success){
+                if (complete) {
+                    complete(YES);
+                }
+            }else{
+                if (complete) {
+                    complete(NO);
+                }
+            }
+        }];
+    }];
+}
+
+- (void)insertVideo:(NSURL *)videoUrl intoAssetCollection:(PHAssetCollection *)collection completionHandler:(void (^)(BOOL success))complete{
+    __block  NSString *assetLocalIdentifier;
+    [[PHPhotoLibrary sharedPhotoLibrary] performChanges:^{
+        if (@available(iOS 9.0, *)) {
+            assetLocalIdentifier = [PHAssetCreationRequest creationRequestForAssetFromVideoAtFileURL:videoUrl].placeholderForCreatedAsset.localIdentifier;
+        }
+    } completionHandler:^(BOOL success, NSError * _Nullable error) {
+        if(success == NO){
+            if (complete) {
+                complete(NO);
+            }
+            return ;
+        }
+        
+        [[PHPhotoLibrary sharedPhotoLibrary] performChanges:^{
+            PHAsset *asset = [PHAsset fetchAssetsWithLocalIdentifiers:@[assetLocalIdentifier] options:nil].lastObject;
+            PHAssetCollectionChangeRequest *request = [PHAssetCollectionChangeRequest changeRequestForAssetCollection:collection];
+            [request addAssets:@[asset]];
+        } completionHandler:^(BOOL success, NSError * _Nullable error) {
+            if(success){
+                if (complete) {
+                    complete(YES);
+                }
+            }else{
+                if (complete) {
+                    complete(NO);
+                }
+            }
+        }];
+    }];
 }
 
 @end

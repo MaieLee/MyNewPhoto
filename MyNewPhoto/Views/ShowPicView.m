@@ -7,8 +7,12 @@
 //
 
 #import "ShowPicView.h"
+#import <pthread.h>
 
 @interface ShowPicView ()
+{
+    pthread_mutex_t lock;
+}
 
 @property (strong, nonatomic) AVPlayer *myPlayer;//播放器
 @property (strong, nonatomic) AVPlayerItem *item;//播放单元
@@ -92,11 +96,17 @@
 }
 
 - (void)holdPicture{
+    pthread_mutex_lock(&lock);
     self.isHold = !self.isHold;
+    pthread_mutex_unlock(&lock);
     
     if (self.isHold) {
         [self.timer invalidate];
         self.timer = nil;
+        
+        if (self.detailComplete) {
+            self.detailComplete(YES);
+        }
         
         self.playIco.hidden = YES;
         
@@ -115,6 +125,10 @@
         if (!self.isSavePic) {
             [self.myPlayer pause];
             [self.playerLayer removeFromSuperlayer];
+        }
+        
+        if (self.detailComplete) {
+            self.detailComplete(NO);
         }
         
         self.delButton.hidden = YES;
@@ -186,6 +200,14 @@
 
 - (void)timerAction
 {
+    if (self.isHold) {
+        return;
+    }
+    
+    pthread_mutex_lock(&lock);
+    self.isHold = NO;
+    pthread_mutex_unlock(&lock);
+    
     [self.timer invalidate];
     self.timer = nil;
     

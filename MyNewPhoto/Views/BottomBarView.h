@@ -13,10 +13,8 @@ typedef void(^ShowFilterBlock) (id filter,NSString *desc);
 
 @interface BottomBarView : UIView
 
-@property (nonatomic, assign) BOOL isFilterPicture;
-
 @property (nonatomic, copy) ShowFilterBlock filterBlock;
-
+- (instancetype)initWithFrame:(CGRect)frame IsFilterPic:(BOOL)isFilter;
 - (void)show;
 - (void)hide;
 

@@ -33,7 +33,7 @@ static NSString *identifier = @"cameraFilterCellID";
         self.showsVerticalScrollIndicator = NO;
         
         [self registerClass:[FilterCollectionViewCell class] forCellWithReuseIdentifier:identifier];
-        
+        _textColor = [UIColor whiteColor];
         _selIndex = -1;
     }
     return self;
@@ -56,6 +56,7 @@ static NSString *identifier = @"cameraFilterCellID";
     cell.selImageView.image = [UIImage createTickImage];
     cell.selImageView.hidden = !fSModel.isSel;
     cell.descLabel.text = fSModel.desc;
+    cell.descLabel.textColor = self.textColor;
     
     return cell;
 }

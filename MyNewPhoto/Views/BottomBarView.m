@@ -20,6 +20,7 @@
 @property (nonatomic, strong) NSMutableArray *filtersArray;
 @property (nonatomic, assign) BOOL isHadLoadCameraView;
 @property (nonatomic, assign) BOOL isHadHide;
+@property (nonatomic, assign) BOOL isFilterPicture;
 @end
 
 @implementation BottomBarView
@@ -32,6 +33,12 @@
     return self;
 }
 
+- (instancetype)initWithFrame:(CGRect)frame IsFilterPic:(BOOL)isFilter{
+    _isFilterPicture = isFilter;
+    
+    return [self initWithFrame:frame];
+}
+
 - (void)setUpUI{
     self.clipsToBounds = YES;
     self.backgroundColor = [UIColor clearColor];
@@ -42,6 +49,10 @@
 {
     if ([MNAppDataHelper shareManager].filtersArray) {
         self.filtersArray = [MNAppDataHelper shareManager].filtersArray;
+        for (FilterSampleModel *fsModel in self.filtersArray) {
+            fsModel.isSel = NO;
+        }
+        
         [self addSubview:self.cameraFilterView];
     }else{
         dispatch_async(dispatch_get_global_queue(0, 0), ^{
@@ -84,6 +95,9 @@
         _cameraFilterView = [[CameraFilterView alloc] initWithFrame:CGRectMake(0, 0, self.frame.size.width, 63) collectionViewLayout:layout];
         _cameraFilterView.cameraFilterDelegate = self;
         _cameraFilterView.picArray = self.filtersArray;
+        if (self.isFilterPicture) {
+            _cameraFilterView.textColor = [UIColor blackColor];
+        }
         _cameraFilterView.backgroundColor = [UIColor clearColor];
     }
     
@@ -92,7 +106,7 @@
 
 - (UIImage *)setTheSampleImageFilter:(id)filter SampleImg:(UIImage *)inputImage
 {
-    [filter forceProcessingAtSize:CGSizeMake(120, 120)];
+    [filter forceProcessingAtSize:inputImage.size];
     [filter useNextFrameForImageCapture];
     
     GPUImagePicture *imageSorce = [[GPUImagePicture alloc] initWithImage:inputImage smoothlyScaleOutput:YES];
@@ -111,11 +125,6 @@
 
 - (void)show
 {
-//    if (!self.isHadLoadCameraView) {
-//        self.isHadLoadCameraView = YES;
-//        [self addSubview:self.cameraFilterView];
-//    }
-    
     self.isHadHide = NO;
     [UIView animateWithDuration:0.2 animations:^{
         self.transform = CGAffineTransformMakeTranslation(0, 0);

@@ -48,6 +48,7 @@ typedef NS_ENUM(NSInteger, CameraManagerFlashMode) {
 @property (nonatomic, strong) UIButton *flashBtn;
 @property (nonatomic, assign) BOOL isRefuseAccessAudio;
 @property (nonatomic, strong) ShowPicView *showPicView;
+@property (nonatomic, strong) GPUImageUIElement *uiElement;
 
 @end
 
@@ -165,6 +166,15 @@ typedef NS_ENUM(NSInteger, CameraManagerFlashMode) {
     _showPicView.complete = ^(BOOL isSavePic, UIImage *saveImage) {
         if (isSavePic) {
             [weakSelf savedPhotosAlbum:saveImage];
+        }else{
+            [weakSelf saveVideoAlbum];
+        }
+    };
+    _showPicView.detailComplete = ^(BOOL isShow) {
+        if (isShow) {
+            [weakSelf.gpuStillCamera stopCameraCapture];
+        }else{
+            [weakSelf.gpuStillCamera startCameraCapture];
         }
     };
     
@@ -233,11 +243,18 @@ typedef NS_ENUM(NSInteger, CameraManagerFlashMode) {
     [self.selFilter removeAllTargets];
     
     [self.gpuVideoCamera addTarget:self.selFilter];
+    [self.uiElement addTarget:self.selFilter];
     [self.selFilter addTarget:self.gpuImageView];
     
     if (self.gpuVideoCamera.cameraPosition != self.cameraPosition) {
         [self.gpuVideoCamera rotateCamera];
     }
+    
+    __unsafe_unretained GPUImageUIElement *weakOverlay = self.uiElement;
+    [self.selFilter disableSecondFrameCheck];//这样只是在需要更新水印的时候检查更新就不会调用很多次
+    runAsynchronouslyOnVideoProcessingQueue(^{
+        [weakOverlay update];
+    });
     
     self.flashBtn.hidden = YES;
     
@@ -258,6 +275,11 @@ typedef NS_ENUM(NSInteger, CameraManagerFlashMode) {
         if (!self.isRefuseAccessAudio) {
             [_gpuVideoCamera addAudioInputsAndOutputs];
         }
+        
+        UIImage *waterImage = [UIImage imageNamed:@"watermark"];
+        UIImageView *waterImageView = [[UIImageView alloc] initWithImage:waterImage];
+        
+        _uiElement = [[GPUImageUIElement alloc] initWithView:waterImageView];
     }
     
     return _gpuVideoCamera;
@@ -525,21 +547,26 @@ typedef NS_ENUM(NSInteger, CameraManagerFlashMode) {
 }
 
 - (void)savedPhotosAlbum:(UIImage *)processedImage{
-    dispatch_async(dispatch_get_main_queue(), ^{
-        UIImageWriteToSavedPhotosAlbum(processedImage, self, @selector(saveImage:didFinishSavingWithError:contextInfo:), nil);
+    UIImage *waterImage = [UIImage imageNamed:@"watermark"];
+    UIImage *saveImage = [UIImage waterImageWithImage:processedImage waterImage:waterImage waterImageRect:CGRectMake(40, processedImage.size.height-waterImage.size.height-40, waterImage.size.width, waterImage.size.height)];
+    dispatch_async(dispatch_get_global_queue(0, 0), ^{
+        if (@available(iOS 9.0, *)) {
+            [[MNGetPhotoAlbums shareManager] insertObject:saveImage isImage:YES intoAlbumNamed:@"情迷相册" completionHandler:nil];
+        }else{
+            UIImageWriteToSavedPhotosAlbum(saveImage, self, @selector(saveImage:didFinishSavingWithError:contextInfo:), nil);
+        }
     });
 }
 
 - (void)saveImage:(UIImage *)image didFinishSavingWithError:(NSError *)error contextInfo:(void *)contextInfo{
     if(!error) {
-        NSLog(@"保存成功！");
+//        NSLog(@"保存成功！");
     }else{
-        NSLog(@"保存失败！");
+//        NSLog(@"保存失败！");
     }
 }
 
 - (void)preVideoRecording{
-
     AVAuthorizationStatus authStatus = [MNGetPhotoAlbums mediaAuthorizationStatus:AVMediaTypeAudio];
     
     if (authStatus == AVAuthorizationStatusDenied) {
@@ -601,18 +628,21 @@ typedef NS_ENUM(NSInteger, CameraManagerFlashMode) {
 }
 
 - (void)saveVideoAlbum{
-    dispatch_async(dispatch_get_main_queue(), ^{
-        UISaveVideoAtPathToSavedPhotosAlbum(self->pathToMovie, self, @selector(saveVideo:didFinishSavingWithError:contextInfo:), nil);
+    dispatch_async(dispatch_get_global_queue(0, 0), ^{
+        if (@available(iOS 9.0, *)) {
+            [[MNGetPhotoAlbums shareManager] insertObject:[NSURL fileURLWithPath:self->pathToMovie] isImage:NO intoAlbumNamed:@"情迷相册" completionHandler:nil];
+        }else{
+            UISaveVideoAtPathToSavedPhotosAlbum(self->pathToMovie, self, @selector(saveVideo:didFinishSavingWithError:contextInfo:), nil);
+        }
     });
 }
 
 - (void)saveVideo:(NSString *)videoPath didFinishSavingWithError:(NSError *)error
   contextInfo:(void *)contextInfo {
-    
     if(!error) {
-        NSLog(@"保存成功！");
+//        NSLog(@"保存成功！");
     }else{
-        NSLog(@"保存失败！");
+//        NSLog(@"保存失败！");
     }
 }
 
@@ -650,6 +680,13 @@ typedef NS_ENUM(NSInteger, CameraManagerFlashMode) {
         [self.gpuStillCamera addTarget:filterGroup];
     }else{
         [self.gpuVideoCamera addTarget:filterGroup];
+        [self.uiElement addTarget:filterGroup];
+        
+        __unsafe_unretained GPUImageUIElement *weakOverlay = self.uiElement;
+        [filterGroup disableSecondFrameCheck];//这样只是在需要更新水印的时候检查更新就不会调用很多次
+        runAsynchronouslyOnVideoProcessingQueue(^{
+            [weakOverlay update];
+        });
     }
     [filterGroup addTarget:self.gpuImageView];
     

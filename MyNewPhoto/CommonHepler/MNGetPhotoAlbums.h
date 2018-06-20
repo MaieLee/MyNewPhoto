@@ -86,4 +86,12 @@
  *
  **/
 - (UIImage *)firstFrameWithVideoURL:(NSString *)urlString size:(CGSize)size;
+
+/**
+ 保存到自建相册
+
+ @param image 需要保存的照片
+ @param albumName 相机名称
+ */
+- (void)insertObject:(id)imageOrVideo isImage:(BOOL)isImage intoAlbumNamed:(NSString *)albumName completionHandler:(void (^)(BOOL success))complete;
 @end
