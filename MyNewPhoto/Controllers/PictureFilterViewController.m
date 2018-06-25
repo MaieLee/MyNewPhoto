@@ -16,6 +16,7 @@
 @interface PictureFilterViewController ()<UIGestureRecognizerDelegate>
 
 @property (nonatomic, strong) GPUImagePicture *imageSource;
+@property (nonatomic, strong) GPUImageOutput<GPUImageInput> *selFilter;
 @property (nonatomic, strong) NSMutableDictionary *filterImageDictionary;
 @property (nonatomic, strong) UIImageView *pictureImageView;
 @property (nonatomic, strong) UIButton *saveBtn;
@@ -277,31 +278,33 @@
 {
     if ([desc isEqualToString:@"原图"]) {
         self.saveBtn.enabled = NO;
+        self.pictureImageView.image = self.picture;
     }else{
         self.saveBtn.enabled = YES;
-    }
-    UIImage *filterImage = nil;
-    if ([self.filterImageDictionary.allKeys containsObject:desc]) {
-        filterImage = [self.filterImageDictionary objectForKey:desc];
-        self.pictureImageView.image = filterImage;
-    }else{
-        [self.imageSource removeAllTargets];
-        [filter forceProcessingAtSize:self.picture.size];
-        [self.imageSource addTarget:filter];
-        [filter useNextFrameForImageCapture];
-        [self.imageSource processImage];
-        
-        dispatch_async(dispatch_get_global_queue(0, 0), ^{
-            UIImage *filterImage = [filter imageFromCurrentFramebuffer];
-            NSData *data = UIImageJPEGRepresentation(filterImage, 0.3);
-            UIImage *resultImage = [UIImage imageWithData:data];
-            dispatch_async(dispatch_get_main_queue(), ^{
-                if (resultImage) {
-                    [self.filterImageDictionary setObject:resultImage forKey:desc];
-                    self.pictureImageView.image = resultImage;
-                }
+        UIImage *filterImage = nil;
+        if ([self.filterImageDictionary.allKeys containsObject:desc]) {
+            filterImage = [self.filterImageDictionary objectForKey:desc];
+            self.pictureImageView.image = filterImage;
+        }else{
+            [self.imageSource removeAllTargets];
+            [filter forceProcessingAtSize:self.picture.size];
+            [self.imageSource addTarget:filter];
+            [filter useNextFrameForImageCapture];
+            [self.imageSource processImage];
+            self.selFilter = filter;
+            
+            dispatch_async(dispatch_get_global_queue(0, 0), ^{
+                UIImage *filterImage = [filter imageFromCurrentFramebuffer];
+                UIImage *resultImage = [UIImage imageWithData:UIImageJPEGRepresentation(filterImage, 0.3)];
+                
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    if (resultImage) {
+                        [self.filterImageDictionary setObject:resultImage forKey:desc];
+                        self.pictureImageView.image = resultImage;
+                    }
+                });
             });
-        });
+        }
     }
     
     self.lblDesc.hidden = NO;
@@ -360,6 +363,14 @@
     [self.playerLayer removeFromSuperlayer];
     self.myPlayer = nil;
     [[NSNotificationCenter defaultCenter] removeObserver:self];
+    
+    [self.imageSource removeAllTargets];
+    self.imageSource = nil;
+    [self.selFilter removeAllTargets];
+    self.selFilter = nil;
+    
+    [self.filterImageDictionary removeAllObjects];
+    self.filterImageDictionary = nil;
 }
 
 - (void)didReceiveMemoryWarning {

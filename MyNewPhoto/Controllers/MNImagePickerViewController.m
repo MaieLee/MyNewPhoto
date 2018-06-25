@@ -14,6 +14,7 @@
 #import "SysPictureModel.h"
 #import "MNStringHelper.h"
 #import "PictureFilterViewController.h"
+#import "VideoFilterViewController.h"
 
 static NSString *const cellIdentf = @"showPictureCell";
 static NSString *const collectCellIdentf = @"collectionCell";
@@ -181,6 +182,19 @@ static NSString *const collectCellIdentf = @"collectionCell";
     SysPictureModel *sysPicModel = _picArray[indexPath.row];
     WEAKSELF
     [[MNGetPhotoAlbums shareManager] getAlbumImageWithAsset:sysPicModel.asset resultImage:^(UIImage *image) {
+//        if (sysPicModel.asset.mediaType == PHAssetMediaTypeVideo) {
+//            VideoFilterViewController *videoVC = [[VideoFilterViewController alloc] init];
+//            videoVC.picture = image;
+//            videoVC.videoURL = sysPicModel.assetURL;
+//            [weakSelf.navigationController pushViewController:videoVC animated:YES];
+//        }else{
+//            PictureFilterViewController *picVC = [[PictureFilterViewController alloc] init];
+//            picVC.picture = image;
+//            picVC.isVideo = sysPicModel.asset.mediaType == PHAssetMediaTypeVideo;
+//            picVC.videoURL = sysPicModel.assetURL;
+//            [weakSelf.navigationController pushViewController:picVC animated:YES];
+//        }
+        
         PictureFilterViewController *picVC = [[PictureFilterViewController alloc] init];
         picVC.picture = image;
         picVC.isVideo = sysPicModel.asset.mediaType == PHAssetMediaTypeVideo;

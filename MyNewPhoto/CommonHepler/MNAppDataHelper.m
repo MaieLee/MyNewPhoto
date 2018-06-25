@@ -26,7 +26,7 @@
     _filtersArray = [NSMutableArray arrayWithCapacity:filtersArray.count];
     for (FilterSampleModel *filterSample in filtersArray) {
         FilterSampleModel *filter = [[FilterSampleModel alloc] init];
-        filter.filter = filterSample.filter;
+        filter.filterClassName = filterSample.filterClassName;
         filter.image = filterSample.image;
         filter.desc = filterSample.desc;
         filter.index = filterSample.index;

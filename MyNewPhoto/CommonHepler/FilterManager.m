@@ -10,15 +10,13 @@
 
 @implementation FilterManager
 
-- (id)filterTheImage:(NSInteger)index{
-    NSDictionary *filterDict = self.filterArray[index];
-    Class filterClass = NSClassFromString(filterDict[@"name"]);
+- (id)filterTheName:(NSString *)fillerName{
+    Class filterClass = NSClassFromString(fillerName);
     if (!filterClass) {
         return nil;
     }
     
     id instance = [[filterClass alloc] init];
-    
     return instance;
 }
 

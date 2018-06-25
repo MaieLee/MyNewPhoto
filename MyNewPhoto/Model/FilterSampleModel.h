@@ -11,9 +11,9 @@
 @interface FilterSampleModel : NSObject
 
 @property (nonatomic, assign) NSInteger index;
-@property (nonatomic, strong) id filter;
+@property (nonatomic, copy)   NSString *filterClassName;
 @property (nonatomic, strong) UIImage *image;
-@property (nonatomic, copy) NSString *desc;
+@property (nonatomic, copy)   NSString *desc;
 @property (nonatomic, assign) BOOL isSel;
 
 @end

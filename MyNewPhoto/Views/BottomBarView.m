@@ -52,7 +52,7 @@
         for (FilterSampleModel *fsModel in self.filtersArray) {
             fsModel.isSel = NO;
         }
-        
+
         [self addSubview:self.cameraFilterView];
     }else{
         dispatch_async(dispatch_get_global_queue(0, 0), ^{
@@ -62,10 +62,10 @@
                 UIImage *image = [UIImage imageNamed:@"filter"];
                 FilterSampleModel *fSModel = [[FilterSampleModel alloc] init];
                 fSModel.index = index;
-                fSModel.filter = [self.filterManager filterTheImage:index];
-                fSModel.image = [self setTheSampleImageFilter:[self.filterManager filterTheImage:index] SampleImg:image];
-                fSModel.isSel = NO;
+                fSModel.filterClassName = self.filterManager.filterArray[index][@"name"];
                 fSModel.desc = self.filterManager.filterArray[index][@"desc"];
+                fSModel.image = [self setTheSampleImageFilter:[self.filterManager filterTheName:fSModel.filterClassName] SampleImg:image];
+                fSModel.isSel = NO;
                 [filterArray addObject:fSModel];
             }
             
@@ -119,7 +119,7 @@
 - (void)switchCameraFilter:(NSInteger)index {
     FilterSampleModel *fsModel = self.filtersArray[index];
     if (self.filterBlock) {
-        self.filterBlock(fsModel.filter,fsModel.desc);
+        self.filterBlock([self.filterManager filterTheName:fsModel.filterClassName],fsModel.desc);
     }
 }
 

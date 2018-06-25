@@ -108,6 +108,7 @@
 		34CA5CCD20A5256B00FB988D /* FilterSampleModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 34CA5CCC20A5256B00FB988D /* FilterSampleModel.m */; };
 		34D5DD0F209DCCA000F9182D /* GPUImageBeautifyFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = 34D5DD0E209DCCA000F9182D /* GPUImageBeautifyFilter.m */; };
 		34E7A46E20A2DB4F00DEE629 /* CameraFilterView.m in Sources */ = {isa = PBXBuildFile; fileRef = 34E7A46D20A2DB4F00DEE629 /* CameraFilterView.m */; };
+		3F4AA60F20E09F8E00ED3CB3 /* VideoFilterViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3F4AA60E20E09F8E00ED3CB3 /* VideoFilterViewController.m */; };
 		3F7F324420D115D4006B2ED7 /* MNAppDataHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 3F7F324320D115D4006B2ED7 /* MNAppDataHelper.m */; };
 		3F9659C920C642470029D381 /* MNStringHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 3F9659C820C642470029D381 /* MNStringHelper.m */; };
 		9D4027BD49C8E420A7B313D4 /* libPods-MyNewPhoto.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1EC42C55EF4D683FABD04253 /* libPods-MyNewPhoto.a */; };
@@ -308,6 +309,8 @@
 		34D5DD0E209DCCA000F9182D /* GPUImageBeautifyFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GPUImageBeautifyFilter.m; sourceTree = "<group>"; };
 		34E7A46C20A2DB4F00DEE629 /* CameraFilterView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CameraFilterView.h; sourceTree = "<group>"; };
 		34E7A46D20A2DB4F00DEE629 /* CameraFilterView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CameraFilterView.m; sourceTree = "<group>"; };
+		3F4AA60D20E09F8E00ED3CB3 /* VideoFilterViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = VideoFilterViewController.h; sourceTree = "<group>"; };
+		3F4AA60E20E09F8E00ED3CB3 /* VideoFilterViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = VideoFilterViewController.m; sourceTree = "<group>"; };
 		3F7F324220D115D4006B2ED7 /* MNAppDataHelper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MNAppDataHelper.h; sourceTree = "<group>"; };
 		3F7F324320D115D4006B2ED7 /* MNAppDataHelper.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MNAppDataHelper.m; sourceTree = "<group>"; };
 		3F9659C720C642470029D381 /* MNStringHelper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MNStringHelper.h; sourceTree = "<group>"; };
@@ -532,6 +535,8 @@
 				34A8146320AAE1BB00971CBA /* PictureFilterViewController.m */,
 				349A982D20ABD1CF0064E2A1 /* MNImagePickerViewController.h */,
 				349A982E20ABD1CF0064E2A1 /* MNImagePickerViewController.m */,
+				3F4AA60D20E09F8E00ED3CB3 /* VideoFilterViewController.h */,
+				3F4AA60E20E09F8E00ED3CB3 /* VideoFilterViewController.m */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -897,6 +902,7 @@
 				34CA5CCD20A5256B00FB988D /* FilterSampleModel.m in Sources */,
 				34922BB1209BE4090009FEB5 /* ToolBarView.m in Sources */,
 				347C65EF20A59EAC004B07D8 /* FWEarlybirdFilter.m in Sources */,
+				3F4AA60F20E09F8E00ED3CB3 /* VideoFilterViewController.m in Sources */,
 				3470A85420994DD1003972FD /* AppDelegate.m in Sources */,
 				347C65FE20A59EAC004B07D8 /* FWWaldenFilter.m in Sources */,
 				347C65F720A59EAC004B07D8 /* FWNashvilleFilter.m in Sources */,

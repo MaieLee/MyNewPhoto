@@ -10,5 +10,5 @@
 
 @interface FilterManager : NSObject
 @property (nonatomic, strong) NSArray *filterArray;
-- (id)filterTheImage:(NSInteger)index;
+- (id)filterTheName:(NSString *)fillerName;
 @end
