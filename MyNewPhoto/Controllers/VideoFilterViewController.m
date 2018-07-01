@@ -24,6 +24,7 @@
 @property (nonatomic, strong) UIView *bottomView;
 @property (strong, nonatomic) AVPlayer *myPlayer;//播放器
 @property (strong, nonatomic) AVPlayerItem *playItem;//播放单元
+@property (nonatomic, strong) AVAsset *asset;
 @end
 
 @implementation VideoFilterViewController
@@ -97,6 +98,12 @@
     self.filterImageDictionary = [NSMutableDictionary dictionaryWithCapacity:0];
     
     [self addNotification];
+    
+    [[PHImageManager defaultManager] requestAVAssetForVideo:self.videoAsset options:[PHVideoRequestOptions new] resultHandler:^(AVAsset * avasset, AVAudioMix * audioMix, NSDictionary * info) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            weakSelf.asset = avasset;
+        });
+    }];
 }
 
 - (void)backAction:(id)sender{
@@ -202,15 +209,23 @@
 - (void)saveAction:(id)sender{
     [self showLoadingHUD:nil];
     NSURL *movieURL = [NSURL fileURLWithPath:self.fileSavePath];
-    self.movieWriter = [[GPUImageMovieWriter alloc] initWithMovieURL:movieURL size:CGSizeMake(self.picture.size.width, self.picture.size.height)];//视频存放路径及输出视频宽高
-    [self.selFilter addTarget:self.movieWriter];
-    self.movieWriter.shouldPassthroughAudio = YES;
-    self.movieWriter.hasAudioTrack = YES;
-    self.gpuMovie.audioEncodingTarget = self.movieWriter;
     
-    [self.gpuMovie enableSynchronizedEncodingUsingMovieWriter:self.movieWriter];
-    [self.gpuMovie startProcessing];
+    GPUImageMovie *movieFile = [[GPUImageMovie alloc] initWithAsset:self.asset];
+    
+    self.movieWriter = [[GPUImageMovieWriter alloc] initWithMovieURL:movieURL size:CGSizeMake(self.picture.size.width, self.picture.size.height)];//视频存放路径及输出视频宽高
+    [movieFile addTarget:self.selFilter];
+    
+    self.movieWriter.shouldPassthroughAudio = YES;
+    if ([[self.asset tracksWithMediaType:AVMediaTypeAudio] count] > 0){
+        movieFile.audioEncodingTarget = self.movieWriter;
+    } else {//no audio
+        movieFile.audioEncodingTarget = nil;
+    }
+    
+    [movieFile enableSynchronizedEncodingUsingMovieWriter:self.movieWriter];
+    [self.selFilter addTarget:self.movieWriter];
     [self.movieWriter startRecording];
+    [movieFile startProcessing];
     
     WEAKSELF
     [self.movieWriter setFailureBlock:^(NSError *error) {

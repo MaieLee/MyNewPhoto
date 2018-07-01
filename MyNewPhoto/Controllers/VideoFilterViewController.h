@@ -7,8 +7,10 @@
 //
 
 #import "ViewController.h"
+#import <Photos/Photos.h>
 
 @interface VideoFilterViewController : ViewController
 @property (nonatomic, strong) UIImage *picture;
 @property (nonatomic, strong) NSURL *videoURL;
+@property (nonatomic, strong) PHAsset *videoAsset;
 @end

@@ -20,6 +20,8 @@
 #define kScreenHeight  [UIScreen mainScreen].bounds.size.height
 #define kScreenWidth   [UIScreen mainScreen].bounds.size.width
 
+#define kIsPhoneX ([UIScreen instancesRespondToSelector:@selector(currentMode)] ? CGSizeEqualToSize(CGSizeMake(1125, 2436), [[UIScreen mainScreen] currentMode].size) : NO)
+
 #define MNCache @"MNCache"
 #define FiltersCache @"FiltersCache"
 

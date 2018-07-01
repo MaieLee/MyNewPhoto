@@ -43,21 +43,24 @@
     self.pictureImageView.userInteractionEnabled = YES;
     [self.view addSubview:self.pictureImageView];
     
-    UIView *headerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, screenSize.width, 68)];
+    CGFloat headerHeight = kIsPhoneX?80:68;
+    CGFloat btnTop = kIsPhoneX?27:14;
+    
+    UIView *headerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, screenSize.width, headerHeight)];
     [self.view addSubview:headerView];
     headerView.backgroundColor = [[UIColor whiteColor] colorWithAlphaComponent:0.9];
     UIButton *backBtn = [UIButton buttonWithType:UIButtonTypeCustom];
     [backBtn setImage:[UIImage imageNamed:@"back_black"] forState:UIControlStateNormal];
-    backBtn.frame = CGRectMake(10, 0, 40, 40);
+    backBtn.frame = CGRectMake(10, btnTop, 40, 40);
     [headerView addSubview:backBtn];
     [backBtn addTarget:self action:@selector(backAction:) forControlEvents:UIControlEventTouchUpInside];
-    backBtn.center = CGPointMake(backBtn.center.x, headerView.center.y);
+
     UIButton *shareBtn = [UIButton buttonWithType:UIButtonTypeCustom];
     [shareBtn setImage:[UIImage imageNamed:@"share"] forState:UIControlStateNormal];
-    shareBtn.frame = CGRectMake(screenSize.width-50, 0, 40, 40);
+    shareBtn.frame = CGRectMake(screenSize.width-50, btnTop, 40, 40);
     [headerView addSubview:shareBtn];
     [shareBtn addTarget:self action:@selector(shareAction:) forControlEvents:UIControlEventTouchUpInside];
-    shareBtn.center = CGPointMake(shareBtn.center.x, headerView.center.y);
+    
     self.headerView = headerView;
     
     if (self.isVideo) {
@@ -77,7 +80,8 @@
         
         [self addNotification];
     }else{
-        _bottomView = [[UIView alloc] initWithFrame:CGRectMake(0, screenSize.height-63, screenSize.width, 68)];
+        CGFloat bottomHeigh = kIsPhoneX?85:68;
+        _bottomView = [[UIView alloc] initWithFrame:CGRectMake(0, screenSize.height-bottomHeigh+5, screenSize.width, bottomHeigh)];
         _bottomView.backgroundColor = [[UIColor whiteColor] colorWithAlphaComponent:0.9];
         [self.view addSubview:_bottomView];
         
@@ -155,8 +159,8 @@
     self.isHiddenView = !self.isHiddenView;
     if (self.isHiddenView) {
         [UIView animateWithDuration:0.2 animations:^{
-            self.headerView.transform = CGAffineTransformMakeTranslation(0, -68);
-            self.bottomView.transform = CGAffineTransformMakeTranslation(0, 63);
+            self.headerView.transform = CGAffineTransformMakeTranslation(0, -self.headerView.frame.size.height);
+            self.bottomView.transform = CGAffineTransformMakeTranslation(0, self.bottomView.frame.size.height-5);
         }];
     }else{
         [UIView animateWithDuration:0.2 animations:^{
@@ -248,7 +252,7 @@
     btn.selected = !btn.isSelected;
     if (btn.isSelected) {
         [UIView animateWithDuration:0.2 animations:^{
-            self.headerView.transform = CGAffineTransformMakeTranslation(0, -68);
+            self.headerView.transform = CGAffineTransformMakeTranslation(0, -self.headerView.frame.size.height);
             btn.alpha = 0;
         } completion:^(BOOL finished) {
             btn.center = CGPointMake(self.view.frame.size.width-btn.frame.size.width/2-10, self.view.frame.size.height-btn.frame.size.height/2-10);

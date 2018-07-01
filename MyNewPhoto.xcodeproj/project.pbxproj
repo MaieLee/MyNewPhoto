@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1893050620E873DF00C324F9 /* SettingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1893050420E873DF00C324F9 /* SettingViewController.m */; };
 		342EB0C4209C391C006F762B /* UIImage+RoundCorner.m in Sources */ = {isa = PBXBuildFile; fileRef = 342EB0C3209C391C006F762B /* UIImage+RoundCorner.m */; };
 		342EB0CA209C3CB3006F762B /* CyclesView.m in Sources */ = {isa = PBXBuildFile; fileRef = 342EB0C9209C3CB3006F762B /* CyclesView.m */; };
 		3432591920AD652D00C11FFE /* MNPictrueCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 3432591820AD652D00C11FFE /* MNPictrueCollectionViewCell.m */; };
@@ -146,6 +147,8 @@
 
 /* Begin PBXFileReference section */
 		1312EE20BA627F33388B0604 /* Pods-MyNewPhoto.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MyNewPhoto.release.xcconfig"; path = "Pods/Target Support Files/Pods-MyNewPhoto/Pods-MyNewPhoto.release.xcconfig"; sourceTree = "<group>"; };
+		1893050320E873DF00C324F9 /* SettingViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SettingViewController.h; sourceTree = "<group>"; };
+		1893050420E873DF00C324F9 /* SettingViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SettingViewController.m; sourceTree = "<group>"; };
 		1EC42C55EF4D683FABD04253 /* libPods-MyNewPhoto.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-MyNewPhoto.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		342EB0C2209C391C006F762B /* UIImage+RoundCorner.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "UIImage+RoundCorner.h"; sourceTree = "<group>"; };
 		342EB0C3209C391C006F762B /* UIImage+RoundCorner.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "UIImage+RoundCorner.m"; sourceTree = "<group>"; };
@@ -537,6 +540,8 @@
 				349A982E20ABD1CF0064E2A1 /* MNImagePickerViewController.m */,
 				3F4AA60D20E09F8E00ED3CB3 /* VideoFilterViewController.h */,
 				3F4AA60E20E09F8E00ED3CB3 /* VideoFilterViewController.m */,
+				1893050320E873DF00C324F9 /* SettingViewController.h */,
+				1893050420E873DF00C324F9 /* SettingViewController.m */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -888,6 +893,7 @@
 			files = (
 				3482675320BFEBD100E17BEE /* ShowPicView.m in Sources */,
 				3470A85720994DD1003972FD /* ViewController.m in Sources */,
+				1893050620E873DF00C324F9 /* SettingViewController.m in Sources */,
 				34A8146420AAE1BB00971CBA /* PictureFilterViewController.m in Sources */,
 				3472093F20A972C8009A8DB9 /* GPUImageFourInputFilter.m in Sources */,
 				349A983820AC27800064E2A1 /* MNTitleButton.m in Sources */,

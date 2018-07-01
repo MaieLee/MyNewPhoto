@@ -38,7 +38,8 @@ static NSString *const collectCellIdentf = @"collectionCell";
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     self.view.backgroundColor = [UIColor whiteColor];
-    _headerView = [[ImgHeaderView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 68)];
+    CGFloat headerHeight = kIsPhoneX?80:68;
+    _headerView = [[ImgHeaderView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, headerHeight)];
     WEAKSELF
     _headerView.backBlock = ^{
         [weakSelf.navigationController popViewControllerAnimated:YES];
@@ -186,6 +187,7 @@ static NSString *const collectCellIdentf = @"collectionCell";
 //            VideoFilterViewController *videoVC = [[VideoFilterViewController alloc] init];
 //            videoVC.picture = image;
 //            videoVC.videoURL = sysPicModel.assetURL;
+//            videoVC.videoAsset = sysPicModel.asset;
 //            [weakSelf.navigationController pushViewController:videoVC animated:YES];
 //        }else{
 //            PictureFilterViewController *picVC = [[PictureFilterViewController alloc] init];

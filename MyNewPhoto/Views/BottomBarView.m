@@ -139,7 +139,7 @@
     }
     
     [UIView animateWithDuration:0.2 animations:^{
-        self.transform = CGAffineTransformMakeTranslation(0, 63);
+        self.transform = CGAffineTransformMakeTranslation(0, self.frame.size.height);
     } completion:^(BOOL finished) {
         self.isHadHide = YES;
     }];

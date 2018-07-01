@@ -16,6 +16,7 @@
 #import "CameraButtonView.h"
 #import "MNImagePickerViewController.h"
 #import "ShowPicView.h"
+#import "SettingViewController.h"
 
 //闪光灯状态
 typedef NS_ENUM(NSInteger, CameraManagerFlashMode) {
@@ -105,14 +106,24 @@ typedef NS_ENUM(NSInteger, CameraManagerFlashMode) {
     self.gpuImageView = [[GPUImageView alloc] initWithFrame:CGRectMake(0, 0, viewFrame.size.width, viewFrame.size.height)];
     self.gpuImageView.fillMode = kGPUImageFillModePreserveAspectRatio;
     [self.view addSubview:self.gpuImageView];
+//    self.gpuImageView.backgroundColor = [UIColor blackColor];
     
     [self addSwipeGesture];
+    
+    CGFloat btnTop = kIsPhoneX?37:15;
+    UIButton *settingBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+    [settingBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    [settingBtn setImage:[UIImage imageNamed:@"setting"] forState:UIControlStateNormal];
+    settingBtn.frame = CGRectMake(10, btnTop, 60, 40);
+    [self.view addSubview:settingBtn];
+    [settingBtn addTarget:self action:@selector(settingAction) forControlEvents:UIControlEventTouchUpInside];
     
     UIButton *flashBtn = [UIButton buttonWithType:UIButtonTypeCustom];
     [flashBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     [flashBtn setImage:[UIImage imageNamed:@"flash_0"] forState:UIControlStateNormal];
-    flashBtn.frame = CGRectMake(10, 15, 60, 40);
+    flashBtn.frame = CGRectMake(0, btnTop, 60, 40);
     [self.view addSubview:flashBtn];
+    flashBtn.center = CGPointMake(self.view.center.x, flashBtn.center.y);
     [flashBtn addTarget:self action:@selector(changeFlashMode:) forControlEvents:UIControlEventTouchUpInside];
     self.flashBtn = flashBtn;
     
@@ -120,12 +131,14 @@ typedef NS_ENUM(NSInteger, CameraManagerFlashMode) {
     [switchCameraBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     [switchCameraBtn setImage:[UIImage imageNamed:@"switchcamera"] forState:UIControlStateNormal];
     switchCameraBtn.titleLabel.font = mnFont(14);
-    switchCameraBtn.frame = CGRectMake(viewFrame.size.width-70, 15, 60, 40);
+    switchCameraBtn.frame = CGRectMake(viewFrame.size.width-70, btnTop, 60, 40);
     [self.view addSubview:switchCameraBtn];
     [switchCameraBtn addTarget:self action:@selector(switchCamera:) forControlEvents:UIControlEventTouchUpInside];
     
+    CGFloat cameraBtnTop = kIsPhoneX?viewFrame.size.height - 157:viewFrame.size.height - 140;
+    
     WEAKSELF
-    _cameraBtn = [[CameraButtonView alloc] initWithFrame:CGRectMake(0, viewFrame.size.height - 140, 87, 87)];
+    _cameraBtn = [[CameraButtonView alloc] initWithFrame:CGRectMake(0, cameraBtnTop, 87, 87)];
     [self.view addSubview:_cameraBtn];
     _cameraBtn.hidden = YES;
     _cameraBtn.center = CGPointMake(self.view.center.x, _cameraBtn.center.y);
@@ -146,9 +159,10 @@ typedef NS_ENUM(NSInteger, CameraManagerFlashMode) {
         }
     };
     
-    _bottomView = [[BottomBarView alloc] initWithFrame:CGRectMake(0, viewFrame.size.height-63, viewFrame.size.width, 63)];
+    CGFloat bottomHeigh = kIsPhoneX?80:63;
+    _bottomView = [[BottomBarView alloc] initWithFrame:CGRectMake(0, viewFrame.size.height-bottomHeigh, viewFrame.size.width, bottomHeigh)];
     [self.view addSubview:_bottomView];
-    _bottomView.transform = CGAffineTransformMakeTranslation(0, 63);
+    _bottomView.transform = CGAffineTransformMakeTranslation(0, bottomHeigh);
     _bottomView.filterBlock = ^(id filter, NSString *desc) {
         [weakSelf showFilters:filter Desc:desc];
     };
@@ -339,6 +353,12 @@ typedef NS_ENUM(NSInteger, CameraManagerFlashMode) {
             [[UIApplication sharedApplication] openURL:url];
         }
     }
+}
+
+- (void)settingAction
+{
+    SettingViewController *settingVc = [[SettingViewController alloc] init];
+    [self presentViewController:settingVc animated:YES completion:nil];
 }
 
 - (void)switchCamera:(UIButton *)button{
