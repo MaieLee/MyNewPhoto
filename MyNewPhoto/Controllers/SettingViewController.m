@@ -7,10 +7,13 @@
 //
 
 #import "SettingViewController.h"
+#import "SettingTableViewCell.h"
+#import "SettingModel.h"
 
 @interface SettingViewController ()<UITableViewDelegate,UITableViewDataSource>
 
 @property (nonatomic, strong) UITableView *mainTableView;
+@property (nonatomic, strong) NSMutableArray *dataArray;
 
 @end
 
@@ -66,10 +69,31 @@
         _mainTableView.separatorStyle = UITableViewCellSeparatorStyleSingleLine;
         _mainTableView.backgroundColor = [UIColor clearColor];
         _mainTableView.separatorColor = [UIColor colorWithRed:0.92f green:0.92f blue:0.92f alpha:1.00f];
-        _mainTableView.rowHeight = 45.0f;
+        _mainTableView.rowHeight = 50.0f;
         _mainTableView.tableFooterView = [UIView new];
+        [_mainTableView registerNib:[UINib nibWithNibName:@"SettingTableViewCell" bundle:nil] forCellReuseIdentifier:@"SettingCellIdentifier"];
     }
     return  _mainTableView;
+}
+
+- (void)setUpDatas{
+    self.dataArray = [NSMutableArray arrayWithCapacity:0];
+    SettingModel *sModel = [[SettingModel alloc] init];
+    sModel.name = @"情迷水印";
+    sModel.isShowSwitch = YES;
+    [self.dataArray addObject:sModel];
+    
+    sModel = [[SettingModel alloc] init];
+    sModel.name = @"录像时长";
+    sModel.isShowSwitch = NO;
+    sModel.desc = @"10秒";
+    [self.dataArray addObject:sModel];
+    
+    sModel = [[SettingModel alloc] init];
+    sModel.name = @"录像时长";
+    sModel.isShowSwitch = NO;
+    sModel.desc = @"10秒";
+    [self.dataArray addObject:sModel];
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
@@ -79,17 +103,15 @@
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    return 45;
+    return 50;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     static NSString *cellIdentifier = @"SettingCellIdentifier";
-    UITableViewCell *cell = (UITableViewCell *)[tableView dequeueReusableCellWithIdentifier:cellIdentifier];
-    if (cell == nil) {
-        cell = [[UITableViewCell alloc] initWithStyle:0 reuseIdentifier:cellIdentifier];
-        cell.accessoryType = UITableViewCellAccessoryNone;
-    }
+    SettingTableViewCell *cell = (SettingTableViewCell *)[tableView dequeueReusableCellWithIdentifier:cellIdentifier];
+    cell.accessoryType = UITableViewCellAccessoryNone;
+    
     return cell;
 }
 
