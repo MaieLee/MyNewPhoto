@@ -19,20 +19,28 @@
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Item" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Tcn-0p-wgt">
-                        <rect key="frame" x="15" y="12" width="34" height="21"/>
-                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                        <rect key="frame" x="15" y="14" width="30.5" height="18"/>
+                        <fontDescription key="fontDescription" type="system" pointSize="15"/>
                         <nil key="textColor"/>
                         <nil key="highlightedColor"/>
                     </label>
                     <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" insetsLayoutMarginsFromSafeArea="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Mkg-29-4OB">
                         <rect key="frame" x="311" y="7" width="51" height="31"/>
                     </switch>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Qk8-Nn-8fq">
+                        <rect key="frame" x="360" y="22.5" width="0.0" height="0.0"/>
+                        <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                        <nil key="textColor"/>
+                        <nil key="highlightedColor"/>
+                    </label>
                 </subviews>
                 <constraints>
                     <constraint firstItem="Mkg-29-4OB" firstAttribute="centerY" secondItem="H2p-sc-9uM" secondAttribute="centerY" id="10w-oL-TZ6"/>
+                    <constraint firstAttribute="trailing" secondItem="Qk8-Nn-8fq" secondAttribute="trailing" constant="15" id="MNG-9D-tHl"/>
                     <constraint firstItem="Tcn-0p-wgt" firstAttribute="centerY" secondItem="H2p-sc-9uM" secondAttribute="centerY" id="Z0e-JP-o6y"/>
                     <constraint firstAttribute="trailing" secondItem="Mkg-29-4OB" secondAttribute="trailing" constant="15" id="aVF-zq-U7j"/>
                     <constraint firstItem="Tcn-0p-wgt" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="15" id="sCe-An-Suw"/>
+                    <constraint firstItem="Qk8-Nn-8fq" firstAttribute="centerY" secondItem="H2p-sc-9uM" secondAttribute="centerY" id="teu-jn-7f3"/>
                 </constraints>
             </tableViewCellContentView>
             <connections>

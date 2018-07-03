@@ -12,7 +12,7 @@
 
 - (void)awakeFromNib {
     [super awakeFromNib];
-    self.itemSwitch.transform = CGAffineTransformMakeScale(0.75, 0.75);
+
 }
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {
