@@ -14,7 +14,6 @@
 
 @property (nonatomic, strong) UITableView *mainTableView;
 @property (nonatomic, strong) NSMutableArray *dataArray;
-
 @end
 
 @implementation SettingViewController
@@ -22,6 +21,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     [self setUpHeaderView];
+    [self setUpDatas];
 }
 
 - (void)setUpHeaderView{
@@ -65,6 +65,7 @@
         _mainTableView = [[UITableView alloc] initWithFrame:self.view.bounds style:UITableViewStylePlain];
         _mainTableView.dataSource = self;
         _mainTableView.delegate = self;
+        _mainTableView.bounces = NO;
         _mainTableView.indicatorStyle = UIScrollViewIndicatorStyleBlack;
         _mainTableView.separatorStyle = UITableViewCellSeparatorStyleSingleLine;
         _mainTableView.backgroundColor = [UIColor clearColor];
@@ -90,15 +91,16 @@
     [self.dataArray addObject:sModel];
     
     sModel = [[SettingModel alloc] init];
-    sModel.name = @"录像时长";
+    sModel.name = @"当前版本";
     sModel.isShowSwitch = NO;
-    sModel.desc = @"10秒";
+    NSString *version = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"];
+    sModel.desc = version;
     [self.dataArray addObject:sModel];
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return 4;
+    return self.dataArray.count;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -110,13 +112,50 @@
 {
     static NSString *cellIdentifier = @"SettingCellIdentifier";
     SettingTableViewCell *cell = (SettingTableViewCell *)[tableView dequeueReusableCellWithIdentifier:cellIdentifier];
-    cell.accessoryType = UITableViewCellAccessoryNone;
+    if (indexPath.row==1) {
+        cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+        cell.descLblRight.constant=0;
+    }else{
+        cell.accessoryType = UITableViewCellAccessoryNone;
+        cell.descLblRight.constant=15;
+    }
+    cell.selectionStyle = UITableViewCellSelectionStyleNone;
     
+    SettingModel *sModel = self.dataArray[indexPath.row];
+    cell.itemSwitch.hidden = !sModel.isShowSwitch;
+    cell.itemLabel.text = sModel.name;
+    cell.descLabel.hidden = sModel.isShowSwitch;
+    if (!sModel.isShowSwitch) {
+        cell.descLabel.text = sModel.desc;
+    }
+    if (sModel.isShowSwitch) {
+        BOOL isHideWater = [[NSUserDefaults standardUserDefaults] boolForKey:@"IsHideWater"];
+        [cell.itemSwitch setOn:!isHideWater];
+        [cell.itemSwitch addTarget:self action:@selector(switchAction:) forControlEvents:UIControlEventValueChanged];
+    }
     return cell;
 }
 
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    if (indexPath.row==1) {
+        
+    }
+    
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
+}
+
+- (void)switchAction:(UISwitch *)sender{
+    [[NSUserDefaults standardUserDefaults] setBool:!sender.isOn forKey:@"IsHideWater"];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
 - (void)backAction:(id)sender{
-    [self dismissViewControllerAnimated:YES completion:nil];
+    [self dismissViewControllerAnimated:YES completion:^{
+        if (self.complete) {
+            self.complete();
+        }
+    }];
 }
 
 - (void)didReceiveMemoryWarning {

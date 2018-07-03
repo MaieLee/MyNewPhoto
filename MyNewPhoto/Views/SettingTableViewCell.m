@@ -12,7 +12,7 @@
 
 - (void)awakeFromNib {
     [super awakeFromNib];
-
+    self.itemSwitch.onTintColor = [UIColor colorWithRed:252/255.0 green:115/255.0 blue:186/255.0 alpha:1];
 }
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {

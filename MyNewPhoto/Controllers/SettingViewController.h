@@ -8,6 +8,10 @@
 
 #import "ViewController.h"
 
+typedef void(^SettingDissBlock) (void);
+
 @interface SettingViewController : ViewController
+
+@property (nonatomic, copy) SettingDissBlock complete;
 
 @end

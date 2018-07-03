@@ -115,6 +115,7 @@
 		3F4AA60F20E09F8E00ED3CB3 /* VideoFilterViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3F4AA60E20E09F8E00ED3CB3 /* VideoFilterViewController.m */; };
 		3F7F324420D115D4006B2ED7 /* MNAppDataHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 3F7F324320D115D4006B2ED7 /* MNAppDataHelper.m */; };
 		3F9659C920C642470029D381 /* MNStringHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 3F9659C820C642470029D381 /* MNStringHelper.m */; };
+		97AB282B20EBD165000F5ADB /* VideoRecordTimePickerView.m in Sources */ = {isa = PBXBuildFile; fileRef = 97AB282A20EBD165000F5ADB /* VideoRecordTimePickerView.m */; };
 		9D4027BD49C8E420A7B313D4 /* libPods-MyNewPhoto.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1EC42C55EF4D683FABD04253 /* libPods-MyNewPhoto.a */; };
 /* End PBXBuildFile section */
 
@@ -326,6 +327,8 @@
 		3F7F324320D115D4006B2ED7 /* MNAppDataHelper.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MNAppDataHelper.m; sourceTree = "<group>"; };
 		3F9659C720C642470029D381 /* MNStringHelper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MNStringHelper.h; sourceTree = "<group>"; };
 		3F9659C820C642470029D381 /* MNStringHelper.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MNStringHelper.m; sourceTree = "<group>"; };
+		97AB282920EBD165000F5ADB /* VideoRecordTimePickerView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = VideoRecordTimePickerView.h; sourceTree = "<group>"; };
+		97AB282A20EBD165000F5ADB /* VideoRecordTimePickerView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = VideoRecordTimePickerView.m; sourceTree = "<group>"; };
 		F2B2517B06B0B5686E9676E8 /* Pods-MyNewPhoto.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MyNewPhoto.debug.xcconfig"; path = "Pods/Target Support Files/Pods-MyNewPhoto/Pods-MyNewPhoto.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -647,6 +650,8 @@
 				3F45729D20EA1F74009A8D66 /* SettingTableViewCell.h */,
 				3F45729E20EA1F74009A8D66 /* SettingTableViewCell.m */,
 				3F45729F20EA1F74009A8D66 /* SettingTableViewCell.xib */,
+				97AB282920EBD165000F5ADB /* VideoRecordTimePickerView.h */,
+				97AB282A20EBD165000F5ADB /* VideoRecordTimePickerView.m */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -915,6 +920,7 @@
 				34D5DD0F209DCCA000F9182D /* GPUImageBeautifyFilter.m in Sources */,
 				349A983220ABDF9C0064E2A1 /* MNGetPhotoAlbums.m in Sources */,
 				3480DF5A20B7A57500289A08 /* MNCircleView.m in Sources */,
+				97AB282B20EBD165000F5ADB /* VideoRecordTimePickerView.m in Sources */,
 				3480DF5D20B7A68700289A08 /* MNSolidCircleView.m in Sources */,
 				3470A86220994DD4003972FD /* main.m in Sources */,
 				347C65F220A59EAC004B07D8 /* FWHudsonFilter.m in Sources */,

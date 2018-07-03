@@ -357,8 +357,19 @@ typedef NS_ENUM(NSInteger, CameraManagerFlashMode) {
 
 - (void)settingAction
 {
+    if (self.isTakeVideo) {
+        return;
+    }
     SettingViewController *settingVc = [[SettingViewController alloc] init];
-    [self presentViewController:settingVc animated:YES completion:nil];
+    WEAKSELF
+    settingVc.complete = ^{
+        dispatch_async(dispatch_get_global_queue(0, 0), ^{
+            [weakSelf.gpuStillCamera startCameraCapture];
+        });
+    };
+    [self presentViewController:settingVc animated:YES completion:^{
+        [self.gpuStillCamera stopCameraCapture];
+    }];
 }
 
 - (void)switchCamera:(UIButton *)button{

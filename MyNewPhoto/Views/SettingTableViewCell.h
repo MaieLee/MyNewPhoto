@@ -11,5 +11,8 @@
 @interface SettingTableViewCell : UITableViewCell
 @property (weak, nonatomic) IBOutlet UILabel *itemLabel;
 @property (weak, nonatomic) IBOutlet UISwitch *itemSwitch;
+@property (weak, nonatomic) IBOutlet UILabel *descLabel;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *descLblRight;
+
 
 @end

@@ -44,6 +44,8 @@
                 </constraints>
             </tableViewCellContentView>
             <connections>
+                <outlet property="descLabel" destination="Qk8-Nn-8fq" id="pCs-vc-iia"/>
+                <outlet property="descLblRight" destination="MNG-9D-tHl" id="yWz-0R-RCu"/>
                 <outlet property="itemLabel" destination="Tcn-0p-wgt" id="Bcg-FT-Wuy"/>
                 <outlet property="itemSwitch" destination="Mkg-29-4OB" id="ZTS-ST-p28"/>
             </connections>
