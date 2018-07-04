@@ -9,11 +9,14 @@
 #import "SettingViewController.h"
 #import "SettingTableViewCell.h"
 #import "SettingModel.h"
+#import "VideoRecordTimePickerView.h"
 
 @interface SettingViewController ()<UITableViewDelegate,UITableViewDataSource>
 
 @property (nonatomic, strong) UITableView *mainTableView;
 @property (nonatomic, strong) NSMutableArray *dataArray;
+@property (nonatomic, strong) VideoRecordTimePickerView *recordTimePickerView;
+
 @end
 
 @implementation SettingViewController
@@ -75,6 +78,20 @@
         [_mainTableView registerNib:[UINib nibWithNibName:@"SettingTableViewCell" bundle:nil] forCellReuseIdentifier:@"SettingCellIdentifier"];
     }
     return  _mainTableView;
+}
+
+- (VideoRecordTimePickerView *)recordTimePickerView{
+    if (_recordTimePickerView == nil) {
+        _recordTimePickerView = [[VideoRecordTimePickerView alloc] initWithFrame:CGRectMake(0, 0, screenSize.width, screenSize.height)];
+        _recordTimePickerView.userInteractionEnabled = YES;
+        WEAKSELF
+        _recordTimePickerView.recordTimeBlock = ^(NSString *times) {
+            SettingTableViewCell *cell = (SettingTableViewCell *)[weakSelf.mainTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:1 inSection:0]];
+            cell.descLabel.text = times;
+        };
+    }
+    
+    return _recordTimePickerView;
 }
 
 - (void)setUpDatas{
@@ -139,7 +156,7 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if (indexPath.row==1) {
-        
+        [self.recordTimePickerView show];
     }
     
     [tableView deselectRowAtIndexPath:indexPath animated:YES];

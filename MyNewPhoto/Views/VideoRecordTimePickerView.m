@@ -11,6 +11,7 @@
 @interface VideoRecordTimePickerView()<UIPickerViewDelegate,UIPickerViewDataSource>
 @property (strong, nonatomic) UIPickerView *pickerView;
 @property (nonatomic, strong) NSArray *nameArray;
+@property (nonatomic, strong) UIView *bgView;
 @end
 
 @implementation VideoRecordTimePickerView
@@ -26,27 +27,36 @@
 }
 
 - (void)setUpUI{
-    UIView *topLine = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.frame.size.width, 0.5)];
-    topLine.backgroundColor = [UIColor grayColor];
-    [self addSubview:topLine];
-    
-    _pickerView = [[UIPickerView alloc]initWithFrame:CGRectMake(0, 50, self.frame.size.width, 162)];
+    UIView *bgView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, screenSize.width, screenSize.height)];
+    bgView.backgroundColor = [[UIColor blackColor] colorWithAlphaComponent:0.4];
+    bgView.alpha = 0;
+    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(closeTap:)];
+    [bgView addGestureRecognizer:tap];
+    [self addSubview:bgView];
+    self.bgView = bgView;
+   
+    _pickerView = [[UIPickerView alloc] initWithFrame:CGRectMake(0, screenSize.height-160, screenSize.width, 160)];
     _pickerView.backgroundColor = [UIColor whiteColor];
     _pickerView.delegate = self;
     _pickerView.dataSource = self;
     [self addSubview:_pickerView];
+    _pickerView.transform = CGAffineTransformMakeTranslation(0,160);
+    
+//    UIView *topLine = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.frame.size.width, 0.5)];
+//    topLine.backgroundColor = [UIColor grayColor];
+//    [self addSubview:topLine];
 }
 
 #pragma mark pickerview function
 -(NSInteger)numberOfComponentsInPickerView:(UIPickerView *)pickerView
 {
-    return 4;
+    return 1;
 }
 
 //返回指定列的行数
 -(NSInteger)pickerView:(UIPickerView *)pickerView numberOfRowsInComponent:(NSInteger)component
 {
-    return 1;
+    return 4;
 }
 
 //返回指定列，行的高度，就是自定义行的高度
@@ -82,6 +92,26 @@
     if (self.recordTimeBlock) {
         self.recordTimeBlock(self.nameArray[row]);
     }
+}
+
+- (void)show{
+    UIWindow *window = [UIApplication sharedApplication].keyWindow;
+    [window addSubview:self];
+    
+    [UIView animateWithDuration:0.3 animations:^{
+        self.pickerView.transform = CGAffineTransformMakeTranslation(0,0);
+        self.bgView.alpha = 1;
+    }];
+}
+
+- (void)closeTap:(id)sender
+{
+    [UIView animateWithDuration:0.3 animations:^{
+        self.pickerView.transform = CGAffineTransformMakeTranslation(0,160);
+        self.bgView.alpha = 0;
+    } completion:^(BOOL finished) {
+        [self removeFromSuperview];
+    }];
 }
 
 @end

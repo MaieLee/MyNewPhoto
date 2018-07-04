@@ -12,4 +12,6 @@ typedef void(^RecordTimePickerView) (NSString *times);
 
 @interface VideoRecordTimePickerView : UIView
 @property (nonatomic, copy) RecordTimePickerView recordTimeBlock;
+
+- (void)show;
 @end
