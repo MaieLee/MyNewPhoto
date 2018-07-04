@@ -571,8 +571,12 @@ typedef NS_ENUM(NSInteger, CameraManagerFlashMode) {
 }
 
 - (void)savedPhotosAlbum:(UIImage *)processedImage{
-    UIImage *waterImage = [UIImage imageNamed:@"watermark"];
-    UIImage *saveImage = [UIImage waterImageWithImage:processedImage waterImage:waterImage waterImageRect:CGRectMake(40, processedImage.size.height-waterImage.size.height-40, waterImage.size.width, waterImage.size.height)];
+    UIImage *saveImage = processedImage;
+    if (![[NSUserDefaults standardUserDefaults] boolForKey:@"IsHideWater"]) {
+        UIImage *waterImage = [UIImage imageNamed:@"watermark"];
+        saveImage = [UIImage waterImageWithImage:processedImage waterImage:waterImage waterImageRect:CGRectMake(40, processedImage.size.height-waterImage.size.height-40, waterImage.size.width, waterImage.size.height)];
+    }
+    
     dispatch_async(dispatch_get_global_queue(0, 0), ^{
         if (@available(iOS 9.0, *)) {
             [[MNGetPhotoAlbums shareManager] insertObject:saveImage isImage:YES intoAlbumNamed:@"情迷相册" completionHandler:nil];

@@ -132,7 +132,11 @@
                 self.takeVideo(1);
             }
             
-            NSTimeInterval timeInterval = 0.1f;
+            NSTimeInterval timeInterval = 0.1f; 
+            NSInteger recordTime = [[NSUserDefaults standardUserDefaults] integerForKey:@"RecordTime"];
+            if (recordTime>0) {
+                timeInterval = recordTime*0.01;
+            }
             self.recordTimer = [NSTimer scheduledTimerWithTimeInterval:timeInterval
                                                                 target:self
                                                               selector:@selector(updateProgress)

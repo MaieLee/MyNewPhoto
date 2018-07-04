@@ -104,7 +104,16 @@
     sModel = [[SettingModel alloc] init];
     sModel.name = @"录像时长";
     sModel.isShowSwitch = NO;
-    sModel.desc = @"10秒";
+    NSInteger recordTime = [[NSUserDefaults standardUserDefaults] integerForKey:@"RecordTime"];
+    if (recordTime>0) {
+        if (recordTime<60) {
+            sModel.desc = [NSString stringWithFormat:@"%ld秒",(long)recordTime];
+        }else{
+            sModel.desc = @"无限制";
+        }
+    }else{
+        sModel.desc = @"10秒";
+    }
     [self.dataArray addObject:sModel];
     
     sModel = [[SettingModel alloc] init];
