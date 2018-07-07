@@ -9,7 +9,7 @@
 #import "MNCircleView.h"
 
 #define KHWCircleLineWidth 3.0f
-#define KHWCircleColor [UIColor colorWithRed:0/255.0 green:191/255.0 blue:255/255.0 alpha:1]
+#define KHWCircleColor [UIColor colorWithRed:252/255.0 green:115/255.0 blue:186/255.0 alpha:1]
 
 @implementation MNCircleView
 
@@ -37,7 +37,7 @@
     //颜色
     [KHWCircleColor set];
     //拐角
-//    path.lineCapStyle = kCGLineCapRound;
+    path.lineCapStyle = kCGLineCapRound;
 //    path.lineJoinStyle = kCGLineJoinRound;
     //半径
     CGFloat radius = (MIN(rect.size.width, rect.size.height) - KHWCircleLineWidth) * 0.5;
