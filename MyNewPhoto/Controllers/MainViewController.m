@@ -17,6 +17,7 @@
 #import "MNImagePickerViewController.h"
 #import "ShowPicView.h"
 #import "SettingViewController.h"
+#import "GuideView.h"
 
 //闪光灯状态
 typedef NS_ENUM(NSInteger, CameraManagerFlashMode) {
@@ -56,6 +57,11 @@ typedef NS_ENUM(NSInteger, CameraManagerFlashMode) {
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    if (![[NSUserDefaults standardUserDefaults] boolForKey:@"HasShowGuideView"]) {
+        GuideView *guide = [[GuideView alloc] initWithFrame:CGRectMake(0, 0, screenSize.width, screenSize.height)];
+        [guide show];
+    }
     
     [self checkoutCameraAuthority];
 }

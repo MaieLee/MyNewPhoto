@@ -10,4 +10,6 @@
 
 @interface GuideView : UIView
 
+- (void)show;
+
 @end
