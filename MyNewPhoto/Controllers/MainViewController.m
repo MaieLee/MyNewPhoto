@@ -50,7 +50,6 @@ typedef NS_ENUM(NSInteger, CameraManagerFlashMode) {
 @property (nonatomic, assign) BOOL isRefuseAccessAudio;
 @property (nonatomic, strong) ShowPicView *showPicView;
 @property (nonatomic, strong) GPUImageUIElement *uiElement;
-
 @end
 
 @implementation MainViewController

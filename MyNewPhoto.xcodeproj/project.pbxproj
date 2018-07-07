@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		1893050620E873DF00C324F9 /* SettingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1893050420E873DF00C324F9 /* SettingViewController.m */; };
+		189F2F0C20F0584800D8B80A /* GuideView.m in Sources */ = {isa = PBXBuildFile; fileRef = 189F2F0B20F0584800D8B80A /* GuideView.m */; };
 		342EB0C4209C391C006F762B /* UIImage+RoundCorner.m in Sources */ = {isa = PBXBuildFile; fileRef = 342EB0C3209C391C006F762B /* UIImage+RoundCorner.m */; };
 		342EB0CA209C3CB3006F762B /* CyclesView.m in Sources */ = {isa = PBXBuildFile; fileRef = 342EB0C9209C3CB3006F762B /* CyclesView.m */; };
 		3432591920AD652D00C11FFE /* MNPictrueCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 3432591820AD652D00C11FFE /* MNPictrueCollectionViewCell.m */; };
@@ -153,6 +154,8 @@
 		1312EE20BA627F33388B0604 /* Pods-MyNewPhoto.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MyNewPhoto.release.xcconfig"; path = "Pods/Target Support Files/Pods-MyNewPhoto/Pods-MyNewPhoto.release.xcconfig"; sourceTree = "<group>"; };
 		1893050320E873DF00C324F9 /* SettingViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SettingViewController.h; sourceTree = "<group>"; };
 		1893050420E873DF00C324F9 /* SettingViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SettingViewController.m; sourceTree = "<group>"; };
+		189F2F0A20F0584800D8B80A /* GuideView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GuideView.h; sourceTree = "<group>"; };
+		189F2F0B20F0584800D8B80A /* GuideView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = GuideView.m; sourceTree = "<group>"; };
 		1EC42C55EF4D683FABD04253 /* libPods-MyNewPhoto.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-MyNewPhoto.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		342EB0C2209C391C006F762B /* UIImage+RoundCorner.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "UIImage+RoundCorner.h"; sourceTree = "<group>"; };
 		342EB0C3209C391C006F762B /* UIImage+RoundCorner.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "UIImage+RoundCorner.m"; sourceTree = "<group>"; };
@@ -652,6 +655,8 @@
 				3F45729F20EA1F74009A8D66 /* SettingTableViewCell.xib */,
 				97AB282920EBD165000F5ADB /* VideoRecordTimePickerView.h */,
 				97AB282A20EBD165000F5ADB /* VideoRecordTimePickerView.m */,
+				189F2F0A20F0584800D8B80A /* GuideView.h */,
+				189F2F0B20F0584800D8B80A /* GuideView.m */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -929,6 +934,7 @@
 				34CA5CCD20A5256B00FB988D /* FilterSampleModel.m in Sources */,
 				34922BB1209BE4090009FEB5 /* ToolBarView.m in Sources */,
 				347C65EF20A59EAC004B07D8 /* FWEarlybirdFilter.m in Sources */,
+				189F2F0C20F0584800D8B80A /* GuideView.m in Sources */,
 				3F4AA60F20E09F8E00ED3CB3 /* VideoFilterViewController.m in Sources */,
 				3470A85420994DD1003972FD /* AppDelegate.m in Sources */,
 				347C65FE20A59EAC004B07D8 /* FWWaldenFilter.m in Sources */,
