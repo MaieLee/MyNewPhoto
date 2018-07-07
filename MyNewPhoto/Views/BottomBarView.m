@@ -21,6 +21,7 @@
 @property (nonatomic, assign) BOOL isHadLoadCameraView;
 @property (nonatomic, assign) BOOL isHadHide;
 @property (nonatomic, assign) BOOL isFilterPicture;
+@property (nonatomic, strong) UIActivityIndicatorView *activityIndicator;
 @end
 
 @implementation BottomBarView
@@ -55,6 +56,13 @@
 
         [self addSubview:self.cameraFilterView];
     }else{
+        self.activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:(UIActivityIndicatorViewStyleGray)];
+        [self addSubview:self.activityIndicator];
+        self.activityIndicator.frame = CGRectMake((self.frame.size.width-60)/2, (self.frame.size.height-60)/2, 60, 60);
+        self.activityIndicator.color = [UIColor whiteColor];
+        self.activityIndicator.hidesWhenStopped = YES;
+        [self.activityIndicator startAnimating];
+        
         dispatch_async(dispatch_get_global_queue(0, 0), ^{
             NSInteger cameraFilterCount = self.filterManager.filterArray.count;
             NSMutableArray *filterArray = [[NSMutableArray alloc] initWithCapacity:cameraFilterCount];
@@ -74,6 +82,7 @@
             
             dispatch_async(dispatch_get_main_queue(), ^{
                 [self addSubview:self.cameraFilterView];
+                [self.activityIndicator stopAnimating];
             });
         });
     }
